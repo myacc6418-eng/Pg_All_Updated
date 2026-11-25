@@ -1,0 +1,2543 @@
+# PG FINDER — COMPLETE PG OWNER DASHBOARD FUNCTIONALITY AND UI IMPROVEMENTS
+
+## 1. Objective
+
+Act as a senior full-stack developer, product designer, database architect, and mobile application engineer.
+
+You are working on the existing PG Finder application.
+
+Your task is to improve the existing PG Owner Dashboard and all associated property management modules according to the requirements below.
+
+The application is intended for Indian PG owners, including people who may have limited technical knowledge or digital literacy.
+
+Therefore, the application must be extremely easy to understand and operate.
+
+Prioritize functionality, simplicity, accessibility, and professional design.
+
+## 2. Strict implementation instructions
+
+- Do not rebuild the application from scratch.
+- Do not remove existing working functionality.
+- Do not modify the Tenant Dashboard unnecessarily.
+- Do not redesign the Super Admin Dashboard unnecessarily.
+- Make supporting Super Admin changes only where required for owner workflows.
+- Preserve the existing application architecture.
+- Preserve existing authentication and authorization.
+- Preserve the current Light, Dark, and System themes.
+- Preserve the existing colors and design system.
+- Preserve existing routes wherever possible.
+- Reuse existing components.
+- Do not create duplicate pages.
+- Do not create disconnected mock datasets.
+- All related modules must use consistent shared data.
+- Do not introduce unnecessary animations.
+- Keep the interface compact and professional.
+- Every button must perform its intended action.
+- Do not represent mock functionality as production-ready functionality.
+
+Before making changes, inspect the existing PG Owner Dashboard, routes, components, services, state management, database models, and backend implementation.
+
+---
+
+# PART 1 — OWNER DASHBOARD QUICK LINKS
+
+## 3. Remove the More Operations expandable section
+
+### Current problem
+
+The PG Owner Dashboard contains a More Operations button or expandable section.
+
+When the owner clicks More Operations, additional quick-access cards become visible.
+
+This creates unnecessary interaction and makes it difficult for owners to discover available functionality.
+
+### Required change
+
+Remove the More Operations button and expandable behavior.
+
+Display all existing quick-access cards directly on the Owner Dashboard.
+
+Do not remove any existing operation.
+
+All quick links must be visible without requiring an additional click.
+
+Organize the cards into clearly labeled groups.
+
+### Property Management
+
+- Add Property
+- My Properties
+- Floors & Rooms
+- Rooms & Beds
+- Vacancies
+- QR Onboarding
+
+### Tenant Management
+
+- All Tenants
+- Joining Requests
+- Tenant Transfers
+- Checkout
+- Tenant Documents
+
+### Finance
+
+- Rent Collection
+- Pending Rent
+- Deposits
+- Expenses
+- Payment History
+- Financial Reports
+
+### Daily Operations
+
+- Food & Mess
+- Complaints
+- Maintenance
+- Rules & Policies
+- Notices
+- Parcels
+- Staff Management
+
+### Analytics and Administration
+
+- Tracking Center
+- Reports & Analytics
+- Reviews & Ratings
+- Startup Events
+- Subscription
+- Support
+
+Reuse existing pages and routes.
+
+If two quick links lead to equivalent functionality, consolidate them without removing access to the underlying feature.
+
+### Quick link UI
+
+Each quick link must contain:
+
+- Recognizable icon
+- Short, understandable label
+- Optional pending count
+- Clickable navigation
+- Consistent card size
+- Clear active or pressed state
+
+Use approximately:
+
+- Three or four cards per row on mobile
+- Four to six cards per row on tablet
+- Six to eight cards per row on desktop
+
+Do not create oversized cards.
+
+All groups must be expanded and visible by default.
+
+---
+
+# PART 2 — SIMPLE AND ACCESSIBLE USER INTERFACE
+
+## 4. Design for owners with limited technical experience
+
+Use simple English and familiar terminology.
+
+Examples:
+
+Instead of "Inventory Allocation," use "Assign Bed."
+
+Instead of "Financial Reconciliation," use "Payment History."
+
+Instead of "Occupancy Utilization," use "Occupied Beds."
+
+Instead of "Tenant Relocation," use "Transfer Tenant."
+
+Use both icons and text for important actions.
+
+Do not rely on icons alone.
+
+### Standard action buttons
+
+| Action | Icon | Visual treatment |
+|---|---|---|
+| View | Eye | Blue or neutral |
+| Edit | Pencil | Amber or neutral |
+| Delete | Trash | Red |
+| Add | Plus | Green |
+| Transfer | ArrowLeftRight | Purple or neutral |
+| Download | Download | Neutral |
+| Approve | CheckCircle | Green |
+| Reject | XCircle | Red |
+
+Use consistent action buttons throughout all owner modules.
+
+### Status colors
+
+| Status | Color |
+|---|---|
+| Paid | Green |
+| Available | Green |
+| Approved | Green |
+| Resolved | Green |
+| Pending | Amber |
+| Partially Paid | Amber |
+| Reserved | Blue |
+| Occupied | Blue |
+| In Progress | Blue |
+| Overdue | Red |
+| Rejected | Red |
+| Under Maintenance | Orange |
+| Inactive | Gray |
+
+Always display the status text alongside the color.
+
+Ensure readable contrast in Light and Dark modes.
+
+---
+
+# PART 3 — STANDARD TABLE MANAGEMENT SYSTEM
+
+## 5. Replace unnecessary record cards with simple tables
+
+For operational management pages, use professional, compact data tables instead of large individual cards.
+
+Apply this approach to:
+
+- Properties
+- Tenants
+- Joining Requests
+- Rent Collection
+- Payment History
+- Deposits
+- Expenses
+- Floors
+- Rooms
+- Beds
+- Maintenance
+- Complaints
+- Staff
+- Notices
+- Parcels
+- Checkout
+- Food menus
+- Tracking requests
+
+Each management table should support relevant functionality:
+
+- Search
+- Property filter
+- Status filter
+- Date filter
+- Sorting
+- Pagination
+- View
+- Edit
+- Delete or Archive where appropriate
+- Add New
+- Export where appropriate
+
+### Desktop
+
+Display a conventional data table with column headings.
+
+### Mobile
+
+Preserve a simple table-based experience.
+
+Prioritize important columns.
+
+Allow horizontal scrolling within the table container when necessary.
+
+Keep the action column accessible.
+
+Alternatively, use expandable table rows for secondary information.
+
+Do not convert every record into a large dashboard card.
+
+### Standard table header
+
+Include:
+
+- Page title
+- Short description
+- Search field
+- Property selection dropdown
+- Relevant filters
+- Add button
+- Export button where applicable
+
+### Standard record actions
+
+View should open a read-only details page or dialog.
+
+Edit should open a prefilled form.
+
+Delete should open a confirmation dialog explaining the consequences.
+
+Important: Do not permanently delete active tenant stays, occupied rooms, confirmed financial transactions, historical deposits, or other legally or operationally important records.
+
+For such records, use appropriate archive, cancellation, reversal, adjustment, or checkout workflows.
+
+---
+
+# PART 4 — MY PROPERTIES PAGE
+
+## 6. Improve the PG property list
+
+Update the existing My Properties page.
+
+Display all properties belonging to the authenticated owner.
+
+Each property should display:
+
+- Property cover photograph
+- PG name
+- Property ID
+- City
+- Locality
+- Approval status
+- Location verification status
+- Listing status
+- Total floors
+- Total rooms
+- Total beds
+- Occupied beds
+- Available beds
+- Active tenants
+- Occupancy percentage
+
+### Property action buttons
+
+For each property, provide:
+
+- View
+- Edit
+- Delete or Archive
+- Manage Floors
+- Manage Beds
+- View Tenants
+- View Vacancies
+- QR Code
+
+The existing Manage Beds and QR buttons must remain functional.
+
+Add the new View Tenants and View Vacancies buttons.
+
+### View Tenants button
+
+When clicked:
+
+- Navigate to the tenant management page.
+- Automatically select the corresponding property.
+- Display only tenants associated with that property.
+- Allow the owner to change the property filter if required.
+
+Example route:
+
+`/owner/tenants?propertyId=PROPERTY_ID`
+
+### View Vacancies button
+
+When clicked:
+
+- Navigate to the vacancy management page.
+- Automatically select the corresponding property.
+- Display floors, rooms, beds, and occupancy information.
+
+Example route:
+
+`/owner/vacancies?propertyId=PROPERTY_ID`
+
+### Property restrictions
+
+Pending or unapproved properties must not unlock operational management.
+
+Approved and location-verified properties can access internal management without paying the future ₹299 listing fee.
+
+Do not automatically publish approved properties.
+
+### Property deletion
+
+Allow deletion of eligible empty drafts.
+
+For properties with existing tenants, financial records, or operational history, provide an archive or deactivation workflow instead.
+
+Prevent deletion that would cause data loss or orphaned records.
+
+---
+
+# PART 5 — ADD PROPERTY FORM UPDATE
+
+## 7. Remove Target Occupants
+
+Update the existing Add Property registration wizard.
+
+Remove the Target Occupants field completely from the registration UI.
+
+Remove the following options from this field:
+
+- Students
+- Working Professionals
+- Both
+
+Remove its required-field validation.
+
+Remove unnecessary dependencies on this field.
+
+If the database already contains historical Target Occupants values, preserve existing data until a safe migration is planned.
+
+Do not perform destructive migrations unnecessarily.
+
+### Final property registration fields
+
+#### Step 1 — Property Details
+
+- PG Name
+- Property Type
+- Accommodation Category
+- Owner or Manager Name
+- Primary Mobile Number
+- Alternate Mobile Number
+- Email
+- Property Description
+- Food Availability
+- Established Year
+
+#### Step 2 — Location
+
+- State
+- District
+- City
+- Locality
+- Complete Address
+- PIN Code
+- Landmark
+- Use My Current Location
+
+Automatically capture latitude, longitude, accuracy, and capture timestamp after the owner grants permission.
+
+#### Step 3 — Amenities
+
+Collect general property-level amenities.
+
+#### Step 4 — Property Photos and Documents
+
+Require at least four overall property photographs.
+
+Allow selection of a cover photograph.
+
+Do not require room or bathroom photographs at this stage.
+
+#### Step 5 — Review and Submit
+
+Validate information and submit for Super Admin approval.
+
+Preserve the existing property approval and location verification workflow.
+
+Do not add rent, rooms, beds, bathrooms, or sharing configurations to initial property registration.
+
+---
+
+# PART 6 — TENANT MANAGEMENT
+
+## 8. Complete tenant management table
+
+Update the All Tenants page.
+
+Display a professional table containing:
+
+| Column |
+|---|
+| Tenant ID |
+| Tenant Name |
+| Mobile Number |
+| PG Name |
+| Floor |
+| Room |
+| Bed |
+| Sharing Type |
+| Joining Date |
+| Monthly Rent |
+| Pending Rent |
+| Deposit Status |
+| Stay Status |
+| Actions |
+
+Additional information can be displayed through expandable rows or the View action.
+
+### Filters
+
+- All Properties
+- Individual Property
+- Floor
+- Room
+- Sharing Type
+- Active Tenants
+- Previous Tenants
+- Pending Rent
+- Joining Date
+- Stay Status
+
+### Search
+
+Allow searching by:
+
+- Tenant name
+- Mobile number
+- Tenant ID
+- Room number
+- Bed number
+
+### Tenant actions
+
+- View
+- Edit
+- Transfer
+- Checkout
+- Delete or Archive where permitted
+
+### View Tenant
+
+Display a complete tenant profile with the following sections:
+
+#### Personal information
+
+- Name
+- Profile photograph
+- Mobile number
+- Email
+- Tenant ID
+- Applicable emergency contact information
+
+#### Accommodation information
+
+- PG name
+- Floor
+- Room
+- Bed
+- Sharing type
+- Joining date
+- Stay duration
+- Stay status
+
+#### Financial information
+
+- Agreed monthly rent
+- Rent due date
+- Total rent paid
+- Outstanding rent
+- Deposit required
+- Deposit received
+- Pending deposit
+- Payment history
+
+#### Additional information
+
+- Authorized verification documents
+- Stay agreement
+- Complaints
+- Maintenance requests
+- Room transfer history
+- Checkout history
+
+Do not display tenant personal expense tracker information.
+
+### Edit Tenant
+
+Allow authorized editing of:
+
+- Permitted stay-related contact information
+- Accommodation details through the transfer workflow
+- Rent agreement through an authorized agreement update
+- Deposit configuration through appropriate financial adjustments
+- Joining information where corrections are permitted
+- Operational notes
+
+Do not allow an owner to change the tenant's authentication credentials.
+
+Do not allow unrestricted modification of confirmed financial records.
+
+---
+
+# PART 7 — JOINING REQUESTS AND ONBOARDING
+
+## 9. Joining requests table
+
+Replace large joining request cards with a simple table.
+
+Columns:
+
+| Column |
+|---|
+| Request ID |
+| Tenant Name |
+| Mobile Number |
+| Requested PG |
+| Preferred Room Type |
+| Requested Joining Date |
+| Request Date |
+| Joining Source |
+| Status |
+| Actions |
+
+Joining sources:
+
+- QR Code
+- Public PG Listing
+- Owner Invitation
+
+Statuses:
+
+- New Request
+- Under Review
+- Approved
+- Awaiting Bed Assignment
+- Awaiting Documents
+- Awaiting Agreement
+- Active Stay
+- Rejected
+- Cancelled
+
+### Actions
+
+- View
+- Edit
+- Approve
+- Reject
+- Assign Room
+- Assign Bed
+- Cancel or Archive
+
+Allow deletion only for eligible draft or invalid records.
+
+Preserve historical onboarding records.
+
+### Joining request details
+
+Display:
+
+- Tenant information
+- Requested property
+- Requested joining date
+- Available floors
+- Available rooms
+- Available beds
+- Agreed rent
+- Security deposit
+- Document status
+- Agreement status
+- Owner notes
+
+### Bed assignment
+
+The owner must select:
+
+1. Property
+2. Floor
+3. Room
+4. Available bed
+
+Only available and eligible beds can be selected.
+
+Prevent duplicate active bed assignments.
+
+Update vacancy information automatically after successful assignment and stay activation.
+
+---
+
+# PART 8 — FLOORS, ROOMS AND VACANCIES
+
+## 10. Unified floor and vacancy management
+
+Improve the existing Floors and Vacancies pages.
+
+The owner must be able to understand the entire PG building structure and occupancy without navigating through many unrelated pages.
+
+Use the following hierarchy:
+
+Property → Floor → Room → Bed → Tenant
+
+### Top summary cards
+
+Display:
+
+- Total Floors
+- Total Rooms
+- Total Beds
+- Occupied Beds
+- Available Beds
+- Reserved Beds
+- Maintenance Beds
+- Occupancy Percentage
+
+### Property dropdown
+
+Allow selection of:
+
+- All Properties
+- Individual PG Property
+
+When a specific property is selected, display its complete floor structure.
+
+---
+
+## 11. Floor overview
+
+Display all floors in compact expandable sections.
+
+Example:
+
+Ground Floor
+
+- Total Rooms: 5
+- Total Beds: 15
+- Occupied: 12
+- Available: 3
+
+First Floor
+
+- Total Rooms: 8
+- Total Beds: 24
+- Occupied: 18
+- Available: 6
+
+Second Floor
+
+- Total Rooms: 6
+- Total Beds: 18
+- Occupied: 14
+- Available: 4
+
+Each floor must have:
+
+- View
+- Edit
+- Delete or Deactivate
+- Add Room
+
+Allow the owner to expand a floor and view all its rooms.
+
+Do not require opening a separate page for every room merely to understand occupancy.
+
+### Add or Edit Floor
+
+Fields:
+
+- Property
+- Floor Name
+- Floor Number
+- Description
+- Operational Status
+
+Support:
+
+- Ground Floor
+- First Floor
+- Second Floor
+- Basement
+- Custom Floor Name
+
+Prevent deletion of floors containing occupied rooms or important historical records.
+
+---
+
+## 12. Room management
+
+Within each floor, display a room table.
+
+Columns:
+
+| Column |
+|---|
+| Room Number |
+| Sharing Type |
+| Total Beds |
+| Occupied Beds |
+| Available Beds |
+| Reserved Beds |
+| AC / Non-AC |
+| Bathroom Type |
+| Monthly Rent |
+| Status |
+| Actions |
+
+Actions:
+
+- View
+- Edit
+- Delete or Deactivate
+- Add Bed
+- View Occupants
+
+### Add or Edit Room
+
+Allow configuration of:
+
+- Property
+- Floor
+- Room Number
+- Room Name
+- Sharing Type
+- Bed Capacity
+- AC or Non-AC
+- Attached Bathroom
+- Common Bathroom
+- Room Amenities
+- Room Photographs
+- Bathroom Photographs
+- Monthly Rent
+- Security Deposit
+- Room Status
+
+Sharing options:
+
+- Single Sharing
+- Double Sharing
+- Triple Sharing
+- Four Sharing
+- Five Sharing
+- Six Sharing
+- Custom Sharing
+
+Allow changing room capacity only when the change does not conflict with existing bed assignments.
+
+For example, a room containing three active tenants cannot be reduced to two beds until the conflicting assignment is resolved.
+
+---
+
+## 13. Bed and occupant details
+
+When a room is expanded, display all beds and their current occupants.
+
+Use a compact table.
+
+| Bed | Status | Tenant Name | Mobile | Joined Date | Rent | Actions |
+|---|---|---|---|---|---|---|
+| B1 | Occupied | Tenant A | Demo Number | 12 Nov 2026 | ₹6,000 | View / Edit |
+| B2 | Occupied | Tenant B | Demo Number | 15 Nov 2026 | ₹6,000 | View / Edit |
+| B3 | Available | — | — | — | ₹6,000 | Assign / Edit |
+
+Use fictional data in demo mode.
+
+### Bed status colors
+
+- Green: Available
+- Blue: Occupied
+- Amber: Reserved
+- Orange: Maintenance
+- Gray: Inactive
+
+Display tenant contact information only to the authorized owner managing that tenant's property.
+
+### Bed actions
+
+For occupied beds:
+
+- View Tenant
+- Edit Stay Details
+- Transfer Tenant
+- Initiate Checkout
+
+For available beds:
+
+- Assign Tenant
+- Edit Bed
+- Mark Maintenance
+- Deactivate
+
+For maintenance beds:
+
+- View Maintenance
+- Edit Status
+- Mark Available after resolution
+
+Vacancy counts must be derived from actual bed records and active assignments.
+
+---
+
+# PART 9 — TENANT TRANSFER SYSTEM
+
+## 14. Transfer tenant functionality
+
+Add a Transfer Tenant action within:
+
+- Tenant management
+- Floor details
+- Room details
+- Bed details
+- Vacancy management
+
+When the owner clicks Edit on an occupied bed or accommodation record, provide a clear Transfer Tenant option.
+
+### Transfer form
+
+Display current accommodation:
+
+- Current PG
+- Current Floor
+- Current Room
+- Current Bed
+- Current Sharing Type
+- Current Rent
+
+Allow selection of new accommodation:
+
+- Destination PG owned by the same authorized owner
+- Destination Floor
+- Destination Room
+- Destination Available Bed
+- New Sharing Type
+- New Rent if applicable
+- Transfer Date
+- Transfer Reason
+- Additional Notes
+
+### Transfer reasons
+
+- Tenant Request
+- Room Upgrade
+- Room Downgrade
+- Maintenance
+- Sharing Change
+- Property Transfer
+- Other
+
+### Validation
+
+- Destination property must be eligible.
+- Destination bed must be available.
+- Prevent transfer into occupied beds.
+- Prevent duplicate active assignments.
+- Preserve original joining date.
+- Record transfer date separately.
+- Preserve room transfer history.
+- Do not silently change agreed rent.
+- Require appropriate tenant agreement for material rent changes.
+
+### Transfer transaction
+
+After successful transfer:
+
+- Close the previous bed assignment.
+- Update the previous bed availability.
+- Create the new bed assignment.
+- Update the destination bed status.
+- Update tenant accommodation details.
+- Update occupancy statistics.
+- Record transfer history.
+- Notify the tenant.
+
+Perform these operations atomically using a database transaction where supported.
+
+---
+
+# PART 10 — RENT COLLECTION
+
+## 15. Complete rent collection table
+
+Redesign the existing Rent Collection page into a simple, professional table-based management system.
+
+Avoid displaying each tenant's payment information as a large separate card.
+
+### Top summary cards
+
+Display:
+
+- Expected Rent
+- Rent Collected
+- Pending Rent
+- Overdue Rent
+- Partially Paid Rent
+- Collection Percentage
+
+### Filters
+
+- Property
+- Floor
+- Room
+- Month
+- Year
+- Payment Status
+- Payment Method
+
+### Rent collection table
+
+| Column |
+|---|
+| Tenant Name |
+| Mobile Number |
+| PG Name |
+| Floor |
+| Room |
+| Monthly Rent |
+| Amount Paid |
+| Pending Amount |
+| Due Date |
+| Last Payment Date |
+| Payment Status |
+| Actions |
+
+### Payment status colors
+
+- Paid: Green
+- Partially Paid: Amber
+- Pending: Amber
+- Overdue: Red
+- Upcoming: Blue
+- Cancelled: Gray
+
+Always show the status label.
+
+### Actions
+
+- View
+- Record Payment
+- Edit eligible payment details
+- Send Reminder
+- Download Receipt
+- Cancel draft or reverse incorrect confirmed payment
+
+Do not allow confirmed payments to be permanently deleted without an audit trail.
+
+---
+
+## 16. Record rent payment
+
+Create a simple payment form.
+
+Fields:
+
+- Property
+- Tenant
+- Rent Month
+- Total Rent Due
+- Previous Outstanding Amount
+- Amount Received
+- Payment Date
+- Payment Method
+- Transaction Reference
+- Notes
+- Optional Receipt Attachment
+
+Payment methods:
+
+- Cash
+- UPI
+- Bank Transfer
+- Card
+- Other
+
+Automatically calculate:
+
+- Total payable
+- Amount received
+- Remaining balance
+- Payment status
+
+Support partial payments.
+
+Prevent duplicate payment recording.
+
+Validate the amount before saving.
+
+Do not treat manually recorded payment information as a verified online payment gateway transaction.
+
+---
+
+## 17. Tenant payment details
+
+When the owner clicks View in the rent table, display:
+
+- Tenant Name
+- Mobile Number
+- PG Name
+- Floor
+- Room
+- Bed
+- Monthly Rent
+- Joining Date
+- Rent Due Date
+
+Display monthly payment history.
+
+| Month | Rent Due | Paid | Pending | Payment Date | Status |
+|---|---:|---:|---:|---|---|
+| September | ₹6,000 | ₹6,000 | ₹0 | 5 Sep | Paid |
+| October | ₹6,000 | ₹4,000 | ₹2,000 | 8 Oct | Partial |
+| November | ₹6,000 | ₹0 | ₹6,000 | — | Pending |
+
+Provide:
+
+- View Receipt
+- Download Receipt
+- Record Payment
+- View Transaction History
+- Send Reminder
+
+Use real ledger data where connected.
+
+---
+
+# PART 11 — SECURITY DEPOSITS
+
+## 18. Tenant deposit management
+
+Redesign the Deposits page to display tenant-wise deposits grouped or filtered by PG property.
+
+### Summary cards
+
+- Total Deposit Required
+- Total Deposits Received
+- Pending Deposits
+- Refundable Deposits Held
+- Pending Refunds
+- Refunded Deposits
+
+### Deposit table
+
+| Column |
+|---|
+| Tenant Name |
+| Mobile Number |
+| PG Name |
+| Floor |
+| Room |
+| Bed |
+| Joining Date |
+| Required Deposit |
+| Received Deposit |
+| Pending Deposit |
+| Deductions |
+| Refundable Amount |
+| Deposit Status |
+| Actions |
+
+### Deposit statuses
+
+- Pending
+- Partially Received
+- Received
+- Refund Pending
+- Partially Refunded
+- Refunded
+- Under Settlement
+
+### Actions
+
+- View
+- Record Deposit
+- Edit eligible deposit information
+- Record Adjustment
+- View History
+- Process Settlement
+- Download Receipt
+
+### Deposit details
+
+Display the complete deposit ledger.
+
+Maintain:
+
+- Original deposit agreement
+- Deposit payments
+- Authorized deductions
+- Refund transactions
+- Outstanding balance
+- Settlement notes
+
+Do not treat refundable security deposits as ordinary business revenue.
+
+Do not permanently delete confirmed deposit transactions.
+
+---
+
+# PART 12 — OWNER EXPENSE TRACKER
+
+## 19. Improve owner expense management
+
+Maintain a simple property-wise expense table.
+
+### Summary cards
+
+- Today's Expenses
+- This Month's Expenses
+- Previous Month Expenses
+- Highest Expense Category
+- Total Operating Expenses
+
+### Expense table
+
+| Column |
+|---|
+| Expense ID |
+| PG Name |
+| Expense Title |
+| Category |
+| Amount |
+| Date |
+| Payment Method |
+| Vendor |
+| Receipt |
+| Actions |
+
+### Categories
+
+- Electricity
+- Water
+- Food
+- Groceries
+- Staff Salaries
+- Property Rent
+- Internet
+- Cleaning
+- Maintenance
+- Repairs
+- Furniture
+- Equipment
+- Laundry
+- Marketing
+- Licences
+- Other
+
+### Actions
+
+- Add Expense
+- View
+- Edit
+- Delete draft or reverse recorded expense
+- Download Receipt
+- Export
+
+Include category, property, and date filters.
+
+Provide monthly expense analytics.
+
+Preserve financial audit history.
+
+---
+
+# PART 13 — MAINTENANCE, RULES AND POLICIES
+
+## 20. Complete maintenance management module
+
+Update the Maintenance page with three clearly separated tabs.
+
+1. Maintenance Requests
+2. Scheduled Maintenance
+3. PG Rules & Policies
+
+Rules and policies must not be mixed with individual maintenance issue records.
+
+---
+
+## 21. Maintenance requests
+
+Allow owners to create maintenance issues themselves.
+
+Do not limit maintenance creation to tenant complaints.
+
+Examples:
+
+- Water motor not working
+- Wi-Fi unavailable
+- Lift not working
+- Electrical issue
+- Bathroom leakage
+- Geyser not working
+- Washing machine repair
+- Furniture damage
+- Door lock repair
+- Cleaning required
+- AC servicing
+
+### Maintenance form
+
+Fields:
+
+- Property
+- Floor
+- Room
+- Bed if applicable
+- Common Area if applicable
+- Maintenance Title
+- Issue Category
+- Problem Description
+- Reported Date
+- Reported By
+- Priority
+- Assigned Staff or Vendor
+- Expected Resolution Date
+- Estimated Repair Cost
+- Actual Repair Cost
+- Current Status
+- Before Repair Photographs
+- After Repair Photographs
+- Notes
+
+### Priority
+
+- Low
+- Medium
+- High
+- Urgent
+
+### Status
+
+- Reported
+- Under Review
+- Assigned
+- In Progress
+- Waiting for Parts
+- Scheduled
+- Resolved
+- Closed
+- Reopened
+
+### Maintenance table
+
+| Column |
+|---|
+| Issue ID |
+| PG Name |
+| Floor / Room |
+| Issue Title |
+| Category |
+| Priority |
+| Reported Date |
+| Expected Resolution |
+| Assigned To |
+| Status |
+| Actions |
+
+### Actions
+
+- Add Maintenance
+- View
+- Edit
+- Assign
+- Update Status
+- Mark Resolved
+- Archive
+
+If an issue affects a room or bed, allow the owner to mark the relevant inventory unavailable for new assignments.
+
+Do not automatically evict or remove existing occupants.
+
+When the maintenance issue is resolved, allow the owner to restore availability after appropriate confirmation.
+
+---
+
+## 22. Scheduled maintenance
+
+Allow owners to schedule preventive maintenance.
+
+Examples:
+
+- Water tank cleaning
+- Pest control
+- Lift servicing
+- AC servicing
+- Fire safety equipment inspection
+- Electrical inspection
+- Deep cleaning
+- Wi-Fi equipment servicing
+
+Fields:
+
+- Property
+- Maintenance Type
+- Scheduled Date
+- Recurrence
+- Assigned Person
+- Expected Cost
+- Completion Status
+- Notes
+
+Support:
+
+- Daily
+- Weekly
+- Monthly
+- Quarterly
+- Yearly
+- Custom Schedule
+
+Display upcoming and overdue maintenance tasks.
+
+---
+
+## 23. PG rules and policies
+
+Create a dedicated property-wise Rules & Policies section accessible from Maintenance and the Owner Dashboard.
+
+Allow owners to create, edit, publish, and archive property rules.
+
+### Rule categories
+
+- Entry and Exit Timings
+- Visitor Policy
+- Quiet Hours
+- Food Timings
+- Cleaning Policy
+- Common Area Usage
+- Laundry Policy
+- Parking Policy
+- Electricity Usage
+- Internet Usage
+- Room Maintenance
+- Rent Payment Policy
+- Deposit Policy
+- Notice Period
+- Checkout Policy
+- Safety Rules
+- Emergency Procedures
+- Other
+
+### Rule fields
+
+- Property
+- Rule Title
+- Category
+- Description
+- Effective Date
+- Status
+- Tenant Acknowledgement Required
+
+### Rule table
+
+| Rule | Property | Category | Effective Date | Status | Actions |
+|---|---|---|---|---|---|
+
+Actions:
+
+- Add Rule
+- View
+- Edit
+- Publish
+- Archive
+
+Published rules should be visible to the property's tenants.
+
+Notify affected tenants when important rules change.
+
+Maintain version history for contractual or financial policies.
+
+Do not allow rule changes to silently override existing tenant agreements.
+
+---
+
+# PART 14 — TRACKING CENTER
+
+## 24. Complete operational Tracking Center
+
+The Tracking Center should act as a central place for monitoring PG operations.
+
+Create the following tabs:
+
+- Overview
+- Tenant Joining
+- Rent Tracking
+- Deposit Tracking
+- Maintenance Tracking
+- Complaint Tracking
+- Checkout Tracking
+- Document Verification
+- Property Approval
+- Location Sharing Requests
+
+### Summary cards
+
+- Pending Joining Requests
+- Pending Documents
+- Overdue Rent
+- Pending Deposits
+- Open Complaints
+- Open Maintenance
+- Upcoming Checkouts
+- Pending Location Requests
+
+Each card must navigate to the relevant filtered table.
+
+---
+
+## 25. Privacy-preserving location sharing requests
+
+Implement an administrator-reviewed location sharing request workflow for legitimate tenant assistance and safety-related purposes.
+
+This feature must not be a surveillance or continuous tenant tracking system.
+
+Do not silently collect tenant GPS coordinates.
+
+Do not collect location automatically during login, logout, app opening, background activity, or ordinary tenant usage.
+
+Do not interpret Last Active as a physical location.
+
+Last Active may represent an application activity timestamp only.
+
+### Owner request
+
+Allow an authorized owner to submit a request for a tenant to voluntarily share a location.
+
+The owner must have a legitimate relationship with the tenant through an eligible stay.
+
+Request fields:
+
+- Request ID
+- Property
+- Tenant
+- Request Category
+- Reason for Request
+- Additional Explanation
+- Request Timestamp
+- Requested Access Duration
+
+The owner must not receive any coordinates when submitting the request.
+
+### Super Admin review
+
+Send the request to an authorized administrator.
+
+The administrator reviews:
+
+- Owner identity
+- Owner's relationship with the tenant
+- Request purpose
+- Request history
+- Applicable privacy restrictions
+- Whether the request is appropriate
+
+Actions:
+
+- Review
+- Approve forwarding the request
+- Reject
+- Request additional information
+
+Administrative approval only authorizes sending the request to the tenant.
+
+It must not automatically disclose private location information.
+
+### Tenant permission
+
+After appropriate administrative review, notify the tenant.
+
+Explain:
+
+- Who is requesting the location
+- Why it is requested
+- What information would be shared
+- How long access would last
+- How to decline or revoke permission
+
+Allow the tenant to:
+
+- Accept and voluntarily share
+- Decline
+- Revoke access
+
+Use additional protections for minors and vulnerable users.
+
+Disable owner access to precise location for minors by default.
+
+Do not penalize tenants for declining location sharing.
+
+### Authorized location display
+
+Only when an eligible adult tenant has explicitly chosen to share a location, and access remains valid, display the voluntarily shared location to the authorized recipient.
+
+Display:
+
+- Tenant Name
+- Location Shared Date
+- Location Shared Time
+- Accuracy
+- Access Expiry
+- Sharing Status
+- Open in Google Maps
+
+Clearly identify it as a previously shared location, not necessarily the tenant's current location.
+
+The Open in Google Maps button should open the authorized shared location in Google Maps.
+
+Do not provide access to historical movements, continuous location tracking, or location data collected for unrelated purposes.
+
+Do not expose coordinates in ordinary tenant tables or unrestricted API responses.
+
+### Request statuses
+
+- Submitted
+- Under Admin Review
+- Additional Information Required
+- Rejected
+- Awaiting Tenant Permission
+- Declined by Tenant
+- Voluntarily Shared
+- Expired
+- Revoked
+
+### Request history table
+
+| Request ID | Tenant | Property | Reason | Requested Date | Status | Actions |
+|---|---|---|---|---|---|---|
+
+Actions:
+
+- View Request
+- Cancel Pending Request
+- View Authorized Shared Location when permitted
+
+### Security requirements
+
+- Backend authorization checks
+- Explicit tenant consent
+- Limited access duration
+- Revocable permissions
+- Audit logs
+- Data minimization
+- Automatic expiry
+- Appropriate retention limits
+- Abuse reporting
+- Rate limits on requests
+
+For genuine emergencies, display appropriate emergency assistance guidance rather than treating the application as an emergency location-tracking service.
+
+If these privacy and security requirements cannot be implemented in the current environment, keep the location sharing functionality disabled and clearly identify it as a future integration.
+
+---
+
+# PART 15 — REPORTS AND ANALYTICS
+
+## 26. Unified Reports & Analytics dashboard
+
+Redesign the Reports page.
+
+Instead of displaying every chart at once, create a single report selection dropdown.
+
+At the top of the page, display:
+
+- Report Type
+- Property Selection
+- Date Range
+- Compare Period
+- Export Report
+
+When the owner selects a report type, dynamically display the relevant summary cards, graphs, and detailed tables.
+
+Do not overload the page with unrelated graphs.
+
+---
+
+## 27. Report dropdown options
+
+Include the following report categories:
+
+### Financial Reports
+
+1. Revenue Report
+2. Rent Collection Report
+3. Pending Rent Report
+4. Overdue Rent Report
+5. Expense Tracker Report
+6. Income vs Expenses Report
+7. Operating Cash Flow Report
+8. Security Deposit Report
+9. Deposit Refund Report
+10. Payment Method Report
+11. Property Financial Comparison
+
+### Tenant Reports
+
+12. Tenant Growth Report
+13. Active Tenants Report
+14. New Joining Report
+15. Checkout Report
+16. Tenant Transfer Report
+17. Average Stay Duration Report
+18. Tenant Retention Report
+19. Joining Source Report
+
+### Property Reports
+
+20. Property Performance Report
+21. Occupancy Report
+22. Vacancy Report
+23. Floor-wise Occupancy Report
+24. Room-wise Occupancy Report
+25. Sharing Type Performance Report
+26. Bed Availability Report
+27. Property Approval Report
+
+### Operational Reports
+
+28. Complaints Report
+29. Complaint Resolution Report
+30. Maintenance Report
+31. Maintenance Expense Report
+32. Food & Mess Report
+33. Food Feedback Report
+34. Staff Attendance Report
+35. Staff Task Performance Report
+36. Staff Salary Report
+37. Parcel Management Report
+
+### Reputation and Growth Reports
+
+38. Reviews & Ratings Report
+39. Food Rating Report
+40. Cleanliness Rating Report
+41. Maintenance Rating Report
+42. Service Rating Report
+43. Featured Listing Performance
+44. Property Listing Performance
+45. QR Onboarding Performance
+
+Group dropdown options into categories for easier selection.
+
+Do not display unsupported report categories as if they contain actual data.
+
+---
+
+## 28. Revenue report
+
+Display:
+
+- Expected Rent
+- Actual Rent Collected
+- Other Operating Income
+- Pending Rent
+- Revenue Growth
+
+Charts:
+
+- Monthly revenue line chart
+- Property-wise revenue bar chart
+- Expected versus collected rent chart
+- Month-over-month comparison
+
+Display a supporting property-wise revenue table.
+
+---
+
+## 29. Expense tracker report
+
+Display:
+
+- Total Expenses
+- Average Monthly Expenses
+- Highest Expense Category
+- Property with Highest Expenses
+
+Charts:
+
+- Monthly expense trend
+- Category-wise donut chart
+- Property-wise expense comparison
+- Income versus expense chart
+
+Display expense transaction details below the charts.
+
+---
+
+## 30. Tenant report
+
+Display:
+
+- Total Active Tenants
+- New Tenants
+- Previous Tenants
+- Upcoming Checkouts
+- Average Stay Duration
+
+Charts:
+
+- Monthly tenant growth
+- Joining versus checkout comparison
+- Property-wise tenant distribution
+- Sharing-type distribution
+- Joining source distribution
+
+---
+
+## 31. Occupancy and vacancy reports
+
+Display:
+
+- Total Beds
+- Occupied Beds
+- Available Beds
+- Reserved Beds
+- Maintenance Beds
+- Occupancy Percentage
+
+Charts:
+
+- Occupancy trend
+- Property-wise occupancy
+- Floor-wise occupancy
+- Sharing-type occupancy
+- Available versus occupied beds
+
+Use real inventory and assignment data.
+
+---
+
+## 32. Complaints and maintenance reports
+
+Display:
+
+- Total Complaints
+- Open Complaints
+- Resolved Complaints
+- Average Resolution Time
+- Total Maintenance Cost
+- Overdue Maintenance
+
+Charts:
+
+- Complaints by category
+- Complaints by property
+- Monthly complaint trend
+- Resolution status
+- Maintenance cost trend
+- Maintenance issue distribution
+
+---
+
+## 33. Reviews and ratings reports
+
+Display:
+
+- Overall Rating
+- Total Reviews
+- Food Rating
+- Cleanliness Rating
+- Maintenance Rating
+- Service Rating
+
+Charts:
+
+- Rating distribution
+- Monthly rating trend
+- Category-wise rating comparison
+- Property-wise rating comparison
+
+---
+
+## 34. Report date filters
+
+Support:
+
+- Today
+- Last 7 Days
+- This Month
+- Last Month
+- Last 3 Months
+- Last 6 Months
+- This Year
+- Last Year
+- Custom Date Range
+
+Allow comparison with the previous period.
+
+### Export options
+
+- CSV
+- Printable Report
+- PDF where supported
+
+Exports must respect owner authorization and property boundaries.
+
+### Chart design
+
+Use:
+
+- Bar charts
+- Line charts
+- Donut charts
+- Stacked bar charts
+- Area charts where appropriate
+
+Avoid complicated 3D charts.
+
+Use understandable labels and legends.
+
+Format financial amounts in Indian Rupees.
+
+Provide empty states when no data exists.
+
+Do not fabricate financial or operational analytics.
+
+---
+
+# PART 16 — REVIEWS AND RATINGS
+
+## 35. Dedicated Reviews & Ratings module
+
+Add a new Reviews & Ratings quick link to the Owner Dashboard.
+
+Route:
+
+`/owner/reviews`
+
+When clicked, display all eligible tenant reviews associated with the owner's properties.
+
+Provide a property dropdown.
+
+Options:
+
+- All Properties
+- Individual PG Property
+
+---
+
+## 36. Overall property rating
+
+Display a professional rating summary inspired by familiar Google review layouts.
+
+Include:
+
+- Overall rating out of 5
+- Circular rating indicator
+- Five-star visual rating
+- Total number of reviews
+- Rating distribution
+- Category-wise ratings
+
+Example:
+
+Overall Rating: 4.3 / 5
+
+Total Reviews: 128
+
+Display distribution for:
+
+- 5 Stars
+- 4 Stars
+- 3 Stars
+- 2 Stars
+- 1 Star
+
+Use horizontal distribution bars.
+
+Do not claim these ratings come from Google unless a legitimate Google integration is configured.
+
+These are PG Finder tenant reviews.
+
+---
+
+## 37. Category-wise ratings
+
+Allow tenants to rate their PG experience across relevant categories.
+
+Categories:
+
+- Overall Experience
+- Food Quality
+- Food Hygiene
+- Cleanliness
+- Room Quality
+- Bathroom Cleanliness
+- Maintenance
+- Owner and Staff Service
+- Safety and Security
+- Wi-Fi Quality
+- Water Availability
+- Amenities
+- Value for Money
+- Location and Accessibility
+
+Food-related categories should be optional for properties without food services.
+
+Display category ratings using compact circular progress indicators or horizontal rating bars.
+
+Show the average rating and number of applicable responses.
+
+Do not count unanswered categories as zero-star ratings.
+
+---
+
+## 38. Reviews table
+
+Display:
+
+| Column |
+|---|
+| Review ID |
+| Tenant Name or Approved Display Name |
+| PG Name |
+| Overall Rating |
+| Food Rating |
+| Cleanliness Rating |
+| Maintenance Rating |
+| Service Rating |
+| Review Message |
+| Review Date |
+| Response Status |
+| Actions |
+
+Allow review messages to expand when lengthy.
+
+### Filters
+
+- Property
+- Overall Rating
+- Category Rating
+- Positive Reviews
+- Critical Reviews
+- Unanswered Reviews
+- Date Range
+
+### Actions
+
+- View Review
+- Reply to Review
+- Edit Owner Reply
+- Report Review
+- View Report Status
+
+Do not allow owners to edit or delete genuine tenant reviews.
+
+Owners can manage their own replies.
+
+Reported reviews should enter the existing Super Admin moderation workflow.
+
+---
+
+## 39. Review details
+
+When clicking View, display:
+
+- Property name
+- Reviewer's permitted display name
+- Review date
+- Overall rating
+- Category-wise ratings
+- Full review message
+- Approved attachments if applicable
+- Owner response
+- Moderation status
+
+Allow the owner to respond professionally.
+
+Example:
+
+"Thank you for your feedback. We have scheduled maintenance for the reported issue."
+
+Do not reveal unnecessary tenant contact information in review records.
+
+---
+
+## 40. Review analytics
+
+Display:
+
+- Overall Rating
+- Total Reviews
+- Average Food Rating
+- Average Cleanliness Rating
+- Average Maintenance Rating
+- Average Service Rating
+- Unanswered Reviews
+- Recent Review Trend
+
+Identify categories receiving lower average ratings so owners can understand areas for improvement.
+
+Do not generate fabricated reviews or manipulate rating calculations.
+
+Only eligible tenants with verified stay history should be able to submit property reviews.
+
+---
+
+# PART 17 — OWNER PROFILE AND BOTTOM NAVIGATION
+
+## 41. Replace More with Profile
+
+Update the PG Owner mobile bottom navigation.
+
+### Existing navigation
+
+- Home
+- Properties
+- Tenants
+- Finance
+- More
+
+### Required navigation
+
+| Icon | Label | Route |
+|---|---|---|
+| House | Home | `/owner/dashboard` |
+| Building2 | Properties | `/owner/properties` |
+| Users | Tenants | `/owner/tenants` |
+| Wallet | Finance | `/owner/finance` |
+| UserRound | Profile | `/owner/profile` |
+
+Remove More from the bottom navigation.
+
+Replace it with Profile.
+
+Do not remove the functionality previously available inside More.
+
+All operational features must remain accessible through:
+
+- Dashboard quick links
+- Desktop sidebar
+- Relevant management pages
+- Profile settings where appropriate
+
+Update active route detection.
+
+The Profile tab must be highlighted when the owner opens their profile or related profile settings.
+
+---
+
+## 42. PG Owner profile page
+
+Create or improve the existing Owner Profile page.
+
+### Profile header
+
+Display:
+
+- Owner profile photograph
+- Full Name
+- Owner ID
+- Mobile Number
+- Email Address
+- Account Status
+- Member Since
+- Current Subscription
+
+Provide an Edit Profile button.
+
+### Personal information
+
+- Full Name
+- Email
+- Mobile Number
+- Alternate Contact
+- Profile Photograph
+
+### Business information
+
+- Business Name
+- Business Contact
+- Business Address
+- Number of Managed Properties
+- Approved Properties
+- Published Properties
+
+### Property overview
+
+Display compact summary cards:
+
+- Total Properties
+- Total Rooms
+- Total Beds
+- Active Tenants
+- Occupancy Rate
+
+### Subscription information
+
+Display:
+
+- Current Plan
+- Plan Features
+- Subscription Status
+- Renewal Date when applicable
+- Upgrade Plan
+
+Preserve the future listing entitlement functionality.
+
+### Settings
+
+- Edit Profile
+- Change Password
+- Notification Preferences
+- Language Preferences
+- Theme Preferences
+- Privacy Settings
+- Account Security
+- Help & Support
+- Terms & Conditions
+- Privacy Policy
+- Logout
+
+Prepare the interface for future Telugu, Hindi, and other Indian language support.
+
+Do not require translation services for the current implementation.
+
+---
+
+# PART 18 — GLOBAL PROPERTY SELECTION AND DATA CONSISTENCY
+
+## 43. Shared property selection
+
+Implement a consistent property dropdown throughout owner modules.
+
+Support:
+
+- All Properties
+- Individual Properties
+
+Apply it to:
+
+- Dashboard
+- Tenants
+- Joining Requests
+- Floors
+- Rooms
+- Beds
+- Vacancies
+- Rent Collection
+- Deposits
+- Expenses
+- Maintenance
+- Rules & Policies
+- Complaints
+- Reports
+- Reviews
+- Staff
+- Checkout
+
+When navigating from a specific property, preserve that property selection.
+
+Do not reset the property filter unnecessarily.
+
+Validate property ownership on the backend.
+
+---
+
+## 44. Shared data synchronization
+
+All modules must use the same underlying property, room, bed, tenant, and financial records.
+
+Example:
+
+When a tenant transfers from Room 101 to Room 203:
+
+- Tenant management must update.
+- Room 101 occupancy must update.
+- Room 203 occupancy must update.
+- Vacancy management must update.
+- Floor occupancy must update.
+- Owner Dashboard must update.
+- Transfer history must update.
+- Reports must update.
+
+When a rent payment is recorded:
+
+- Rent Collection must update.
+- Tenant payment history must update.
+- Pending rent must update.
+- Finance Dashboard must update.
+- Revenue reports must update.
+- Tenant-facing official rent ledger must update.
+
+When a maintenance issue is resolved:
+
+- Maintenance status must update.
+- Complaint status must update where linked.
+- Relevant room or bed availability must update after confirmation.
+- Maintenance reports must update.
+
+Do not maintain inconsistent duplicate datasets.
+
+---
+
+# PART 19 — BACKEND AND SECURITY
+
+## 45. Backend requirements
+
+Inspect existing backend functionality before adding APIs.
+
+Support all required create, read, update, archive, transfer, and financial adjustment operations.
+
+Use appropriate database relationships.
+
+Suggested supporting entities:
+
+- properties
+- floors
+- rooms
+- bathrooms
+- beds
+- tenants
+- stays
+- bed_assignments
+- tenant_transfers
+- joining_requests
+- rent_invoices
+- rent_payments
+- payment_adjustments
+- deposit_transactions
+- owner_expenses
+- maintenance_requests
+- maintenance_schedules
+- property_rules
+- property_rule_versions
+- reviews
+- review_ratings
+- owner_review_replies
+- review_reports
+- location_sharing_requests
+- location_sharing_permissions
+- audit_logs
+
+Reuse equivalent existing models.
+
+Do not create duplicate tables.
+
+Do not perform destructive migrations unnecessarily.
+
+### Authorization
+
+Every owner operation must verify:
+
+- Authenticated user
+- PG Owner role
+- Property ownership
+- Relevant property approval status
+- Resource access permissions
+- Applicable subscription entitlements
+
+Do not allow an owner to access another owner's tenant records.
+
+### Financial integrity
+
+Use decimal amounts or integer minor units.
+
+Use database transactions where appropriate.
+
+Preserve financial audit trails.
+
+Prevent duplicate payment records.
+
+### Deletion integrity
+
+Before deleting any record, check its relationships.
+
+Prevent deletion of:
+
+- Occupied beds
+- Rooms with active occupants
+- Floors with active rooms
+- Properties with active tenants
+- Confirmed financial records
+- Historical stay agreements
+
+Use appropriate archive or adjustment operations instead.
+
+---
+
+# PART 20 — RESPONSIVE LAYOUT
+
+## 46. Preserve fixed bottom navigation
+
+The bottom navigation must remain visible across all Owner Dashboard pages.
+
+Use a shared viewport-height application shell.
+
+The main content must scroll independently.
+
+Do not place bottom navigation inside the scrollable content.
+
+Requirements:
+
+- Visible immediately after login
+- Visible while scrolling
+- Visible on property management pages
+- Visible on tenant management pages
+- Visible on finance pages
+- Visible on profile
+- No content overlap
+- No unnecessary nested scrollbars
+- Safe-area support
+
+Preserve desktop sidebar navigation.
+
+---
+
+## 47. Table responsiveness
+
+Ensure tables work properly on:
+
+- 320px mobile screens
+- 375px mobile screens
+- 390px mobile screens
+- 430px mobile screens
+- Tablets
+- Laptops
+- Desktops
+
+Use:
+
+- Compact rows
+- Readable text
+- Clear column headings
+- Accessible action buttons
+- Horizontal table scrolling when necessary
+- Expandable rows for secondary information
+- Appropriate empty states
+
+Avoid making text excessively small.
+
+---
+
+# PART 21 — IMPLEMENTATION ORDER
+
+## 48. Execute changes in the following order
+
+### Phase 1 — Navigation and dashboard
+
+- Remove More Operations expandable behavior.
+- Display all quick links.
+- Replace bottom navigation More with Profile.
+- Preserve existing layout and theme.
+
+### Phase 2 — Property management
+
+- Remove Target Occupants.
+- Improve property list.
+- Add View Tenants.
+- Add View Vacancies.
+- Improve property actions.
+
+### Phase 3 — Tenant management
+
+- Convert tenant records to tables.
+- Improve tenant details.
+- Add appropriate View, Edit, Transfer, and Archive actions.
+- Improve joining requests.
+
+### Phase 4 — Inventory management
+
+- Improve floors.
+- Improve rooms.
+- Improve beds.
+- Display floor-wise vacancies.
+- Display occupant details.
+- Implement tenant transfer workflow.
+
+### Phase 5 — Finance
+
+- Improve Rent Collection table.
+- Improve payment details.
+- Improve deposits.
+- Improve expense tracker.
+- Maintain financial consistency.
+
+### Phase 6 — Daily operations
+
+- Improve maintenance.
+- Add scheduled maintenance.
+- Add rules and policies.
+- Improve operational Tracking Center.
+
+### Phase 7 — Reports and reviews
+
+- Implement report type dropdown.
+- Add dynamic charts.
+- Add Reviews & Ratings.
+- Add category-wise ratings.
+- Add owner review responses.
+
+### Phase 8 — Profile and testing
+
+- Complete Owner Profile.
+- Verify responsive design.
+- Verify Light and Dark modes.
+- Verify data consistency.
+- Run production build.
+- Run relevant tests.
+
+Implement location sharing only after its privacy, consent, and authorization requirements are fully supported.
+
+---
+
+# PART 22 — ACCEPTANCE CRITERIA
+
+## 49. Verify all requirements
+
+1. All quick links are visible without clicking More Operations.
+2. Quick links are grouped professionally.
+3. All operational links work.
+4. Bottom navigation contains Profile instead of More.
+5. Owner Profile opens correctly.
+6. Target Occupants is removed from Add Property.
+7. Property registration still works.
+8. Minimum four property photographs are required.
+9. GPS capture remains functional.
+10. Property approval restrictions remain functional.
+11. Property list contains View Tenants.
+12. Property list contains View Vacancies.
+13. Manage Beds remains functional.
+14. QR onboarding remains functional.
+15. Tenant management uses a simple table.
+16. Joining requests use a simple table.
+17. View and Edit actions work.
+18. Delete or Archive actions follow data integrity rules.
+19. Floor-wise occupancy is visible.
+20. Room-wise occupancy is visible.
+21. Occupied bed tenant details are visible to authorized owners.
+22. Tenant transfer works correctly.
+23. Floor and room editing works.
+24. Sharing configuration editing works.
+25. Rent Collection uses a simple table.
+26. Property-wise rent filtering works.
+27. Payment status colors are understandable.
+28. Deposit management displays tenant, property, room, and payment information.
+29. Owner Expense Tracker works.
+30. Owners can create maintenance requests.
+31. Owners can update maintenance resolution dates and status.
+32. Rules and policies management works.
+33. Operational Tracking Center works.
+34. Any location sharing feature respects explicit consent and authorization.
+35. Reports contain a comprehensive report dropdown.
+36. Selected report displays appropriate charts.
+37. Report filters work.
+38. Reviews & Ratings quick link works.
+39. Overall rating is displayed professionally.
+40. Category-wise ratings are displayed.
+41. Review messages are visible.
+42. Owners can respond to reviews.
+43. Owners cannot manipulate tenant reviews.
+44. All property-related data remains synchronized.
+45. Light and Dark modes work.
+46. Bottom navigation remains visible.
+47. Mobile tables remain usable.
+48. Existing Tenant and Super Admin functionality is preserved.
+49. No fake production data or integrations are introduced.
+50. Production build passes.
+
+---
+
+## 50. Final implementation report
+
+After completing the changes, provide:
+
+- Existing implementation findings
+- Completed changes
+- Files modified
+- Components created or reused
+- Routes added or updated
+- Database changes
+- API changes
+- Functional workflows
+- Demo-only functionality
+- Security and privacy checks
+- Responsive testing results
+- Build status
+- Remaining dependencies
+- Incomplete functionality
+
+Do not claim that a module is complete if it only contains static UI.
+
+## Final objective
+
+Transform the existing PG Owner Dashboard into a complete, simple, professional PG management application.
+
+The owner should be able to manage properties, floors, rooms, beds, tenants, joining requests, rent, deposits, expenses, maintenance, policies, reviews, reports, and their profile from one consistent interface.
+
+Make the application easy to understand for Indian PG owners with varying levels of digital literacy.
+
+Preserve existing functionality and implement all improvements without rebuilding the application.

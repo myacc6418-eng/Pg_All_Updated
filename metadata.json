@@ -1,0 +1,6 @@
+{
+  "name": "PG Finder",
+  "description": "Indian paying guest accommodation discovery marketplace and PG property management platform for tenants, PG owners, and administrators.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

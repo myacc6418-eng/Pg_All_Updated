@@ -1,0 +1,3596 @@
+# PG FINDER — COMPLETE FULL-STACK MOBILE-FIRST APPLICATION
+
+## 1. PROJECT OVERVIEW
+
+Act as a senior product architect, full-stack software engineer, database architect, mobile application developer, and professional UI/UX designer.
+
+Build a complete application named **PG Finder** from scratch.
+
+PG Finder is an Indian paying guest accommodation discovery marketplace and PG property management platform.
+
+The application connects tenants searching for accommodation with PG owners while providing PG owners with comprehensive property management tools.
+
+The platform must support exactly three primary roles:
+
+1. TENANT
+2. PG_OWNER
+3. SUPER_ADMIN
+
+All three roles must exist within a single application using shared authentication, reusable components, backend services, database infrastructure, and role-based access control.
+
+Do not create three independent applications.
+
+Do not create unnecessary microservices.
+
+Build a scalable modular monolith that can be extended in future development phases.
+
+The application is exclusively designed for the Indian market.
+
+Use Indian Rupees (INR), Indian address formats, Indian mobile number validation, and Asia/Kolkata timezone for relevant business operations.
+
+---
+
+# PART A — TECHNICAL ARCHITECTURE
+
+## 2. Recommended technology stack
+
+Use the following technology stack where supported by the Google AI Studio environment:
+
+### Frontend
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui or equivalent reusable accessible components
+- Lucide React icons
+- React Router
+- React Hook Form
+- Zod validation
+- TanStack Query for server state
+- Recharts for analytics
+
+### Backend
+
+- Node.js
+- TypeScript
+- Express.js or the existing supported server framework
+- REST API architecture
+- Modular controllers, services, repositories, middleware, and validation
+- Centralized error handling
+- Role-based authorization
+
+### Database
+
+Prefer PostgreSQL with Prisma ORM for relational data management.
+
+If the Google AI Studio environment does not support PostgreSQL directly, create a clearly separated database abstraction and use an available persistent database integration where appropriate.
+
+Do not claim that a production database is connected when it is not.
+
+Do not represent localStorage as a secure production database.
+
+### Storage
+
+Provide a storage abstraction for:
+
+- Property photographs
+- Room photographs
+- Bathroom photographs
+- User profile photographs
+- Private verification documents
+- Receipts and attachments
+
+Support future integration with Cloudflare R2 or another compatible object storage provider.
+
+### Mobile compatibility
+
+Build the application as a mobile-first responsive web application.
+
+Prepare the architecture for future Android and iOS packaging using Capacitor.
+
+Include:
+
+- Mobile safe-area support
+- Touch-friendly interactions
+- Native-style bottom navigation
+- Camera and gallery integration points
+- Geolocation support
+- Push notification integration points
+- Future AdMob integration points
+
+Do not pretend that native SDKs are operational inside an ordinary browser preview.
+
+---
+
+## 3. Application architecture
+
+Organize the project into clear feature modules.
+
+Suggested structure:
+
+```text
+src/
+  components/
+    ui/
+    shared/
+    navigation/
+    dashboard/
+    forms/
+    charts/
+    feedback/
+
+  layouts/
+    PublicLayout
+    TenantLayout
+    OwnerLayout
+    AdminLayout
+
+  features/
+    authentication/
+    tenant/
+    owner/
+    admin/
+    properties/
+    rooms/
+    beds/
+    stays/
+    expenses/
+    rent/
+    payments/
+    complaints/
+    maintenance/
+    food/
+    notifications/
+    events/
+    advertisements/
+    subscriptions/
+
+  pages/
+    public/
+    tenant/
+    owner/
+    admin/
+
+  hooks/
+  services/
+  types/
+  schemas/
+  utilities/
+  configuration/
+
+server/
+  modules/
+    auth/
+    users/
+    owners/
+    tenants/
+    properties/
+    verification/
+    inventory/
+    stays/
+    rent/
+    expenses/
+    payments/
+    complaints/
+    maintenance/
+    food/
+    events/
+    subscriptions/
+    advertisements/
+    notifications/
+    administration/
+
+  middleware/
+  database/
+  storage/
+  configuration/
+  utilities/
+```
+
+Adapt this structure to the actual supported environment.
+
+Use reusable services and components.
+
+Avoid giant components containing thousands of lines of unrelated functionality.
+
+---
+
+# PART B — PROFESSIONAL UI AND DESIGN SYSTEM
+
+## 4. Overall design direction
+
+Create a premium, clean, modern Indian accommodation application.
+
+The UI should feel like a professionally developed mobile product, not a generic website template or an oversized administrative dashboard.
+
+Design characteristics:
+
+- Minimalist and professional
+- Compact information density
+- Consistent spacing
+- Clean typography
+- Subtle shadows
+- Rounded cards
+- Clear visual hierarchy
+- Professional line icons
+- Responsive layouts
+- Readable data tables
+- Accessible forms
+- Subtle transitions
+- Consistent navigation
+
+Avoid:
+
+- Excessive gradients
+- Oversized dashboard cards
+- Unnecessary decorative illustrations
+- Excessive empty space
+- Large hero banners inside authenticated dashboards
+- Excessive animations
+- Inconsistent icon styles
+- Horizontal overflow
+- Generic placeholder pages
+- Unnecessary popups
+
+Use Inter or a similar professional sans-serif font.
+
+---
+
+## 5. Light, Dark and System themes
+
+Implement three theme preferences:
+
+- Light
+- Dark
+- System
+
+### Light theme
+
+- Primary: #047857
+- Primary hover: #065F46
+- Background: #F8FAFC
+- Surface: #FFFFFF
+- Primary text: #111827
+- Secondary text: #64748B
+- Border: #E2E8F0
+- Success: #059669
+- Warning: #D97706
+- Error: #DC2626
+
+### Dark theme
+
+- Primary: #34D399
+- Background: #0B1220
+- Surface: #111827
+- Elevated surface: #1F2937
+- Primary text: #F9FAFB
+- Secondary text: #9CA3AF
+- Border: #374151
+
+Use semantic CSS variables and reusable theme tokens.
+
+Persist the selected theme preference.
+
+All dashboards, dialogs, charts, forms, tables, navigation bars, and dropdowns must support all three themes.
+
+---
+
+## 6. Dashboard layout and scrolling
+
+Create a shared responsive application shell.
+
+The mobile application shell must contain:
+
+- Fixed or non-scrolling top header
+- Independently scrollable main content
+- Permanently visible bottom navigation
+
+Use a layout equivalent to:
+
+```tsx
+<div className="flex h-dvh min-h-0 flex-col overflow-hidden">
+  <header className="shrink-0">
+    {/* Dashboard header */}
+  </header>
+
+  <main className="min-h-0 flex-1 overflow-y-auto">
+    <Outlet />
+  </main>
+
+  <nav className="shrink-0">
+    {/* Role-specific bottom navigation */}
+  </nav>
+</div>
+```
+
+Critical requirements:
+
+- Bottom navigation must never disappear while scrolling.
+- Bottom navigation must not be placed inside scrollable page content.
+- Users must not need to scroll to the bottom to access navigation.
+- Last content items must remain accessible.
+- Respect mobile safe areas.
+- Avoid nested vertical scrolling.
+- Preserve desktop sidebars.
+- Use a consistent responsive breakpoint for switching navigation systems.
+- Implement thin, theme-aware desktop scrollbars.
+
+Test on mobile, tablet, laptop, and desktop screen sizes.
+
+---
+
+## 7. Dashboard quick links design
+
+All three dashboards must contain compact quick-access tiles.
+
+Each tile should include:
+
+- Professional Lucide icon
+- Short feature name
+- Optional notification count
+- Clickable navigation
+- Subtle hover or pressed state
+
+Mobile layout:
+
+- Three or four quick links per row
+- Two KPI cards per row
+- Compact spacing
+
+Tablet layout:
+
+- Four to six quick links per row
+- Three KPI cards per row
+
+Desktop layout:
+
+- Six to eight quick links per row
+- Four or more KPI cards per row
+
+Every quick link must navigate to a functional page.
+
+Do not create non-functional decorative buttons.
+
+---
+
+# PART C — PUBLIC APPLICATION AND AUTHENTICATION
+
+## 8. Public landing page
+
+Create a professional public landing page.
+
+Brand name: PG Finder
+
+Main headline:
+
+**Find Your Perfect PG. Live Smarter.**
+
+Supporting content should explain:
+
+- Discover verified PG accommodation
+- Compare amenities and prices
+- Manage your PG stay
+- Track rent and personal expenses
+- Connect with startup events
+- Discover useful local businesses
+
+Include:
+
+- Search by city or locality
+- Popular locations
+- Featured verified PG properties
+- Benefits for tenants
+- Benefits for PG owners
+- How PG Finder works
+- Frequently asked questions
+- Contact and support
+- Privacy policy
+- Terms and conditions
+- Login and registration buttons
+
+Only published and eligible properties should appear in public discovery.
+
+---
+
+## 9. Authentication and role selection
+
+Create a shared authentication system.
+
+Public registration options:
+
+- Register as Tenant
+- Register as PG Owner
+
+Do not allow public Super Admin registration.
+
+Super Admin accounts must be provisioned securely through backend administration.
+
+### Registration fields
+
+- Full name
+- Email address
+- Indian mobile number
+- Password
+- Confirm password
+- Terms and privacy acceptance
+
+Support:
+
+- Email or mobile verification through configured providers
+- Login
+- Forgot password
+- Password reset
+- Secure logout
+- Session management
+- Account status management
+
+After login, redirect users according to their role:
+
+- TENANT → `/tenant/home`
+- PG_OWNER → `/owner/dashboard`
+- SUPER_ADMIN → `/admin/dashboard`
+
+PG owners receive dashboard access after normal account registration and verification.
+
+Do not require separate Super Admin approval of the owner account before dashboard access.
+
+Each PG property requires independent approval.
+
+Implement protected routes and backend role authorization.
+
+Never rely exclusively on frontend route guards for security.
+
+---
+
+# PART D — COMPLETE TENANT DASHBOARD
+
+## 10. Tenant navigation
+
+Mobile bottom navigation:
+
+| Icon | Label | Route |
+|---|---|---|
+| House | Home | `/tenant/home` |
+| Search | Explore | `/tenant/explore` |
+| CalendarDays | Connect | `/tenant/events` |
+| Building2 | My PG | `/tenant/my-pg` |
+| UserRound | Profile | `/tenant/profile` |
+
+Use a responsive sidebar on desktop where appropriate.
+
+Connect must represent startup events and networking opportunities through published events.
+
+Do not implement an unrelated social media feed, jobs portal, dating platform, or public chat system.
+
+---
+
+## 11. Tenant home dashboard
+
+Create two dashboard states.
+
+### State A — Tenant without an active PG stay
+
+Display:
+
+- Welcome header
+- Profile avatar
+- Current selected city
+- Notifications
+- Theme switch
+- Search for PG accommodation
+- Recommended PG properties
+- Recently viewed properties
+- Saved PGs
+- Featured verified PGs
+- Upcoming startup events
+- PG Finder Local services
+
+### Quick links
+
+- Find PG
+- Saved PGs
+- Scan QR
+- My Requests
+- Expense Tracker
+- Startup Events
+- Local Services
+- Support
+
+### State B — Tenant with an active PG stay
+
+Display:
+
+- Current PG name
+- Room number
+- Bed number
+- Stay status
+- Monthly rent
+- Next rent due date
+- Outstanding rent
+- Current month personal expenses
+- Today's food menu
+- Recent notices
+- Complaint status
+- Upcoming events
+
+### Compact KPI cards
+
+- Monthly Rent
+- Pending Dues
+- Monthly Expenses
+- Days Until Rent Due
+
+### Quick links
+
+- Pay Rent
+- Expense Tracker
+- Food Menu
+- Raise Complaint
+- Maintenance
+- Notices
+- Parcels
+- Roommate Expenses
+- Receipts
+- Local Services
+- Startup Events
+- Checkout
+
+All quick links must navigate to their respective modules.
+
+---
+
+## 12. Explore PG accommodation
+
+Build a comprehensive property discovery experience.
+
+Search and filters:
+
+- State
+- City
+- Locality
+- Monthly rent range
+- Accommodation category
+- Men's PG
+- Women's PG
+- Co-living PG
+- Single sharing
+- Double sharing
+- Triple sharing
+- Custom sharing
+- Food availability
+- AC availability
+- Wi-Fi
+- Parking
+- Laundry
+- Attached bathroom
+- Available beds
+- Verified properties
+- Ratings
+
+Property cards must display:
+
+- Cover photograph
+- Property name
+- Locality and city
+- Starting monthly rent
+- Available sharing options
+- Available beds
+- Key amenities
+- Rating when real reviews exist
+- Verification status
+- Save button
+- Sponsored label when applicable
+
+Do not display fake verification badges or fabricated ratings.
+
+Support:
+
+- List view
+- Grid view where appropriate
+- Search
+- Sorting
+- Filter reset
+- Pagination or infinite loading
+- Empty states
+- Loading skeletons
+
+---
+
+## 13. Property details page
+
+Display:
+
+- Property image gallery
+- Property name
+- Verified location
+- Accommodation category
+- Property description
+- Available room configurations
+- Room photographs
+- Bathroom photographs
+- Sharing capacity
+- Rent
+- Security deposit
+- Amenities
+- Food availability
+- House rules
+- Notice period
+- Available beds
+- Reviews
+- Property contact options
+- Save property
+- Request to Join
+
+Public property details must never expose:
+
+- Private verification documents
+- Tenant identities
+- Occupied bed tenant information
+- Owner account credentials
+- Private financial records
+
+Only eligible published properties appear in public search.
+
+---
+
+## 14. Tenant joining and QR onboarding
+
+Support two joining methods:
+
+### Method 1 — Join through a published property
+
+Tenant opens property details and submits a joining request.
+
+### Method 2 — Join through a property-specific QR code
+
+Owner generates a QR code associated with an approved property.
+
+The QR opens a secure joining route such as:
+
+`/join/:propertyId`
+
+Workflow:
+
+1. Tenant scans QR.
+2. Property joining page opens.
+3. Tenant registers or logs in if necessary.
+4. Preserve the intended joining destination.
+5. Tenant submits a joining request.
+6. Owner reviews the request.
+7. Owner assigns an available room and bed.
+8. Tenant reviews rent, deposit, and stay terms.
+9. Tenant submits applicable documents securely.
+10. Owner completes the required verification.
+11. Tenant accepts the stay agreement.
+12. Stay becomes active.
+
+Prevent:
+
+- Duplicate active stays
+- Duplicate bed assignments
+- Assignment of unavailable beds
+- Unauthorized joining
+- Joining suspended properties
+
+An approved, location-verified property may use QR onboarding without purchasing public listing entitlement.
+
+QR onboarding must not make an unpublished property discoverable through public search.
+
+---
+
+## 15. My PG module
+
+Create a dedicated active accommodation management page.
+
+Display:
+
+- PG name and cover image
+- Owner or manager contact
+- Room number
+- Bed number
+- Floor
+- Joining date
+- Monthly rent
+- Security deposit
+- Stay status
+- Agreement details
+- Property rules
+
+Provide tabs or compact navigation for:
+
+- Overview
+- Rent
+- Food
+- Complaints
+- Maintenance
+- Notices
+- Documents
+- Parcels
+- Checkout
+
+Tenants without an active stay should see an appropriate empty state and a Find PG action.
+
+---
+
+## 16. Tenant rent management
+
+Provide a complete tenant-facing rent ledger.
+
+Display:
+
+- Monthly rent amount
+- Current rent due
+- Previous outstanding dues
+- Due date
+- Payment history
+- Payment status
+- Security deposit
+- Additional charges
+- Receipts
+
+Payment statuses:
+
+- Upcoming
+- Due
+- Partially Paid
+- Paid
+- Overdue
+- Cancelled
+
+Support:
+
+- View monthly rent breakdown
+- View recorded payments
+- Download receipts
+- View payment references
+- Receive rent reminders
+
+Keep online payment integration modular for future implementation.
+
+Do not generate fake successful payment transactions.
+
+---
+
+# PART E — TENANT PERSONAL EXPENSE TRACKER
+
+## 17. Complete personal expense management
+
+Build a dedicated expense tracker for tenants.
+
+Route:
+
+`/tenant/expenses`
+
+This module must be available even when the tenant has not joined a PG.
+
+The purpose is to help students and working professionals manage their everyday expenses.
+
+Personal expenses are private to the tenant.
+
+PG owners must not have access to a tenant's personal spending records.
+
+---
+
+## 18. Expense tracker dashboard
+
+Display compact summary cards:
+
+- Today's Expenses
+- This Week's Expenses
+- This Month's Expenses
+- Monthly Budget
+- Remaining Budget
+- Previous Month Expenses
+
+Display:
+
+- Monthly spending trend
+- Category-wise spending breakdown
+- Recent transactions
+- Upcoming recurring expenses
+- Budget progress
+- Highest spending category
+
+Provide filters:
+
+- Today
+- This Week
+- This Month
+- Last Month
+- Custom Date Range
+
+Provide a prominent but compact Add Expense button.
+
+---
+
+## 19. Add expense functionality
+
+Fields:
+
+| Field | Requirement |
+|---|---|
+| Expense title | Required |
+| Amount | Required |
+| Category | Required |
+| Date | Required |
+| Payment method | Optional |
+| Notes | Optional |
+| Receipt attachment | Optional |
+| Recurring expense | Optional |
+
+Default categories:
+
+- PG Rent
+- Food
+- Groceries
+- Transport
+- Education
+- Mobile Recharge
+- Internet
+- Laundry
+- Electricity
+- Shopping
+- Entertainment
+- Health
+- Subscriptions
+- Travel
+- Personal Care
+- Other
+
+Allow users to create custom categories.
+
+Payment methods:
+
+- Cash
+- UPI
+- Debit Card
+- Credit Card
+- Bank Transfer
+- Other
+
+Support:
+
+- Add expense
+- Edit expense
+- Delete expense with confirmation
+- Search expenses
+- Filter by category
+- Filter by payment method
+- Filter by date
+- Upload receipts
+- Export expense records
+
+Use INR currency formatting.
+
+Store financial amounts using integer minor units or an appropriate decimal database type.
+
+Do not use floating-point arithmetic for financial ledger calculations.
+
+---
+
+## 20. Monthly budget management
+
+Allow tenants to configure:
+
+- Overall monthly budget
+- Category-specific budgets
+- Budget notification preferences
+
+Display:
+
+- Allocated budget
+- Amount spent
+- Remaining amount
+- Budget utilization percentage
+
+Use clear progress indicators.
+
+Provide optional alerts when spending approaches or exceeds the configured budget.
+
+Do not use guilt-based or manipulative messages.
+
+---
+
+## 21. Expense analytics
+
+Create professional charts for:
+
+- Daily spending
+- Weekly spending
+- Monthly spending
+- Category distribution
+- Month-over-month comparison
+- Budget versus actual spending
+
+Support downloadable CSV reports.
+
+Provide a clean printable report where supported.
+
+Do not display charts with invented financial data outside explicitly labeled demo mode.
+
+---
+
+## 22. Rent and expense tracker integration
+
+Allow tenants to optionally include confirmed PG rent payments in their personal expense tracker.
+
+Requirements:
+
+- Automatically imported rent expenses must reference the original rent payment.
+- Prevent duplicate rent expense entries.
+- Import only the tenant's confirmed payments.
+- Clearly distinguish imported rent expenses from manually entered expenses.
+- Do not modify the owner's rent ledger when a tenant edits personal expense notes.
+- Allow tenants to exclude imported transactions from personal analytics without altering the original rent record.
+
+---
+
+## 23. Recurring expenses
+
+Allow users to configure recurring expenses such as:
+
+- Monthly rent
+- Internet
+- Mobile recharge
+- Transport pass
+- Subscriptions
+
+Support:
+
+- Daily
+- Weekly
+- Monthly
+- Custom recurrence
+
+A recurring reminder is not proof that a payment occurred.
+
+Allow the tenant to confirm an expense before it becomes a completed transaction, unless the expense is imported from an actual confirmed payment record.
+
+---
+
+## 24. Roommate shared expenses
+
+Create a separate shared expense module.
+
+Examples:
+
+- Groceries
+- Shared food orders
+- Cleaning supplies
+- Shared household purchases
+
+Support:
+
+- Create shared expense
+- Select consenting participants
+- Equal split
+- Custom amount split
+- Amount paid by each participant
+- Pending settlements
+- Settlement confirmation
+- Expense history
+
+Do not automatically expose personal expenses to roommates.
+
+Do not automatically transfer money.
+
+Shared expenses must remain separate from official PG rent and deposit records.
+
+---
+
+# PART F — ADDITIONAL TENANT MODULES
+
+## 25. Food and mess management
+
+Display:
+
+- Today's breakfast
+- Today's lunch
+- Today's dinner
+- Weekly menu
+- Meal timings
+- Food notices
+
+Support optional meal feedback.
+
+Food availability depends on the active property configuration.
+
+---
+
+## 26. Complaints and maintenance
+
+Allow tenants to create complaints or maintenance requests.
+
+Categories:
+
+- Electrical
+- Plumbing
+- Wi-Fi
+- Cleaning
+- Furniture
+- Food
+- Water
+- Security
+- Other
+
+Fields:
+
+- Title
+- Description
+- Category
+- Optional attachment
+- Priority
+
+Statuses:
+
+- Open
+- Acknowledged
+- In Progress
+- Resolved
+- Closed
+- Reopened
+
+Display request history and owner responses.
+
+Provide emergency contact information separately from ordinary maintenance requests.
+
+---
+
+## 27. Notices and announcements
+
+Display announcements published by the tenant's PG owner.
+
+Examples:
+
+- Water maintenance
+- Electricity interruptions
+- Food menu changes
+- Rent reminders
+- Property rules
+- Holiday schedules
+- Startup event announcements
+
+Support read and unread status.
+
+---
+
+## 28. Parcels
+
+Allow owners to record parcels received for tenants.
+
+Tenant view:
+
+- Parcel description
+- Received date
+- Collection status
+- Collection instructions
+
+Statuses:
+
+- Received
+- Ready for Collection
+- Collected
+
+Protect tenant delivery information from unrelated users.
+
+---
+
+## 29. Checkout
+
+Allow tenants to request checkout.
+
+Display:
+
+- Requested checkout date
+- Notice period
+- Pending rent
+- Additional dues
+- Deposit amount
+- Proposed deductions
+- Settlement status
+
+Owner reviews and confirms checkout.
+
+Do not release the assigned bed until the checkout process is completed according to the business rules.
+
+Preserve previous stay history and financial records.
+
+---
+
+## 30. Tenant profile
+
+Include:
+
+- Profile photograph
+- Name
+- Email
+- Mobile number
+- Account information
+- Active PG
+- Stay history
+- Saved properties
+- Saved events
+- Expense tracker settings
+- Notification preferences
+- Theme preferences
+- Privacy settings
+- Help and support
+- Logout
+
+Collect only necessary personal information.
+
+Do not require Aadhaar numbers or copies by default.
+
+Provide appropriate safeguards for users under 18 and any legally required guardian consent.
+
+---
+
+# PART G — COMPLETE PG OWNER DASHBOARD
+
+## 31. Owner navigation
+
+Mobile bottom navigation:
+
+| Icon | Label | Route |
+|---|---|---|
+| House | Home | `/owner/dashboard` |
+| Building2 | Properties | `/owner/properties` |
+| Users | Tenants | `/owner/tenants` |
+| Wallet | Finance | `/owner/finance` |
+| Menu | More | `/owner/more` |
+
+Desktop sidebar groups:
+
+- Overview
+- Property Management
+- Tenant Management
+- Finance
+- Daily Operations
+- Staff Management
+- Reports
+- Subscriptions
+- Settings
+
+---
+
+## 32. Owner dashboard homepage
+
+Create a compact, professional dashboard.
+
+Header:
+
+- Owner profile photograph
+- Owner name
+- Notifications
+- Theme switch
+- Property selector
+- Add Property button
+
+Property selector:
+
+- All Properties
+- Individual property names
+
+All dashboard metrics must update according to the selected property.
+
+### KPI cards
+
+- Total Properties
+- Approved Properties
+- Pending Approvals
+- Total Rooms
+- Total Beds
+- Occupied Beds
+- Vacant Beds
+- Occupancy Rate
+- Active Tenants
+- Pending Joining Requests
+- Monthly Rent Collected
+- Pending Rent
+- Monthly Expenses
+- Open Complaints
+
+Display compact charts for:
+
+- Occupancy
+- Monthly income
+- Monthly expenses
+- Rent collection
+- Property performance
+
+### Owner quick links
+
+- Add PG
+- My Properties
+- Floors
+- Rooms & Beds
+- Vacancies
+- Tenants
+- Joining Requests
+- QR Onboarding
+- Rent Collection
+- Expenses
+- Deposits
+- Food & Mess
+- Complaints
+- Maintenance
+- Notices
+- Parcels
+- Staff
+- Checkout
+- Tracking Center
+- Reports
+- Startup Events
+- Subscription
+
+Group additional quick links under expandable sections to avoid overcrowding the homepage.
+
+### Today's operations
+
+Display:
+
+- Rent due today
+- New joining requests
+- Upcoming checkouts
+- Pending complaints
+- Maintenance tasks
+- Staff tasks
+- Parcels awaiting collection
+
+---
+
+# PART H — ADD PG PROPERTY AND APPROVAL
+
+## 33. Property registration business workflow
+
+This is a critical business requirement.
+
+The owner must first register the overall PG property.
+
+The owner must not be required to configure rooms, beds, bathrooms, sharing options, or rent during initial registration.
+
+Workflow:
+
+1. Owner creates an account.
+2. Owner accesses dashboard.
+3. Owner adds PG property.
+4. Owner captures property location.
+5. Owner uploads property photographs.
+6. Owner submits for approval.
+7. Super Admin verifies property and location.
+8. Property is approved.
+9. Owner unlocks property management.
+10. Owner configures floors, rooms, bathrooms, beds, rent, and other operations.
+11. Owner may purchase the official public listing entitlement in a future phase.
+12. Eligible property becomes publicly discoverable.
+
+The official listing fee will be ₹299 per property under the future Basic listing model.
+
+Do not integrate real payment collection for this fee during the initial implementation.
+
+---
+
+## 34. Add Property wizard
+
+Create a simple five-step registration wizard.
+
+### Step 1 — Property Details
+
+Fields:
+
+- PG property name
+- Property type
+- Accommodation category
+- Owner or manager name
+- Primary mobile number
+- Alternate mobile number
+- Email address
+- Property description
+- Target occupants
+- Food availability
+- Established year
+
+Property types:
+
+- PG Accommodation
+- Hostel
+- Co-living Accommodation
+
+Accommodation categories:
+
+- Men's PG
+- Women's PG
+- Co-living PG
+
+Target occupants:
+
+- Students
+- Working Professionals
+- Both
+
+Prefill applicable owner profile details.
+
+Do not include rooms, beds, bathrooms, rent, or deposits in this step.
+
+---
+
+## 35. Step 2 — Automatic property location capture
+
+Fields:
+
+- State
+- District
+- City or town
+- Locality
+- Complete address
+- PIN code
+- Nearby landmark
+
+Add a button:
+
+**Use My Current Location**
+
+When clicked:
+
+- Request location permission.
+- Capture device latitude.
+- Capture device longitude.
+- Capture GPS accuracy.
+- Capture location timestamp.
+- Save the coordinates to the property draft.
+- Display location capture status.
+- Allow the owner to capture again.
+
+Use browser geolocation or the supported native geolocation API.
+
+Example:
+
+```typescript
+navigator.geolocation.getCurrentPosition(
+  (position) => {
+    const location = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      accuracy: position.coords.accuracy,
+      capturedAt: new Date(position.timestamp).toISOString(),
+    };
+
+    // Save location to property form state.
+  },
+  (error) => {
+    // Display appropriate error state.
+  },
+  {
+    enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 0,
+  }
+);
+```
+
+Handle:
+
+- Permission denied
+- Location unavailable
+- Timeout
+- Unsupported browser
+- Low accuracy
+- Successful capture
+
+Do not require manual latitude and longitude entry.
+
+If a reverse-geocoding provider is configured, attempt to populate the address automatically.
+
+Otherwise, allow manual textual address entry.
+
+Do not invent an address from coordinates.
+
+Display:
+
+"Please capture your location while physically present at your PG property."
+
+The owner must confirm the captured location represents the actual property.
+
+GPS capture is not independent verification.
+
+Super Admin must review the location.
+
+Do not continuously track the owner's location.
+
+---
+
+## 36. Step 3 — Property amenities
+
+Provide compact selectable amenity chips.
+
+General facilities:
+
+- Wi-Fi
+- Power Backup
+- Lift
+- Parking
+- Drinking Water
+- Housekeeping
+- Laundry
+- Common TV
+- Common Study Area
+- Common Lounge
+- Gym
+- Terrace Access
+
+Food facilities:
+
+- Breakfast
+- Lunch
+- Dinner
+- Vegetarian Food
+- Non-Vegetarian Food
+
+Safety facilities:
+
+- CCTV in Common Areas
+- Security Guard
+- Controlled Entry
+- Fire Safety Equipment
+- Emergency Exits
+- First Aid
+
+Collect only property-level facilities.
+
+Room-level amenities will be configured later.
+
+---
+
+## 37. Step 4 — Property photographs and documents
+
+Require a minimum of four distinct overall property photographs.
+
+Suggested categories:
+
+1. Building front view
+2. Property entrance
+3. Reception or common area
+4. Additional overall property view
+
+Accommodate properties without a dedicated reception.
+
+Allow additional property photographs.
+
+Support:
+
+- Camera capture
+- Gallery upload
+- Multiple image selection
+- Image preview
+- Remove image
+- Replace image
+- Upload progress
+- Retry failed uploads
+- Select cover image
+- Reorder images
+
+The cover image counts toward the minimum four photographs.
+
+Display:
+
+"3 of 4 required property photographs uploaded."
+
+Prevent final submission until at least four valid photographs are successfully uploaded.
+
+Do not require room photographs or bathroom photographs during property registration.
+
+Those photographs will be uploaded when configuring rooms and bathrooms after approval.
+
+Validate image type, file size, and actual content.
+
+Remove unnecessary embedded GPS metadata from uploaded photographs.
+
+### Property verification documents
+
+Support applicable documents:
+
+- Ownership authorization
+- Lease or rental authorization
+- Applicable business registration
+- Applicable local licences
+- Other required verification documents
+
+Document requirements must be configurable.
+
+Keep verification documents private.
+
+Do not expose documents in public listings.
+
+---
+
+## 38. Step 5 — Review and submit
+
+Display:
+
+- Property information
+- Complete address
+- Captured location
+- Selected amenities
+- Property photographs
+- Cover image
+- Uploaded verification documents
+
+Allow editing individual sections.
+
+Include owner declaration confirming accuracy and authorization.
+
+Actions:
+
+- Save as Draft
+- Submit for Approval
+
+On submission:
+
+- Validate all required fields.
+- Validate location capture.
+- Validate minimum four photographs.
+- Validate applicable documents.
+- Prevent duplicate submissions.
+- Record submission timestamp.
+- Create an approval request.
+- Notify authorized Super Admin users.
+
+Redirect to property details with approval status.
+
+---
+
+## 39. Independent property statuses
+
+Maintain separate approval, location verification, and listing states.
+
+### Property approval
+
+- DRAFT
+- PENDING_APPROVAL
+- UNDER_REVIEW
+- CORRECTIONS_REQUIRED
+- RESUBMITTED
+- APPROVED
+- REJECTED
+- SUSPENDED
+
+### Location verification
+
+- NOT_SUBMITTED
+- PENDING_VERIFICATION
+- UNDER_REVIEW
+- CORRECTIONS_REQUIRED
+- VERIFIED
+- REJECTED
+- REVERIFICATION_REQUIRED
+
+### Listing status
+
+- NOT_LISTED
+- ELIGIBLE_FOR_LISTING
+- PUBLISHED
+- UNPUBLISHED
+- SUSPENDED
+
+Property approval does not automatically mean the property is publicly listed.
+
+---
+
+## 40. Property access restrictions
+
+Before approval and location verification, allow:
+
+- View property
+- Edit draft
+- Track approval
+- View admin feedback
+- Correct information
+- Resubmit
+- Add another property
+
+Restrict:
+
+- Floor creation
+- Room creation
+- Bathroom configuration
+- Bed creation
+- Rent configuration
+- Tenant onboarding
+- QR onboarding
+- Property operational management
+- Public listing
+
+After approval and location verification, unlock internal property management.
+
+Do not require the ₹299 public listing payment for internal property management.
+
+Enforce restrictions per property.
+
+An owner with one approved property and one pending property must still be able to manage the approved property.
+
+Enforce these rules on the backend.
+
+---
+
+# PART I — OWNER PROPERTY OPERATIONS
+
+## 41. Floors, rooms, bathrooms and beds
+
+Create a hierarchical inventory system:
+
+Owner → Property → Floor → Room → Bed
+
+Support ground floor and custom floor names.
+
+### Floor fields
+
+- Floor name
+- Floor number
+- Description
+- Operational status
+
+### Room fields
+
+- Room number
+- Floor
+- Room category
+- Sharing capacity
+- AC or Non-AC
+- Room size where available
+- Attached bathroom availability
+- Room amenities
+- Room photographs
+- Monthly rent
+- Security deposit
+- Availability status
+
+Sharing options:
+
+- Single sharing
+- Double sharing
+- Triple sharing
+- Four sharing
+- Five sharing
+- Custom sharing
+
+Support manual and bulk room creation.
+
+### Bathroom configuration
+
+Support:
+
+- Attached bathroom
+- Shared bathroom
+- Common floor bathroom
+
+Collect:
+
+- Bathroom type
+- Bathroom photographs
+- Geyser availability
+- Water availability
+- Maintenance status
+
+### Bed fields
+
+- Bed identifier
+- Associated room
+- Rent override if applicable
+- Bed status
+- Assigned tenant
+
+Bed statuses:
+
+- Available
+- Reserved
+- Occupied
+- Under Maintenance
+- Inactive
+
+Prevent duplicate active bed assignments.
+
+Automatically calculate vacancies and occupancy.
+
+Do not allow owners to manually override occupied-bed counts independently of actual assignments.
+
+---
+
+## 42. Rent and pricing configuration
+
+Support:
+
+- Property-level default pricing
+- Sharing-based pricing
+- Room-level pricing
+- Bed-level pricing overrides
+
+Configure:
+
+- Monthly rent
+- Security deposit
+- Maintenance charges
+- Food charges
+- Electricity charges
+- Laundry charges
+- Other charges
+- Rent due date
+- Minimum stay
+- Notice period
+- Refund terms
+
+Use a clear pricing precedence system:
+
+Bed override → Room pricing → Sharing pricing → Property default.
+
+Preserve agreed rent for existing stays unless changed through an authorized and recorded agreement update.
+
+---
+
+## 43. Vacancy management
+
+Display:
+
+- Total beds
+- Occupied beds
+- Available beds
+- Reserved beds
+- Maintenance beds
+- Inactive beds
+
+Support filtering by:
+
+- Property
+- Floor
+- Room
+- Sharing type
+- Bed status
+
+Provide visual room and bed cards.
+
+Vacancies must update when:
+
+- Tenant joins
+- Tenant transfers rooms
+- Tenant checks out
+- Bed is reserved
+- Bed enters maintenance
+
+---
+
+## 44. Tenant management
+
+Create a complete owner tenant directory.
+
+Display:
+
+- Tenant ID
+- Name
+- Mobile number
+- Email
+- Property
+- Floor
+- Room
+- Bed
+- Joining date
+- Monthly rent
+- Deposit
+- Stay status
+- Document verification status
+- Pending dues
+
+Support search, filtering, sorting, pagination, and authorized exports.
+
+Tenant detail tabs:
+
+- Overview
+- Documents
+- Room & Bed
+- Rent & Payments
+- Security Deposit
+- Complaints
+- Maintenance
+- Notices & Agreements
+- Stay History
+- Checkout
+
+Allow room and bed transfers using transactional availability checks.
+
+Protect tenant information.
+
+---
+
+## 45. Joining requests
+
+Display:
+
+- New requests
+- Under review
+- Accepted
+- Rejected
+- Awaiting documents
+- Awaiting agreement
+- Active stay
+
+Allow owner to:
+
+- Review request
+- Select available room
+- Assign bed
+- Configure agreed rent
+- Configure deposit
+- Request applicable documents
+- Review verification
+- Confirm stay activation
+
+Prevent assigning occupied or unavailable beds.
+
+---
+
+## 46. QR onboarding management
+
+Generate a property-specific QR code for approved and location-verified properties.
+
+Support:
+
+- View QR
+- Download QR
+- Print QR
+- Share joining link
+- Disable joining link
+- Regenerate joining link where necessary
+
+QR must contain only an appropriate joining URL or opaque identifier.
+
+Do not include private tenant or owner information in QR content.
+
+---
+
+## 47. Owner finance dashboard
+
+Display:
+
+- Expected Monthly Rent
+- Rent Collected
+- Pending Rent
+- Overdue Rent
+- Security Deposits Held
+- Monthly Expenses
+- Other Income
+- Operating Cash Flow
+
+Provide tabs:
+
+- Overview
+- Rent
+- Payments
+- Deposits
+- Expenses
+- Reports
+
+Do not count refundable deposits as ordinary operating revenue.
+
+---
+
+## 48. Rent collection
+
+Support:
+
+- Monthly rent generation
+- Tenant-specific rent
+- Additional charges
+- Partial payments
+- Payment history
+- Manual payment recording
+- Receipt generation
+- Rent reminders
+- Outstanding dues
+- Overdue reports
+
+Payment methods:
+
+- Cash
+- UPI
+- Bank Transfer
+- Card
+- Other
+
+Require payment references where appropriate.
+
+Maintain audit history for financial changes.
+
+Do not silently delete financial transactions.
+
+Use reversal or adjustment records where necessary.
+
+Prevent duplicate monthly rent generation.
+
+---
+
+## 49. Owner expense tracker
+
+Build a separate business expense tracker.
+
+Route:
+
+`/owner/expenses`
+
+Available to all eligible owner plans, including Basic.
+
+Categories:
+
+- Electricity
+- Water
+- Food and Groceries
+- Staff Salaries
+- Cleaning Supplies
+- Repairs
+- Maintenance
+- Internet
+- Property Rent
+- Laundry
+- Furniture
+- Equipment
+- Licences
+- Marketing
+- Other
+
+Fields:
+
+- Property
+- Expense title
+- Category
+- Amount
+- Date
+- Payment method
+- Vendor
+- Receipt
+- Notes
+- Recurring status
+
+Support:
+
+- Add expense
+- Edit expense with audit history
+- Search
+- Filter
+- Monthly reports
+- Category breakdown
+- Property-wise comparison
+- CSV export
+
+Display income versus expenses and operating cash flow.
+
+Owner business expenses must remain completely separate from tenant personal expenses.
+
+---
+
+## 50. Security deposit management
+
+Support:
+
+- Deposit required
+- Deposit received
+- Pending deposit
+- Deposit adjustments
+- Authorized deductions
+- Refund amount
+- Refund status
+- Settlement history
+
+Preserve deposit ledger entries.
+
+Show the tenant a transparent breakdown of any deductions.
+
+---
+
+## 51. Food and mess management
+
+Allow owners to:
+
+- Configure meal availability
+- Create weekly menu
+- Configure meal timings
+- Publish daily menu
+- Update meal information
+- Receive meal feedback
+- Publish food announcements
+
+Support breakfast, lunch, and dinner.
+
+Food management is optional per property.
+
+---
+
+## 52. Complaints and maintenance
+
+Display:
+
+- New complaints
+- Open complaints
+- In-progress complaints
+- Resolved complaints
+- Overdue maintenance tasks
+
+Allow:
+
+- Review request
+- Assign responsible staff
+- Update status
+- Add notes
+- Upload completion evidence
+- Notify tenant
+- Reopen request when needed
+
+Maintain complaint history.
+
+---
+
+## 53. Notices and announcements
+
+Allow owners to create notices for:
+
+- All tenants in a property
+- Specific floors
+- Specific rooms
+- Selected tenants
+
+Support:
+
+- Title
+- Message
+- Priority
+- Publish date
+- Expiry date
+- Optional attachment
+
+Display delivery and read status where supported.
+
+---
+
+## 54. Staff management
+
+Business plan feature.
+
+Support staff roles:
+
+- Property Manager
+- Receptionist
+- Cook
+- Housekeeping
+- Security
+- Maintenance Staff
+
+Allow:
+
+- Staff directory
+- Staff invitations
+- Property assignment
+- Role permissions
+- Attendance
+- Task assignment
+- Salary records
+- Leave management
+- Staff activity history
+
+Staff accounts must operate as restricted subaccounts of the owner role, not as an unrelated fourth public dashboard role.
+
+---
+
+## 55. Checkout management
+
+Display:
+
+- Checkout requests
+- Upcoming departures
+- Pending rent
+- Deposit settlement
+- Room inspection
+- Deductions
+- Refund status
+
+Workflow:
+
+1. Tenant requests checkout.
+2. Owner reviews notice period.
+3. Outstanding dues are calculated.
+4. Room inspection is recorded.
+5. Deposit settlement is prepared.
+6. Tenant receives settlement details.
+7. Checkout is completed.
+8. Bed becomes available or enters maintenance.
+9. Stay history is preserved.
+
+---
+
+## 56. Tracking Center
+
+Create a central operations tracking page.
+
+Track:
+
+- Joining requests
+- Document verification
+- Pending rent
+- Overdue rent
+- Deposit settlements
+- Complaints
+- Maintenance
+- Upcoming checkouts
+- Property approval
+- Listing status
+
+Basic plan receives standard status tracking.
+
+Pro and Business receive advanced filters, reminders, follow-up tracking, and operational reports.
+
+---
+
+## 57. Owner reports and analytics
+
+Create reports for:
+
+- Property occupancy
+- Room availability
+- Tenant growth
+- Rent collection
+- Outstanding dues
+- Monthly expenses
+- Income versus expenses
+- Deposit liabilities
+- Complaint resolution
+- Checkout trends
+- Property performance
+
+Support date ranges and property filters.
+
+Export authorized reports to CSV.
+
+Provide printable summaries.
+
+---
+
+## 58. Owner profile and settings
+
+Include:
+
+- Profile photograph
+- Name
+- Email
+- Mobile number
+- Business information
+- Managed properties
+- Subscription
+- Notification settings
+- Theme settings
+- Security settings
+- Help and support
+- Logout
+
+---
+
+# PART J — STARTUP EVENTS AND LOCAL SERVICES
+
+## 59. Startup Events — Connect
+
+Create a dedicated Startup Events module.
+
+Only Super Admin or an authorized admin sub-role can create, publish, update, or cancel public events.
+
+Tenant and owner users can discover events.
+
+Event categories:
+
+- Startup Networking
+- Entrepreneurship
+- Technology
+- AI and Innovation
+- Founder Meetups
+- Investor Events
+- Workshops
+- Hackathons
+- Business Conferences
+- Incubator Programs
+
+Event details:
+
+- Event title
+- Cover image
+- Description
+- Organizer
+- Date and time
+- Venue
+- City
+- Online or Offline
+- Speakers
+- Agenda
+- Free or Paid
+- Capacity
+- Registration deadline
+- Official registration link
+
+Support:
+
+- Search
+- Filters
+- Bookmark
+- Free RSVP
+- Cancel RSVP
+- Waitlist
+- Calendar information
+- Share event
+
+Paid events must use official external registration links during the initial phase.
+
+Do not collect paid event ticket payments within PG Finder.
+
+Do not expose attendee personal information publicly.
+
+PG owners may share published events with their own tenants through announcements.
+
+---
+
+## 60. PG Finder Local
+
+Create a local services discovery module.
+
+Categories:
+
+- Restaurants
+- Tiffin Centers
+- Grocery Stores
+- Laundry
+- Gyms
+- Transportation
+- Stationery
+- Mobile Repair
+- Essential Services
+
+Display:
+
+- Business name
+- Category
+- Image
+- Description
+- Area
+- Contact details
+- Business hours when available
+- Website or official link
+- Sponsored label when applicable
+
+Allow users to select their city and locality manually.
+
+Location permission must be optional.
+
+Do not expose a tenant's precise location to advertisers.
+
+---
+
+# PART K — SUBSCRIPTIONS AND MONETIZATION
+
+## 61. Owner subscription plans
+
+Implement plan configuration and entitlement logic.
+
+### Basic — ₹0/month
+
+- Add properties
+- Property approval
+- Rooms and beds
+- Tenant management
+- Rent management
+- Expense management
+- Basic reports
+- Food management
+- Complaints
+- Basic tracking
+- QR onboarding
+
+Official public listing fee:
+
+₹299 per eligible property as a future one-time listing entitlement.
+
+### Pro — ₹199/month
+
+Includes Basic features plus:
+
+- Up to five subscription-covered active public listings
+- Advanced tracking
+- Advanced rent reminders
+- Dues reports
+- Maintenance follow-up
+- Advanced analytics
+
+### Business — ₹499/month
+
+Includes Pro features plus:
+
+- Up to twenty subscription-covered active public listings
+- Staff management
+- Staff roles and permissions
+- Attendance
+- Task management
+- Bulk reminders
+- Multi-property operations
+- Advanced reports
+- Priority support
+
+Subscription-covered listings remain eligible while the subscription entitlement is active.
+
+Provide a configurable grace period.
+
+On expiry, subscription-only listings should become unpublished after the grace period.
+
+Valid lifetime listing entitlements should remain unaffected.
+
+Never delete property or tenant data because a subscription expires.
+
+---
+
+## 62. Official listing entitlement
+
+Keep property approval and listing entitlement independent.
+
+Public listing requires:
+
+- Property approved
+- Location verified
+- Required room inventory configured
+- Rent information configured
+- Public listing information complete
+- Valid listing entitlement
+- Owner not suspended
+- Property not suspended
+
+Do not implement real ₹299 payment collection until the payment provider is configured.
+
+Create a future-ready payment abstraction.
+
+Never generate fake successful transactions.
+
+In demo mode, allow clearly labeled simulated entitlement states without representing them as real payments.
+
+---
+
+## 63. Featured PG promotions
+
+Create configurable promotional packages.
+
+Initial illustrative packages:
+
+- ₹299 for 7 days
+- ₹799 for 30 days
+- ₹1,999 for 90 days
+
+Only eligible published properties can purchase featured placement.
+
+Display promoted properties with a clear Sponsored or Featured label.
+
+Do not allow promotions to bypass property approval or verification.
+
+---
+
+## 64. Local business advertising
+
+Create configurable advertising packages.
+
+Initial illustrative packages:
+
+- ₹499 for 7 days
+- ₹1,499 for 30 days
+- ₹3,999 for 90 days
+
+Support:
+
+- Advertiser information
+- Business category
+- Campaign title
+- Campaign image
+- Description
+- Target city
+- Target locality
+- Start date
+- End date
+- Campaign status
+- Impression tracking
+- Click tracking
+
+Target campaigns by selected city, locality, or contextual page category rather than private tenant information.
+
+All paid placements must be clearly labeled Sponsored.
+
+---
+
+## 65. Google AdMob integration architecture
+
+Prepare future native mobile integration for:
+
+- Banner Ads
+- Native Ads
+- App Open Ads
+- Interstitial Ads
+- Rewarded Ads
+- AdMob Mediation
+- Eligible bidding sources
+
+Create a reusable advertisement service and placement configuration.
+
+Ad placements may include:
+
+- Tenant Explore
+- PG Finder Local
+- Event discovery
+- Selected non-sensitive browsing screens
+
+Do not display advertisements in:
+
+- Super Admin Dashboard
+- Login and registration
+- Document submission
+- Rent payment
+- Checkout settlement
+- Emergency information
+- Complaints and safety workflows
+- Sensitive personal expense details
+
+Do not force users to watch advertisements to access essential features.
+
+Use frequency caps.
+
+Support age-appropriate advertising and applicable child and teen protections.
+
+Do not use behavioral targeting based on private financial information, precise location, identity documents, or other sensitive information.
+
+Use official test ad units during development.
+
+Do not generate artificial impressions or clicks.
+
+Browser previews must show clearly labeled ad placeholders only.
+
+Native AdMob integration will require the appropriate mobile SDK, application identifiers, ad unit identifiers, and release configuration.
+
+---
+
+# PART L — COMPLETE SUPER ADMIN DASHBOARD
+
+## 66. Super Admin navigation
+
+Mobile bottom navigation:
+
+| Icon | Label | Route |
+|---|---|---|
+| LayoutDashboard | Home | `/admin/dashboard` |
+| Building2 | Properties | `/admin/properties` |
+| Users | Users | `/admin/users` |
+| ClipboardCheck | Approvals | `/admin/approvals` |
+| Menu | More | `/admin/more` |
+
+Desktop sidebar groups:
+
+### Overview
+
+- Dashboard
+- Analytics
+- Recent Activity
+
+### User Management
+
+- PG Owners
+- Tenants
+- Admin Users
+- Roles & Permissions
+
+### Property Management
+
+- All Properties
+- Property Approvals
+- Location Verification
+- Property Documents
+- Rooms & Beds
+- Vacancies
+
+### Tenant Operations
+
+- Joining Requests
+- Active Stays
+- Checkout
+- Rent Oversight
+- Complaints
+- Disputes
+
+### Monetization
+
+- Subscription Plans
+- Subscriptions
+- Lifetime Listings
+- Platform Payments
+- Refunds
+- Featured PGs
+- Local Business Ads
+- AdMob
+
+### Platform Operations
+
+- Startup Events
+- Notifications
+- Reviews
+- Support
+- CMS
+- Audit Logs
+- System Health
+
+### Settings
+
+- Platform Settings
+- Profile
+- Security
+- Logout
+
+---
+
+## 67. Super Admin dashboard homepage
+
+Create a compact professional administration dashboard.
+
+### KPI cards
+
+- Total Users
+- Total PG Owners
+- Total Tenants
+- Total Properties
+- Pending Property Approvals
+- Pending Location Verifications
+- Approved Properties
+- Published Properties
+- Total Beds
+- Occupied Beds
+- Vacant Beds
+- Active Subscriptions
+- Platform Revenue
+- Active Advertisements
+- Open Support Tickets
+- Upcoming Events
+
+### Quick links
+
+- Property Approvals
+- Location Verification
+- PG Owners
+- Tenants
+- All Properties
+- Property Documents
+- Subscriptions
+- Payments
+- Featured PGs
+- Local Ads
+- AdMob
+- Create Event
+- Notifications
+- Support
+- Reports
+- Settings
+
+### Dashboard sections
+
+- Pending approvals
+- Recent registrations
+- Recent property submissions
+- Pending location reviews
+- Revenue overview
+- User growth
+- Property growth
+- Occupancy overview
+- Recent administrative activity
+- Support tickets
+- Upcoming events
+
+Use real data where connected.
+
+Do not combine PG owners' rent collection with PG Finder platform revenue.
+
+---
+
+## 68. PG owner management
+
+Display:
+
+- Owner ID
+- Name
+- Email
+- Mobile number
+- Registration date
+- Account status
+- Total properties
+- Approved properties
+- Published properties
+- Subscription plan
+
+Owner details:
+
+- Profile
+- Properties
+- Subscription
+- Platform payments
+- Support history
+- Activity history
+
+Authorized actions:
+
+- View
+- Suspend
+- Reactivate
+- Review account status
+- Review subscription
+
+Record administrative actions in audit logs.
+
+Do not require separate owner account approval during normal registration.
+
+---
+
+## 69. Property approval management
+
+Create a complete property approval queue.
+
+Display:
+
+- Property name
+- Owner
+- City
+- Locality
+- Submission date
+- Approval status
+- Location verification status
+- Document status
+
+Property review page:
+
+- Basic details
+- Address
+- Captured coordinates
+- GPS accuracy
+- Property photographs
+- Amenities
+- Verification documents
+- Previous review history
+
+Actions:
+
+- Start Review
+- Approve
+- Request Corrections
+- Reject
+- Suspend
+
+Require review comments for corrections, rejection, and suspension.
+
+Notify the owner of status changes.
+
+Maintain full approval history.
+
+---
+
+## 70. Location verification
+
+Create a separate verification queue.
+
+Display:
+
+- Submitted address
+- Latitude
+- Longitude
+- GPS accuracy
+- Capture timestamp
+- Map preview when supported
+- Owner confirmation
+- Verification history
+
+Allow authorized administrators to:
+
+- Start review
+- Verify location
+- Request corrections
+- Reject location
+- Require reverification
+
+Do not automatically mark locations verified based only on GPS capture.
+
+Material address or coordinate changes after verification must trigger reverification.
+
+Preserve submitted and verified coordinates separately where needed.
+
+---
+
+## 71. Property document verification
+
+Display private documents only to authorized verification administrators.
+
+Support:
+
+- View document
+- Approve document
+- Reject document
+- Request replacement
+- Add review notes
+
+Document statuses:
+
+- Pending
+- Under Review
+- Verified
+- Rejected
+- Replacement Required
+
+Use secure, expiring access links where supported.
+
+Do not expose private storage references publicly.
+
+---
+
+## 72. Tenant administration
+
+Display:
+
+- Tenant ID
+- Name
+- Contact information
+- Registration date
+- Account status
+- Active property
+- Stay status
+
+Authorized tenant details:
+
+- Account profile
+- Joining history
+- Stay history
+- Official rent records
+- Deposit records
+- Support cases
+- Account activity
+
+Super Admin must not receive unrestricted access to private personal expense tracker entries.
+
+Provide aggregate expense module usage statistics without exposing individual spending details.
+
+---
+
+## 73. Inventory and stay oversight
+
+Provide platform-level oversight of:
+
+- Floors
+- Rooms
+- Beds
+- Occupancy
+- Vacancies
+- Joining requests
+- Active stays
+- Room transfers
+- Checkout
+
+Display inconsistencies for authorized review.
+
+Do not allow arbitrary administrative bed assignments that bypass owner permissions and business rules.
+
+---
+
+## 74. Subscription management
+
+Allow authorized admins to:
+
+- Create plans
+- Edit plan descriptions
+- Configure prices
+- Configure feature entitlements
+- Configure listing limits
+- View active subscriptions
+- View expired subscriptions
+- Review renewal status
+- Configure grace periods
+
+Maintain plan change history.
+
+Do not retroactively change existing paid agreements without appropriate rules and notice.
+
+---
+
+## 75. Platform payments and refunds
+
+Track platform revenue separately from owner rent.
+
+Revenue categories:
+
+- Listing fees
+- Subscriptions
+- Featured PG promotions
+- Local business advertising
+- AdMob revenue
+
+Payment statuses:
+
+- Created
+- Pending
+- Successful
+- Failed
+- Cancelled
+- Refunded
+- Partially Refunded
+
+Prepare future payment gateway integration.
+
+Require verified webhooks and idempotent processing.
+
+Never trust frontend payment success alone.
+
+Do not fabricate transactions.
+
+Refund actions require appropriate permissions and audit history.
+
+---
+
+## 76. Advertisement administration
+
+Create management pages for:
+
+- Featured PG campaigns
+- Local business campaigns
+- Advertisement placements
+- Campaign packages
+- Campaign performance
+- AdMob configuration
+
+AdMob dashboard:
+
+- Configured ad units
+- Ad formats
+- Placement status
+- Frequency settings
+- Test mode
+- Mediation configuration status
+- Actual impressions when available
+- Actual eCPM when available
+- Actual estimated earnings when available
+
+If reporting is not connected, display "Reporting integration not configured."
+
+Do not invent AdMob earnings.
+
+---
+
+## 77. Startup event administration
+
+Allow authorized administrators to:
+
+- Create event
+- Save draft
+- Edit event
+- Upload event image
+- Configure speakers
+- Configure agenda
+- Configure venue
+- Configure capacity
+- Publish event
+- Cancel event
+- Manage free registrations
+- Manage waitlist
+- View attendance
+- Review event analytics
+
+Only published events appear in Tenant and Owner Connect modules.
+
+---
+
+## 78. Notifications administration
+
+Support:
+
+- Platform-wide announcements
+- Tenant notifications
+- Owner notifications
+- Property-specific notifications
+- Approval notifications
+- Subscription reminders
+- Event announcements
+
+Channels:
+
+- In-app
+- Email when configured
+- Push notifications when configured
+- SMS when configured
+
+Provide notification templates and delivery status.
+
+Respect notification preferences for non-essential communications.
+
+---
+
+## 79. Support and dispute management
+
+Create support ticket management.
+
+Categories:
+
+- Account
+- Property Verification
+- Joining
+- Rent
+- Deposit
+- Subscription
+- Payment
+- Technical Issue
+- Safety Concern
+- Other
+
+Statuses:
+
+- Open
+- Assigned
+- In Progress
+- Awaiting Response
+- Resolved
+- Closed
+
+Support:
+
+- Ticket assignment
+- Internal notes
+- User replies
+- Attachments
+- Priority
+- Escalation
+- Resolution history
+
+Provide separate emergency guidance where appropriate.
+
+---
+
+## 80. Reviews and moderation
+
+Allow eligible tenants with verified stay history to submit property reviews.
+
+Support:
+
+- Rating
+- Written feedback
+- Optional approved attachments
+- Review reporting
+- Moderation
+- Owner response
+
+Do not generate fake reviews.
+
+Maintain moderation history.
+
+---
+
+## 81. Content management system
+
+Allow authorized administrators to manage:
+
+- Landing page content
+- FAQs
+- About PG Finder
+- Contact information
+- Terms and conditions
+- Privacy policy
+- Help articles
+- Platform announcements
+- Supported cities
+- Amenity master list
+- Expense category defaults
+
+Use version history for important policy content.
+
+---
+
+## 82. Admin roles and permissions
+
+Maintain SUPER_ADMIN as the primary administrative dashboard role.
+
+Support restricted admin sub-roles:
+
+- Operations Admin
+- Verification Admin
+- Support Admin
+- Finance Admin
+- Events Admin
+- Content Admin
+
+Enforce permissions on the backend.
+
+Use least-privilege access.
+
+Record sensitive administrative actions.
+
+---
+
+## 83. Audit logs
+
+Track:
+
+- Login-related security events
+- Property submission
+- Property approval
+- Location verification
+- Document verification
+- Account suspension
+- Subscription changes
+- Financial adjustments
+- Refund actions
+- Advertisement changes
+- Event publication
+- Permission changes
+
+Include:
+
+- Actor ID
+- Action
+- Entity type
+- Entity ID
+- Timestamp
+- Relevant change summary
+
+Do not store passwords, authentication tokens, or unnecessary private information in logs.
+
+---
+
+## 84. System health and platform settings
+
+Display actual integration status where available:
+
+- API health
+- Database connectivity
+- Storage connectivity
+- Email provider
+- Notification provider
+- Payment provider
+- AdMob reporting
+- Background jobs
+
+Do not invent healthy service indicators.
+
+Platform settings:
+
+- Platform name
+- Support contact
+- Default currency
+- Timezone
+- Property photo minimum
+- Verification requirements
+- Subscription configuration
+- Listing configuration
+- Feature flags
+- Advertisement settings
+- Maintenance mode
+
+---
+
+# PART M — DATABASE AND BUSINESS LOGIC
+
+## 85. Database entities
+
+Design a normalized relational schema.
+
+### Authentication
+
+- users
+- user_profiles
+- roles
+- permissions
+- user_roles
+- sessions
+
+### Properties
+
+- properties
+- property_addresses
+- property_images
+- property_documents
+- amenities
+- property_amenities
+- property_rules
+- property_approvals
+- location_verifications
+
+### Inventory
+
+- floors
+- rooms
+- room_images
+- room_amenities
+- bathrooms
+- bathroom_images
+- beds
+- pricing_rules
+
+### Tenancy
+
+- joining_requests
+- stays
+- bed_assignments
+- stay_agreements
+- tenant_documents
+- checkout_requests
+- stay_history
+
+### Official PG finance
+
+- rent_invoices
+- rent_invoice_items
+- rent_payments
+- payment_allocations
+- deposit_transactions
+- owner_expenses
+- financial_adjustments
+- receipts
+
+### Tenant personal finance
+
+- tenant_expenses
+- tenant_expense_categories
+- tenant_budgets
+- tenant_category_budgets
+- tenant_recurring_expenses
+- tenant_expense_attachments
+- shared_expenses
+- shared_expense_participants
+- shared_expense_settlements
+
+### Operations
+
+- food_menus
+- meal_feedback
+- complaints
+- maintenance_requests
+- notices
+- notice_recipients
+- parcels
+- staff
+- staff_attendance
+- staff_tasks
+- staff_salary_records
+
+### Events
+
+- events
+- event_speakers
+- event_agenda
+- event_registrations
+- saved_events
+
+### Monetization
+
+- subscription_plans
+- subscriptions
+- plan_entitlements
+- listing_entitlements
+- platform_payments
+- platform_refunds
+- featured_campaigns
+- local_businesses
+- advertisement_campaigns
+- advertisement_placements
+- advertisement_metrics
+
+### Administration
+
+- notifications
+- notification_preferences
+- saved_properties
+- property_reviews
+- support_tickets
+- support_messages
+- audit_logs
+- platform_settings
+
+Use foreign keys, indexes, timestamps, uniqueness constraints, and appropriate database transactions.
+
+Prevent duplicate records and inconsistent assignments.
+
+Use database migrations.
+
+Do not perform destructive schema changes unnecessarily.
+
+---
+
+## 86. API architecture
+
+Create consistent role-based REST APIs.
+
+Examples:
+
+```text
+/api/auth/*
+/api/tenant/profile
+/api/tenant/properties
+/api/tenant/joining-requests
+/api/tenant/stays
+/api/tenant/rent
+/api/tenant/expenses
+/api/tenant/budgets
+/api/tenant/shared-expenses
+/api/tenant/complaints
+/api/tenant/events
+
+/api/owner/dashboard
+/api/owner/properties
+/api/owner/properties/:id/location
+/api/owner/properties/:id/images
+/api/owner/properties/:id/submit
+/api/owner/floors
+/api/owner/rooms
+/api/owner/beds
+/api/owner/tenants
+/api/owner/joining-requests
+/api/owner/rent
+/api/owner/payments
+/api/owner/expenses
+/api/owner/deposits
+/api/owner/food
+/api/owner/staff
+/api/owner/maintenance
+/api/owner/reports
+
+/api/admin/dashboard
+/api/admin/users
+/api/admin/properties
+/api/admin/property-approvals
+/api/admin/location-verifications
+/api/admin/documents
+/api/admin/subscriptions
+/api/admin/payments
+/api/admin/advertisements
+/api/admin/events
+/api/admin/support
+/api/admin/audit-logs
+/api/admin/settings
+```
+
+Implement appropriate methods, validation, authentication, pagination, filtering, and error responses.
+
+Use a consistent response structure.
+
+Do not expose sensitive fields unnecessarily.
+
+---
+
+# PART N — SECURITY AND DATA PRIVACY
+
+## 87. Security requirements
+
+Implement:
+
+- Secure password hashing
+- Authentication middleware
+- Role-based authorization
+- Resource ownership checks
+- Server-side validation
+- Secure session management
+- Rate limiting
+- Protection against injection attacks
+- Secure file upload validation
+- Private document storage
+- Secure environment variables
+- Audit logging
+- Safe error handling
+- Appropriate CORS configuration
+- CSRF protection where applicable
+
+Never expose API secrets in frontend code.
+
+Never trust role, owner ID, approval status, or payment status supplied by an untrusted client.
+
+Derive authorized identity from the authenticated session.
+
+---
+
+## 88. Data isolation
+
+Enforce strict data boundaries.
+
+### Tenant
+
+Can access their own:
+
+- Profile
+- Stay
+- Rent records
+- Personal expenses
+- Budgets
+- Complaints
+- Documents
+
+### PG Owner
+
+Can access:
+
+- Their own properties
+- Their property inventory
+- Authorized tenant stay information
+- Official rent records
+- Their business expenses
+- Their property operations
+
+Cannot access tenant personal expense tracker records.
+
+### Super Admin
+
+Can access only the administrative data required by assigned permissions.
+
+Private personal expense information must not become ordinary administrative browsing data.
+
+Use aggregate analytics wherever individual data is unnecessary.
+
+---
+
+# PART O — DEMO DATA AND FUNCTIONAL PROTOTYPE
+
+## 89. Demo data
+
+Create realistic fictional Indian demo data.
+
+Include:
+
+- Multiple PG owners
+- Multiple tenants
+- Multiple cities
+- Approved properties
+- Pending properties
+- Draft properties
+- Correction-required properties
+- Published and unpublished properties
+- Floors
+- Rooms
+- Beds
+- Active stays
+- Rent invoices
+- Partial payments
+- Owner expenses
+- Tenant personal expenses
+- Budgets
+- Complaints
+- Food menus
+- Events
+- Advertisements
+- Subscription examples
+
+Use clearly fictional names and records.
+
+Label demo mode visibly.
+
+Provide a safe demo role switcher only in development mode.
+
+Do not expose demo login bypasses in production.
+
+Ensure all three dashboards can be explored and tested.
+
+Demo workflows should update shared state consistently across roles.
+
+For example:
+
+- Owner submits a property.
+- Admin sees the submitted property.
+- Admin approves the property.
+- Owner sees updated approval status.
+- Owner unlocks property operations.
+- Owner creates rooms and beds.
+- Tenant submits a joining request.
+- Owner assigns a bed.
+- Tenant sees active stay.
+- Occupancy updates automatically.
+
+Do not create three disconnected mock datasets.
+
+---
+
+# PART P — IMPLEMENTATION ORDER
+
+## 90. Development phases
+
+Implement the application in logical phases.
+
+### Phase 1 — Foundation
+
+- Project structure
+- Design system
+- Shared layouts
+- Light/Dark/System themes
+- Authentication
+- Role routing
+- Three dashboards
+- Bottom navigation
+- Desktop sidebars
+- Quick links
+
+### Phase 2 — Property registration
+
+- Add Property wizard
+- Draft persistence
+- GPS location capture
+- Property amenities
+- Minimum four property photographs
+- Document uploads
+- Property submission
+- Super Admin approval
+- Location verification
+
+### Phase 3 — Property operations
+
+- Floors
+- Rooms
+- Bathrooms
+- Beds
+- Pricing
+- Vacancies
+- Owner dashboard statistics
+
+### Phase 4 — Tenant onboarding
+
+- PG discovery
+- Property details
+- Joining requests
+- QR onboarding
+- Tenant verification
+- Bed assignment
+- Active stays
+
+### Phase 5 — Financial management
+
+- Rent
+- Payments
+- Receipts
+- Deposits
+- Owner expense tracker
+- Tenant personal expense tracker
+- Budgets
+- Shared expenses
+
+### Phase 6 — Daily operations
+
+- Food
+- Complaints
+- Maintenance
+- Notices
+- Parcels
+- Checkout
+- Staff
+- Tracking Center
+
+### Phase 7 — Platform engagement
+
+- Startup Events
+- PG Finder Local
+- Notifications
+- Reviews
+- Support
+
+### Phase 8 — Monetization
+
+- Subscription entitlements
+- Future ₹299 listing entitlement
+- Featured PG promotions
+- Local business advertisements
+- AdMob integration architecture
+- Payment provider abstraction
+
+### Phase 9 — Administration and analytics
+
+- Complete Super Admin controls
+- Reports
+- Audit logs
+- System health
+- CMS
+- Platform settings
+
+### Phase 10 — Quality assurance
+
+- Security testing
+- Responsive testing
+- Accessibility testing
+- Business logic testing
+- Integration testing
+- Production build
+
+Do not attempt to finish every module superficially in a single generation.
+
+Build the foundation and implement modules in a controlled sequence.
+
+Preserve working modules when implementing subsequent phases.
+
+---
+
+# PART Q — FINAL ACCEPTANCE CRITERIA
+
+## 91. Mandatory functional requirements
+
+The completed application must satisfy:
+
+1. Exactly three primary role-based dashboards.
+2. Professional mobile-first UI.
+3. Working Light, Dark and System themes.
+4. Permanently visible mobile bottom navigation.
+5. Functional desktop navigation.
+6. Clickable dashboard KPI cards and quick links.
+7. Owner registration and dashboard access.
+8. Five-step property registration.
+9. Automatic latitude and longitude capture.
+10. Minimum four property photographs.
+11. Property approval workflow.
+12. Independent location verification.
+13. Approval-based property management access.
+14. Post-approval room and bathroom configuration.
+15. Bed inventory and accurate vacancies.
+16. Rent configuration.
+17. Tenant joining requests.
+18. QR onboarding.
+19. Tenant room and bed assignment.
+20. Tenant rent management.
+21. Owner business expense tracker.
+22. Tenant personal expense tracker.
+23. Monthly budgets and expense analytics.
+24. Roommate shared expenses.
+25. Food management.
+26. Complaints and maintenance.
+27. Notices and parcels.
+28. Checkout and deposit settlement.
+29. Startup Events.
+30. PG Finder Local.
+31. Subscription entitlement architecture.
+32. Future official listing payment architecture.
+33. Advertisement management.
+34. Complete Super Admin management.
+35. Secure role-based data isolation.
+36. Shared state consistency.
+37. Responsive mobile and desktop layouts.
+38. No fabricated production payment or revenue data.
+39. Functional loading, empty, success, and error states.
+40. Successful production build.
+
+---
+
+## 92. Final instructions to Google AI Studio
+
+Start building PG Finder from scratch using this specification.
+
+Create a cohesive application rather than a collection of disconnected screens.
+
+Prioritize a professional UI and reusable architecture.
+
+Build all three dashboards with complete navigation and compact quick links.
+
+Use functional forms, realistic demo records, shared state, and clear business workflows.
+
+Where actual backend infrastructure is supported, implement persistent backend functionality.
+
+Where an external integration is unavailable, create an explicit integration interface and clearly identify the missing configuration.
+
+Do not fabricate successful API connections.
+
+Do not expose credentials.
+
+Do not automatically publish unapproved properties.
+
+Do not require rooms, bathrooms, beds, or rent during initial property registration.
+
+Do not remove bottom navigation.
+
+Do not allow owners to access tenant personal expense information.
+
+Do not implement real payment collection without configured and verified payment infrastructure.
+
+At the end of each implementation phase, report:
+
+- Completed modules
+- Functional features
+- Files created
+- Database changes
+- API implementation
+- Demo-only features
+- Missing external integrations
+- Security checks
+- Build status
+- Remaining work
+
+The final product should be a professional, scalable, mobile-first Indian PG marketplace and accommodation management application named PG Finder.
