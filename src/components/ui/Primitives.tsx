@@ -143,15 +143,17 @@ export const QuickLinkTile: React.FC<{
     <button
       type="button"
       onClick={onClick}
-      className="relative flex flex-col items-center justify-center gap-1.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] px-2 py-2.5 text-center transition-colors hover:border-[#047857]/50 dark:hover:border-[#34D399]/50 hover:bg-[#F8FAFC] dark:hover:bg-[#1F2937]/70 active:scale-[0.98] min-h-[72px] focus-visible:outline-2 focus-visible:outline-[#047857]"
+      className="relative flex h-full min-h-[88px] sm:min-h-[92px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] px-2.5 py-3 text-center transition-colors hover:border-[#047857]/50 dark:hover:border-[#34D399]/50 hover:bg-[#F8FAFC] dark:hover:bg-[#1F2937]/70 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-[#047857]"
     >
       {typeof count === 'number' && count > 0 && (
-        <span className="absolute top-1.5 right-2 text-[11px] font-semibold font-mono-num tabular-nums text-[#047857] dark:text-[#34D399]">
-          {count}
+        <span className="absolute top-1.5 right-2 text-[11px] font-bold font-mono-num tabular-nums text-[#047857] dark:text-[#34D399]">
+          {count > 99 ? '99+' : count}
         </span>
       )}
-      <span className="text-[#047857] dark:text-[#34D399]">{icon}</span>
-      <span className="text-[11px] font-medium text-[#111827] dark:text-[#F9FAFB] leading-tight line-clamp-2">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[#047857] dark:text-[#34D399] [&>svg]:h-[22px] [&>svg]:w-[22px]">
+        {icon}
+      </span>
+      <span className="text-[11px] font-medium text-[#111827] dark:text-[#F9FAFB] leading-snug line-clamp-2 min-h-[28px] flex items-center justify-center">
         {label}
       </span>
     </button>
@@ -167,15 +169,20 @@ export const StatusText: React.FC<{
   const s = status.toLowerCase();
   const resolvedTone: SemanticTone =
     tone ||
-    (/paid|available|approved|resolved|published|verified|collected|completed|received|voluntarily shared|active stay/i.test(s) && !/partially|refund|pending/i.test(s)
+    (/paid|available|approved|resolved|published|verified|collected|completed|received|voluntarily shared|active stay|success/i.test(s) &&
+    !/partially|refund|pending|not|replacement|reverification|unpaid/i.test(s)
       ? 'success'
-      : /reserved|occupied|in progress|upcoming|assigned|active|under review|scheduled/i.test(s)
+      : s === 'active'
+      ? 'success'
+      : /under review|in progress|assigned|reserved|occupied|under settlement|waiting for user|waiting for admin|grace period/i.test(s)
       ? 'info'
-      : /maintenance/i.test(s)
+      : /correction|replacement|maintenance|paused|reverification/i.test(s)
       ? 'orange'
-      : /overdue|rejected|suspend|cancel|error|declined|revoked/i.test(s)
+      : /overdue|rejected|suspend|cancel|error|declined|revoked|failed|blocked/i.test(s)
       ? 'error'
-      : /pending|partial|awaiting|requested|draft|correction|open|reopened|new|replacement|refund/i.test(s)
+      : /expired|archived|draft|unpublished|inactive|closed|not listed|not submitted|withdrawn/i.test(s)
+      ? 'neutral'
+      : /pending|partial|awaiting|requested|open|reopened|new|refund|scheduled|upcoming/i.test(s)
       ? 'warning'
       : 'neutral');
 
@@ -211,7 +218,19 @@ export const StatusText: React.FC<{
   );
 };
 
-export type ActionKind = 'view' | 'edit' | 'delete' | 'add' | 'transfer' | 'download' | 'approve' | 'reject';
+export type ActionKind =
+  | 'view'
+  | 'edit'
+  | 'delete'
+  | 'add'
+  | 'transfer'
+  | 'download'
+  | 'approve'
+  | 'reject'
+  | 'suspend'
+  | 'restore'
+  | 'location'
+  | 'message';
 
 export const ActionBtn: React.FC<{
   kind: ActionKind;
@@ -219,7 +238,8 @@ export const ActionBtn: React.FC<{
   onClick: () => void;
   disabled?: boolean;
   title?: string;
-}> = ({ kind, label, onClick, disabled, title }) => {
+  compact?: boolean;
+}> = ({ kind, label, onClick, disabled, title, compact }) => {
   const config: Record<ActionKind, { defaultLabel: string; icon: React.ReactNode; style: string }> = {
     view: {
       defaultLabel: 'View',
@@ -261,6 +281,26 @@ export const ActionBtn: React.FC<{
       icon: <XCircle className="w-3.5 h-3.5 shrink-0" />,
       style: 'border-[#E2E8F0] dark:border-[#374151] text-[#DC2626] dark:text-[#F87171] hover:bg-red-50/70 dark:hover:bg-red-950/30',
     },
+    suspend: {
+      defaultLabel: 'Suspend',
+      icon: <AlertTriangle className="w-3.5 h-3.5 shrink-0" />,
+      style: 'border-[#E2E8F0] dark:border-[#374151] text-[#DC2626] dark:text-[#F87171] hover:bg-red-50/70 dark:hover:bg-red-950/30',
+    },
+    restore: {
+      defaultLabel: 'Restore',
+      icon: <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />,
+      style: 'border-[#E2E8F0] dark:border-[#374151] text-[#059669] dark:text-[#34D399] hover:bg-emerald-50/70 dark:hover:bg-emerald-950/30',
+    },
+    location: {
+      defaultLabel: 'Map',
+      icon: <Monitor className="w-3.5 h-3.5 shrink-0" />,
+      style: 'border-[#E2E8F0] dark:border-[#374151] text-[#047857] dark:text-[#34D399] hover:bg-emerald-50/70 dark:hover:bg-emerald-950/30',
+    },
+    message: {
+      defaultLabel: 'Reply',
+      icon: <Clock className="w-3.5 h-3.5 shrink-0" />,
+      style: 'border-[#E2E8F0] dark:border-[#374151] text-[#2563EB] dark:text-[#60A5FA] hover:bg-blue-50/70 dark:hover:bg-blue-950/30',
+    },
   };
 
   const cfg = config[kind];
@@ -270,10 +310,12 @@ export const ActionBtn: React.FC<{
       disabled={disabled}
       title={title || label || cfg.defaultLabel}
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 min-h-[34px] disabled:opacity-40 ${cfg.style}`}
+      className={`inline-flex items-center justify-center gap-1 rounded-lg border ${
+        compact ? 'px-2 py-1 min-h-[30px]' : 'px-2.5 py-1.5 min-h-[34px]'
+      } text-xs font-medium transition-colors whitespace-nowrap shrink-0 disabled:opacity-40 ${cfg.style}`}
     >
       {cfg.icon}
-      <span>{label ?? cfg.defaultLabel}</span>
+      {!compact && <span>{label ?? cfg.defaultLabel}</span>}
     </button>
   );
 };
@@ -321,3 +363,93 @@ export const ModalSheet: React.FC<{
     </div>
   );
 };
+
+export const ConfirmDialog: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  description: string;
+  confirmLabel?: string;
+  tone?: 'danger' | 'warning' | 'primary';
+  requireReason?: boolean;
+  reasonLabel?: string;
+  reasonPlaceholder?: string;
+  onConfirm: (reason: string) => void;
+}> = ({
+  open,
+  onClose,
+  title,
+  description,
+  confirmLabel = 'Confirm',
+  tone = 'primary',
+  requireReason = false,
+  reasonLabel = 'Reason / Notes',
+  reasonPlaceholder = 'Enter clear reason for audit log...',
+  onConfirm,
+}) => {
+  const [reason, setReason] = useState('');
+  const [err, setErr] = useState('');
+
+  if (!open) return null;
+
+  const btnCls =
+    tone === 'danger'
+      ? 'bg-[#DC2626] hover:bg-[#B91C1C] text-white'
+      : tone === 'warning'
+      ? 'bg-[#D97706] hover:bg-[#B45309] text-white'
+      : 'bg-[#047857] hover:bg-[#065F46] text-white dark:bg-[#34D399] dark:text-[#0B1220]';
+
+  return (
+    <ModalSheet open={open} onClose={onClose} title={title} maxWidth="max-w-md">
+      <div className="space-y-4 text-xs">
+        <p className="text-[#64748B] dark:text-[#9CA3AF] leading-relaxed">{description}</p>
+        {requireReason && (
+          <div>
+            <label className="block font-medium mb-1">{reasonLabel} *</label>
+            <textarea
+              rows={3}
+              value={reason}
+              onChange={(e) => {
+                setReason(e.target.value);
+                setErr('');
+              }}
+              placeholder={reasonPlaceholder}
+              className="w-full p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
+            />
+            {err && <div className="text-[#DC2626] mt-1 font-medium">{err}</div>}
+          </div>
+        )}
+        <div className="flex items-center justify-end gap-2 pt-1">
+          <button
+            type="button"
+            onClick={() => {
+              setReason('');
+              setErr('');
+              onClose();
+            }}
+            className="h-9 px-3.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (requireReason && !reason.trim()) {
+                setErr('Reason is required.');
+                return;
+              }
+              const val = reason.trim();
+              setReason('');
+              setErr('');
+              onConfirm(val);
+            }}
+            className={`h-9 px-4 rounded-xl font-semibold ${btnCls}`}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </ModalSheet>
+  );
+};
+

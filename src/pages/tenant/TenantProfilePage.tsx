@@ -16,6 +16,7 @@ export const TenantProfilePage: React.FC = () => {
     tenantRespondLocationRequest,
     autoImportConfirmedRent,
     setAutoImportConfirmedRent,
+    supportTickets,
     createSupportTicket,
     logout,
   } = usePGFinder();
@@ -28,6 +29,7 @@ export const TenantProfilePage: React.FC = () => {
 
   const myStays = stays.filter((s) => s.tenantId === currentUser?.id);
   const myLocationRequests = locationRequests.filter((l) => l.tenantId === currentUser?.id);
+  const myTickets = supportTickets.filter((t) => t.userId === currentUser?.id);
   const savedPgs = properties.filter((p) => savedPropertyIds.includes(p.id));
   const savedEvts = events.filter((e) => savedEventIds.includes(e.id));
 
@@ -209,6 +211,19 @@ export const TenantProfilePage: React.FC = () => {
               </button>
             </div>
             {ticketSent && <p className="text-xs text-[#059669]">Support ticket logged for Super Admin review.</p>}
+            {myTickets.length > 0 && (
+              <div className="space-y-1.5 pt-2">
+                {myTickets.map((t) => (
+                  <div key={t.id} className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] text-xs space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold truncate">{t.subject}</span>
+                      <StatusText status={t.status} />
+                    </div>
+                    <div className="text-[#64748B] dark:text-[#9CA3AF]">Latest reply: {t.lastReply}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </form>
         </div>
       </div>

@@ -49,6 +49,13 @@ export interface UserAccount {
   avatarInitials: string;
   subscriptionPlan?: 'Basic' | 'Pro' | 'Business';
   languagePreference?: 'English' | 'Hindi' | 'Telugu' | 'Kannada' | 'Tamil';
+  suspendedReason?: string;
+  suspendedAt?: string;
+  suspendedBy?: string;
+  archived?: boolean;
+  adminNotes?: string;
+  assignedAdminRole?: string;
+  lastLoginAt?: string;
 }
 
 export interface CapturedLocation {
@@ -109,6 +116,30 @@ export interface PGProperty {
   archived?: boolean;
   adminComment?: string;
   submittedAt?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  locationReviewedBy?: string;
+  locationReviewedAt?: string;
+  locationNotes?: string;
+  verificationHistory?: { id: string; status: string; actor: string; timestamp: string; comment?: string }[];
+  locationHistory?: {
+    id: string;
+    status: string;
+    actor: string;
+    timestamp: string;
+    latitude?: number;
+    longitude?: number;
+    accuracy?: number;
+    comment?: string;
+  }[];
+  suspensionDetails?: {
+    category: string;
+    reason: string;
+    effectiveDate: string;
+    reviewDate?: string;
+    suspendedBy: string;
+    suspendedAt: string;
+  };
   qrEnabled: boolean;
   qrToken: string;
   houseRules: string[];
@@ -606,27 +637,96 @@ export interface LocalBusiness {
   isSponsored: boolean;
 }
 
+export interface SupportMessage {
+  id: string;
+  senderName: string;
+  senderRole: UserRole;
+  body: string;
+  createdAt: string;
+}
+
+export interface SupportInternalNote {
+  id: string;
+  authorName: string;
+  note: string;
+  createdAt: string;
+}
+
 export interface SupportTicket {
   id: string;
+  ticketCode?: string;
   userId: string;
   userName: string;
   userRole: UserRole;
-  category: 'Account' | 'Property Verification' | 'Joining' | 'Rent' | 'Deposit' | 'Subscription' | 'Technical Issue' | 'Safety Concern';
+  userMobile?: string;
+  userEmail?: string;
+  category:
+    | 'Account'
+    | 'Property Verification'
+    | 'Location Verification'
+    | 'Document Verification'
+    | 'Joining'
+    | 'Rent'
+    | 'Deposit'
+    | 'Subscription'
+    | 'Payment'
+    | 'Listing'
+    | 'Advertisement'
+    | 'Featured PG'
+    | 'Technical Issue'
+    | 'Safety Concern'
+    | 'Tenant Complaint Escalation'
+    | 'Other';
+  relatedEntityLabel?: string;
   subject: string;
-  priority: 'Low' | 'Medium' | 'High';
-  status: 'Open' | 'Assigned' | 'In Progress' | 'Awaiting Response' | 'Resolved' | 'Closed';
+  description?: string;
+  priority: 'Low' | 'Medium' | 'High' | 'Urgent';
+  status:
+    | 'Open'
+    | 'Under Review'
+    | 'Assigned'
+    | 'In Progress'
+    | 'Awaiting Response'
+    | 'Waiting for User'
+    | 'Waiting for Admin'
+    | 'Resolved'
+    | 'Closed'
+    | 'Reopened';
+  assignedAdmin?: string;
   createdAt: string;
+  updatedAt?: string;
   lastReply: string;
+  resolutionSummary?: string;
+  messages?: SupportMessage[];
+  internalNotes?: SupportInternalNote[];
 }
+
+export type AuditCategory =
+  | 'Auth'
+  | 'PG Owner'
+  | 'Tenant'
+  | 'Property'
+  | 'Administrator'
+  | 'Financial'
+  | 'Document Access'
+  | 'Location Verification'
+  | 'Location Sharing Requests'
+  | 'Security Events';
 
 export interface AuditLogEntry {
   id: string;
   actorName: string;
   actorRole: UserRole;
+  category?: AuditCategory;
   action: string;
   entityType: string;
   entityId: string;
   summary: string;
+  beforeValue?: string;
+  afterValue?: string;
+  reason?: string;
+  status?: 'Success' | 'Failed' | 'Blocked';
+  ipOrDeviceSummary?: string;
   timestamp: string;
 }
 
@@ -638,4 +738,206 @@ export interface AppNotification {
   createdAt: string;
   read: boolean;
   route?: string;
+  category?: string;
 }
+
+export interface PropertyHistoryEntry {
+  id: string;
+  status: string;
+  actor: string;
+  timestamp: string;
+  comment?: string;
+  latitude?: number;
+  longitude?: number;
+  accuracy?: number;
+}
+
+export interface PropertySuspensionDetails {
+  category: string;
+  reason: string;
+  effectiveDate: string;
+  reviewDate?: string;
+  suspendedBy: string;
+  suspendedAt: string;
+}
+
+export interface UnifiedDocumentRecord {
+  id: string;
+  category: 'Owner' | 'Property' | 'Tenant';
+  ownerOrTenantName: string;
+  ownerId?: string;
+  propertyId?: string;
+  propertyName?: string;
+  tenantId?: string;
+  stayId?: string;
+  documentType: string;
+  fileName: string;
+  uploadedAt: string;
+  verificationStatus: 'Pending' | 'Under Review' | 'Verified' | 'Rejected' | 'Replacement Required';
+  verifiedBy?: string;
+  verifiedAt?: string;
+  rejectionOrReplacementNote?: string;
+  archived?: boolean;
+  previewUrl?: string;
+}
+
+export interface PlanFeature {
+  id: string;
+  name: string;
+  code: string;
+  category:
+    | 'Property Management'
+    | 'Tenant Management'
+    | 'Finance & Billing'
+    | 'Analytics'
+    | 'Support & Priority'
+    | 'Listing & Promotion';
+  description: string;
+  status: 'Active' | 'Inactive';
+  createdAt: string;
+}
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  billingCycle: 'Monthly' | 'Quarterly' | 'Yearly';
+  priceInr: number;
+  maxProperties: number;
+  maxRooms: number;
+  maxBeds: number;
+  includedListingSlots: number;
+  graceDays: number;
+  featureIds: string[];
+  status: 'Active' | 'Inactive' | 'Archived';
+}
+
+export interface OwnerSubscriptionRecord {
+  id: string;
+  ownerId: string;
+  ownerName: string;
+  ownerEmail: string;
+  planId: string;
+  planName: string;
+  status: 'Active' | 'Pending Payment' | 'Grace Period' | 'Expired' | 'Cancelled' | 'Suspended';
+  startDate: string;
+  endDate: string;
+  renewalMode: 'Auto' | 'Manual';
+  paymentStatus: 'Paid' | 'Pending' | 'Unconfigured' | 'Failed';
+  amountInr: number;
+  notes?: string;
+}
+
+export interface PlatformPaymentRecord {
+  id: string;
+  ownerId: string;
+  ownerName: string;
+  category: 'Subscription' | 'Listing Fee (₹299)' | 'Featured PG' | 'Local Ad';
+  reference: string;
+  amountInr: number;
+  status: 'Paid' | 'Pending' | 'Refunded' | 'Failed';
+  date: string;
+  planOrCampaignName: string;
+  note?: string;
+}
+
+export interface FeaturedCampaign {
+  id: string;
+  propertyId: string;
+  propertyName: string;
+  ownerId: string;
+  ownerName: string;
+  city: string;
+  locality: string;
+  packageName: 'Starter Boost (₹299)' | 'City Spotlight (₹799)' | 'Metro Premier (₹1,999)';
+  placement:
+    | 'Home Featured'
+    | 'Explore Top Carousel'
+    | 'City Search Top'
+    | 'Locality Spotlight'
+    | 'Suggested PGs';
+  startDate: string;
+  endDate: string;
+  priorityWeight: number;
+  priceInr: number;
+  paymentStatus: 'Pending Demo' | 'Confirmed Demo' | 'Unpaid';
+  status: 'Draft' | 'Scheduled' | 'Active' | 'Paused' | 'Expired' | 'Cancelled' | 'Archived';
+  impressions: number;
+  clicks: number;
+}
+
+export interface AdvertiserAccount {
+  id: string;
+  businessName: string;
+  contactPerson: string;
+  mobile: string;
+  email: string;
+  city: string;
+  locality: string;
+  category: LocalBusiness['category'];
+  status: 'Active' | 'Paused' | 'Suspended' | 'Archived';
+  createdAt: string;
+}
+
+export interface LocalAdCampaign {
+  id: string;
+  advertiserId: string;
+  advertiserName: string;
+  title: string;
+  category: LocalBusiness['category'];
+  description: string;
+  ctaText: string;
+  destinationUrl: string;
+  targetCity: string;
+  targetLocality: string;
+  placement: 'PG Finder Local' | 'Tenant Home Area Card' | 'Explore Nearby Feed';
+  startDate: string;
+  endDate: string;
+  packagePriceInr: number;
+  status: 'Draft' | 'Pending Approval' | 'Active' | 'Paused' | 'Expired' | 'Rejected' | 'Archived';
+  impressions: number;
+  clicks: number;
+}
+
+export type AdminNotificationCategory =
+  | 'System Maintenance'
+  | 'Policy Update'
+  | 'Property Verification'
+  | 'Location Verification'
+  | 'Document Action'
+  | 'Subscription Reminder'
+  | 'Payment Alert'
+  | 'Feature Update'
+  | 'Safety Advisory'
+  | 'Event Announcement'
+  | 'Promotional Update'
+  | 'Support Update';
+
+export type AdminAudienceMode =
+  | 'All Users'
+  | 'All PG Owners'
+  | 'All Tenants'
+  | 'Specific City Users'
+  | 'Specific Property Owners'
+  | 'Specific Property Tenants'
+  | 'Active Subscribers'
+  | 'Expired Subscribers'
+  | 'Individual User';
+
+export interface AdminNotificationRecord {
+  id: string;
+  title: string;
+  message: string;
+  category: AdminNotificationCategory;
+  targetAudienceMode: AdminAudienceMode;
+  targetFilterValue?: string;
+  channels: ('In-App' | 'Push' | 'Email')[];
+  status: 'Draft' | 'Scheduled' | 'Published' | 'Failed' | 'Withdrawn' | 'Archived';
+  scheduledAt?: string;
+  publishedAt?: string;
+  createdBy: string;
+  recipientEstimate: number;
+  inAppReadCount: number;
+}
+

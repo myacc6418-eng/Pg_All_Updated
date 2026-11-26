@@ -30,6 +30,13 @@ import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminPropertiesPage } from './pages/admin/AdminPropertiesPage';
 import { AdminApprovalsPage } from './pages/admin/AdminApprovalsPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
+import { AdminDocumentsPage } from './pages/admin/AdminDocumentsPage';
+import { AdminSubscriptionsPage } from './pages/admin/AdminSubscriptionsPage';
+import { AdminPromotionsPage } from './pages/admin/AdminPromotionsPage';
+import { AdminNotificationsPage } from './pages/admin/AdminNotificationsPage';
+import { AdminSupportPage } from './pages/admin/AdminSupportPage';
+import { AdminAuditPage } from './pages/admin/AdminAuditPage';
+import { AdminProfilePage } from './pages/admin/AdminProfilePage';
 import { AdminMorePage } from './pages/admin/AdminMorePage';
 
 import { ConnectEventsPage } from './pages/shared/ConnectEventsPage';
@@ -85,7 +92,16 @@ export default function App() {
               <Route path="dashboard" element={<AdminDashboardPage />} />
               <Route path="properties" element={<AdminPropertiesPage />} />
               <Route path="approvals" element={<AdminApprovalsPage />} />
+              <Route path="locations" element={<AdminApprovalsPage forcedTab="location" />} />
+              <Route path="documents" element={<AdminDocumentsPage />} />
               <Route path="users" element={<AdminUsersPage />} />
+              <Route path="subscriptions" element={<AdminSubscriptionsPage />} />
+              <Route path="featured" element={<AdminPromotionsPage forcedSection="featured" />} />
+              <Route path="local-ads" element={<AdminPromotionsPage forcedSection="local-ads" />} />
+              <Route path="notifications" element={<AdminNotificationsPage />} />
+              <Route path="support" element={<AdminSupportPage />} />
+              <Route path="audit" element={<AdminAuditPage />} />
+              <Route path="profile" element={<AdminProfilePage />} />
               <Route path="more" element={<AdminMorePage />} />
             </Route>
 

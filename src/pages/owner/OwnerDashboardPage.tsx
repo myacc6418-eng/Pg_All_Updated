@@ -131,67 +131,47 @@ export const OwnerDashboardPage: React.FC = () => {
     };
   });
 
-  const quickLinkGroups = [
-    {
-      title: 'Property Management',
-      items: [
-        { icon: <Plus className="w-5 h-5" />, label: 'Add PG', to: '/owner/properties?wizard=1' },
-        { icon: <Building2 className="w-5 h-5" />, label: 'My Properties', to: '/owner/properties' },
-        { icon: <Layers className="w-5 h-5" />, label: 'Floors & Vacancies', to: `/owner/vacancies${propQueryFirst}` },
-        { icon: <BedDouble className="w-5 h-5" />, label: 'Rooms & Beds', to: `/owner/vacancies${propQueryFirst}` },
-        { icon: <QrCode className="w-5 h-5" />, label: 'QR Onboarding', to: '/owner/properties?qr=open' },
-      ],
-    },
-    {
-      title: 'Tenant Management',
-      items: [
-        { icon: <Users className="w-5 h-5" />, label: 'All Tenants', to: `/owner/tenants${propQueryFirst}` },
-        { icon: <UserPlus className="w-5 h-5" />, label: 'Joining Requests', count: pendingRequests, to: `/owner/tenants?tab=requests${propQuery}` },
-        { icon: <ArrowLeftRight className="w-5 h-5" />, label: 'Transfer Tenant', to: `/owner/vacancies?transfer=1${propQuery}` },
-        { icon: <LogOut className="w-5 h-5" />, label: 'Checkouts', count: pendingCheckouts.length, to: `/owner/tenants?tab=checkouts${propQuery}` },
-        { icon: <ClipboardCheck className="w-5 h-5" />, label: 'Tenant Documents', to: `/owner/tenants?tab=documents${propQuery}` },
-      ],
-    },
-    {
-      title: 'Finance',
-      items: [
-        { icon: <CreditCard className="w-5 h-5" />, label: 'Rent Collection', to: `/owner/finance?tab=rent${propQuery}` },
-        { icon: <History className="w-5 h-5" />, label: 'Payment History', to: `/owner/finance?tab=history${propQuery}` },
-        { icon: <Wallet className="w-5 h-5" />, label: 'Security Deposits', to: `/owner/finance?tab=deposits${propQuery}` },
-        { icon: <ReceiptIndianRupee className="w-5 h-5" />, label: 'Business Expenses', to: `/owner/expenses${propQueryFirst}` },
-      ],
-    },
-    {
-      title: 'Daily Operations',
-      items: [
-        { icon: <Wrench className="w-5 h-5" />, label: 'Maintenance', count: openMaintenance, to: `/owner/maintenance?tab=requests${propQuery}` },
-        { icon: <CalendarClock className="w-5 h-5" />, label: 'Scheduled Tasks', to: `/owner/maintenance?tab=scheduled${propQuery}` },
-        { icon: <BookOpen className="w-5 h-5" />, label: 'PG Rules & Policies', to: `/owner/maintenance?tab=rules${propQuery}` },
-        { icon: <MessageSquareWarning className="w-5 h-5" />, label: 'Complaints', count: openComplaints, to: `/owner/more?section=complaints${propQuery}` },
-        { icon: <Utensils className="w-5 h-5" />, label: 'Food & Mess Menu', to: `/owner/more?section=food${propQuery}` },
-        { icon: <Megaphone className="w-5 h-5" />, label: 'Notices', to: `/owner/more?section=notices${propQuery}` },
-        { icon: <Package className="w-5 h-5" />, label: 'Parcels', count: pendingParcels.length, to: `/owner/more?section=parcels${propQuery}` },
-        { icon: <ShieldCheck className="w-5 h-5" />, label: 'Staff Management', to: `/owner/more?section=staff${propQuery}` },
-      ],
-    },
-    {
-      title: 'Analytics and Administration',
-      items: [
-        { icon: <Activity className="w-5 h-5" />, label: 'Tracking Center', count: activeLocationReqs, to: `/owner/tracking${propQueryFirst}` },
-        { icon: <FileBarChart className="w-5 h-5" />, label: 'Reports & Analytics', to: `/owner/reports${propQueryFirst}` },
-        { icon: <Star className="w-5 h-5" />, label: 'Reviews & Ratings', to: `/owner/reviews${propQueryFirst}` },
-        { icon: <MapPin className="w-5 h-5" />, label: 'Location Requests', to: `/owner/tracking?tab=location${propQuery}` },
-        { icon: <ClipboardCheck className="w-5 h-5" />, label: 'Subscription & Plans', to: '/owner/more?section=subscription' },
-        { icon: <CalendarDays className="w-5 h-5" />, label: 'Startup Events', to: '/owner/events' },
-        { icon: <Compass className="w-5 h-5" />, label: 'PG Finder Local', to: '/owner/local' },
-      ],
-    },
+  const quickLinks: {
+    icon: React.ReactNode;
+    label: string;
+    count?: number;
+    to: string;
+  }[] = [
+    { icon: <Plus />, label: 'Add PG', to: '/owner/properties?wizard=1' },
+    { icon: <Building2 />, label: 'My Properties', to: '/owner/properties' },
+    { icon: <Layers />, label: 'Floors & Vacancies', to: `/owner/vacancies${propQueryFirst}` },
+    { icon: <BedDouble />, label: 'Rooms & Beds', to: `/owner/vacancies${propQueryFirst}` },
+    { icon: <QrCode />, label: 'QR Onboarding', to: '/owner/properties?qr=open' },
+    { icon: <Users />, label: 'All Tenants', to: `/owner/tenants${propQueryFirst}` },
+    { icon: <UserPlus />, label: 'Joining Requests', count: pendingRequests, to: `/owner/tenants?tab=requests${propQuery}` },
+    { icon: <ArrowLeftRight />, label: 'Transfer Tenant', to: `/owner/vacancies?transfer=1${propQuery}` },
+    { icon: <LogOut />, label: 'Checkouts', count: pendingCheckouts.length, to: `/owner/tenants?tab=checkouts${propQuery}` },
+    { icon: <ClipboardCheck />, label: 'Tenant Documents', to: `/owner/tenants?tab=documents${propQuery}` },
+    { icon: <CreditCard />, label: 'Rent Collection', to: `/owner/finance?tab=rent${propQuery}` },
+    { icon: <History />, label: 'Payment History', to: `/owner/finance?tab=history${propQuery}` },
+    { icon: <Wallet />, label: 'Security Deposits', to: `/owner/finance?tab=deposits${propQuery}` },
+    { icon: <ReceiptIndianRupee />, label: 'Business Expenses', to: `/owner/expenses${propQueryFirst}` },
+    { icon: <Wrench />, label: 'Maintenance', count: openMaintenance, to: `/owner/maintenance?tab=requests${propQuery}` },
+    { icon: <CalendarClock />, label: 'Scheduled Tasks', to: `/owner/maintenance?tab=scheduled${propQuery}` },
+    { icon: <BookOpen />, label: 'PG Rules & Policies', to: `/owner/maintenance?tab=rules${propQuery}` },
+    { icon: <MessageSquareWarning />, label: 'Complaints', count: openComplaints, to: `/owner/more?section=complaints${propQuery}` },
+    { icon: <Utensils />, label: 'Food & Mess Menu', to: `/owner/more?section=food${propQuery}` },
+    { icon: <Megaphone />, label: 'Notices', to: `/owner/more?section=notices${propQuery}` },
+    { icon: <Package />, label: 'Parcels', count: pendingParcels.length, to: `/owner/more?section=parcels${propQuery}` },
+    { icon: <ShieldCheck />, label: 'Staff Management', to: `/owner/more?section=staff${propQuery}` },
+    { icon: <Activity />, label: 'Tracking Center', count: activeLocationReqs, to: `/owner/tracking${propQueryFirst}` },
+    { icon: <FileBarChart />, label: 'Reports & Analytics', to: `/owner/reports${propQueryFirst}` },
+    { icon: <Star />, label: 'Reviews & Ratings', to: `/owner/reviews${propQueryFirst}` },
+    { icon: <MapPin />, label: 'Location Requests', to: `/owner/tracking?tab=location${propQuery}` },
+    { icon: <ClipboardCheck />, label: 'Subscription & Plans', to: '/owner/more?section=subscription' },
+    { icon: <CalendarDays />, label: 'Startup Events', to: '/owner/events' },
+    { icon: <Compass />, label: 'PG Finder Local', to: '/owner/local' },
   ];
 
   const pendingProp = scopedProps.find((p) => p.approvalStatus !== 'APPROVED');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header with Shared Property Selector and Add Property */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -284,33 +264,24 @@ export const OwnerDashboardPage: React.FC = () => {
         />
       </div>
 
-      {/* All Owner Quick Links Directly Visible in 5 Labeled Operational Groups */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">All Operations &amp; Quick Links</h2>
-          <span className="text-xs text-[#64748B] dark:text-[#9CA3AF]">
-            Tap any module to open directly
-          </span>
+      {/* Unified Continuous Quick Links Grid */}
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-sm font-semibold">Quick Links</h2>
+          <p className="text-xs text-[#64748B] dark:text-[#9CA3AF] mt-0.5">
+            Manage all your PG operations.
+          </p>
         </div>
 
-        <div className="space-y-4">
-          {quickLinkGroups.map((grp) => (
-            <div key={grp.title} className="space-y-2">
-              <div className="text-xs font-semibold text-[#64748B] dark:text-[#9CA3AF]">
-                {grp.title}
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
-                {grp.items.map((item) => (
-                  <QuickLinkTile
-                    key={item.label}
-                    icon={item.icon}
-                    label={item.label}
-                    count={item.count}
-                    onClick={() => navigate(item.to)}
-                  />
-                ))}
-              </div>
-            </div>
+        <div className="grid grid-cols-3 min-[400px]:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+          {quickLinks.map((item) => (
+            <QuickLinkTile
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              count={item.count}
+              onClick={() => navigate(item.to)}
+            />
           ))}
         </div>
       </section>

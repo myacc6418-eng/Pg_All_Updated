@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building2, KeyRound, LogOut, Pencil, ShieldCheck } from 'lucide-react';
+import { Building2, HelpCircle, KeyRound, LogOut, Pencil, ShieldCheck } from 'lucide-react';
 import { usePGFinder } from '../../context/PGFinderContext';
-import { KpiCard, ModalSheet, ThemeSwitch } from '../../components/ui/Primitives';
-import { UserAccount } from '../../types/pgfinder';
+import { KpiCard, ModalSheet, StatusText, ThemeSwitch } from '../../components/ui/Primitives';
+import { SupportTicket, UserAccount } from '../../types/pgfinder';
 
 const LANGUAGES: NonNullable<UserAccount['languagePreference']>[] = [
   'English',
@@ -20,6 +20,8 @@ export const OwnerProfilePage: React.FC = () => {
     rooms,
     beds,
     stays,
+    supportTickets,
+    createSupportTicket,
     updateCurrentUserProfile,
     logout,
   } = usePGFinder();
@@ -50,6 +52,14 @@ export const OwnerProfilePage: React.FC = () => {
   const [notifJoining, setNotifJoining] = useState(true);
   const [legalOpen, setLegalOpen] = useState(false);
   const [banner, setBanner] = useState('');
+  const [ticketCat, setTicketCat] = useState<SupportTicket['category']>('Property Verification');
+  const [ticketSubject, setTicketSubject] = useState('');
+  const [ticketDesc, setTicketDesc] = useState('');
+
+  const ownerTickets = useMemo(
+    () => supportTickets.filter((t) => t.userId === (currentUser?.id || 'usr-owner-1')),
+    [supportTickets, currentUser]
+  );
 
   return (
     <div className="space-y-5">
@@ -230,6 +240,95 @@ export const OwnerProfilePage: React.FC = () => {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Owner Help & Support (Public Replies Only) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!ticketSubject.trim()) return;
+            createSupportTicket({
+              userId: currentUser?.id || 'usr-owner-1',
+              userName: currentUser?.name || 'PG Owner',
+              userRole: 'PG_OWNER',
+              userMobile: currentUser?.mobile,
+              userEmail: currentUser?.email,
+              category: ticketCat,
+              subject: ticketSubject.trim(),
+              description: ticketDesc.trim() || undefined,
+              priority: 'Medium',
+            });
+            setTicketSubject('');
+            setTicketDesc('');
+            setBanner('Support ticket submitted to Super Admin Help Desk.');
+          }}
+          className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-2.5"
+        >
+          <div className="flex items-center gap-2 font-semibold text-sm">
+            <HelpCircle className="w-4 h-4 text-[#047857] dark:text-[#34D399]" />
+            <span>Contact Platform Support</span>
+          </div>
+          <select
+            value={ticketCat}
+            onChange={(e) => setTicketCat(e.target.value as SupportTicket['category'])}
+            className="w-full h-9 px-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
+          >
+            {[
+              'Property Verification',
+              'Location Verification',
+              'Document Verification',
+              'Subscription',
+              'Payment',
+              'Listing',
+              'Featured PG',
+              'Technical Issue',
+              'Other',
+            ].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          <input
+            type="text"
+            required
+            value={ticketSubject}
+            onChange={(e) => setTicketSubject(e.target.value)}
+            placeholder="Ticket subject..."
+            className="w-full h-9 px-3 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
+          />
+          <textarea
+            rows={2}
+            value={ticketDesc}
+            onChange={(e) => setTicketDesc(e.target.value)}
+            placeholder="Describe your request for the Super Admin team..."
+            className="w-full p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
+          />
+          <button type="submit" className="h-9 px-4 rounded-xl bg-[#047857] text-white font-semibold">
+            Submit Support Ticket
+          </button>
+        </form>
+
+        <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-2.5">
+          <div className="font-semibold text-sm">My Support Tickets ({ownerTickets.length})</div>
+          {ownerTickets.length === 0 ? (
+            <p className="text-[#64748B]">No support tickets raised yet.</p>
+          ) : (
+            ownerTickets.map((t) => (
+              <div key={t.id} className="p-3 rounded-xl border border-[#E2E8F0] dark:border-[#374151] space-y-1">
+                <div className="flex justify-between font-semibold gap-2">
+                  <span className="truncate">{t.subject}</span>
+                  <StatusText status={t.status} />
+                </div>
+                <div className="text-[#64748B]">
+                  {t.category} · <span className="font-mono-num">{t.createdAt}</span>
+                </div>
+                <div className="text-[#111827] dark:text-[#F9FAFB] pt-0.5">
+                  Latest Reply: {t.lastReply}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 

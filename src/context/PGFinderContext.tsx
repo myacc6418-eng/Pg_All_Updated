@@ -1,22 +1,30 @@
 import React, { createContext, useContext, useState } from 'react';
 import {
+  AdminNotificationRecord,
+  AdvertiserAccount,
   AppNotification,
+  AuditCategory,
   AuditLogEntry,
   Bed,
   BedStatus,
   CheckoutRequest,
   ComplaintItem,
   DepositTransaction,
+  FeaturedCampaign,
   Floor,
   FoodMenuDay,
   JoiningRequest,
+  LocalAdCampaign,
   LocalBusiness,
   LocationSharingRequest,
   MaintenanceRequest,
   NoticeItem,
   OwnerExpense,
+  OwnerSubscriptionRecord,
   PGProperty,
   ParcelItem,
+  PlanFeature,
+  PlatformPaymentRecord,
   PropertyReview,
   PropertyRule,
   RentInvoice,
@@ -27,32 +35,41 @@ import {
   SharingOption,
   StaffMember,
   StartupEvent,
+  SubscriptionPlan,
   SupportTicket,
   TenantBudget,
   TenantExpense,
   TenantStay,
   TenantTransferRecord,
+  UnifiedDocumentRecord,
   UserAccount,
   UserRole,
 } from '../types/pgfinder';
 import {
+  INITIAL_ADMIN_NOTIFICATIONS,
+  INITIAL_ADVERTISERS,
   INITIAL_AUDIT_LOGS,
   INITIAL_BEDS,
   INITIAL_CHECKOUTS,
   INITIAL_COMPLAINTS,
   INITIAL_DEPOSIT_TRANSACTIONS,
   INITIAL_EVENTS,
+  INITIAL_FEATURED_CAMPAIGNS,
   INITIAL_FLOORS,
   INITIAL_FOOD_MENU,
   INITIAL_JOINING_REQUESTS,
+  INITIAL_LOCAL_AD_CAMPAIGNS,
   INITIAL_LOCAL_BUSINESSES,
   INITIAL_LOCATION_SHARING_REQUESTS,
   INITIAL_MAINTENANCE_REQUESTS,
   INITIAL_NOTICES,
   INITIAL_NOTIFICATIONS,
   INITIAL_OWNER_EXPENSES,
+  INITIAL_OWNER_SUBSCRIPTIONS,
   INITIAL_OWNER_TRANSFERS,
   INITIAL_PARCELS,
+  INITIAL_PLAN_FEATURES,
+  INITIAL_PLATFORM_PAYMENTS,
   INITIAL_PROPERTIES,
   INITIAL_PROPERTY_REVIEWS,
   INITIAL_PROPERTY_RULES,
@@ -63,9 +80,11 @@ import {
   INITIAL_SHARED_EXPENSES,
   INITIAL_STAFF,
   INITIAL_STAYS,
+  INITIAL_SUBSCRIPTION_PLANS,
   INITIAL_SUPPORT_TICKETS,
   INITIAL_TENANT_BUDGET,
   INITIAL_TENANT_EXPENSES,
+  INITIAL_UNIFIED_DOCUMENTS,
   INITIAL_USERS,
   TENANT_EXPENSE_CATEGORIES,
 } from '../data/demoData';
@@ -146,9 +165,14 @@ interface PGFinderContextValue {
     decision: 'UNDER_REVIEW' | 'APPROVED' | 'CORRECTIONS_REQUIRED' | 'REJECTED' | 'SUSPENDED',
     comment?: string
   ) => void;
+  adminSuspendProperty: (
+    propertyId: string,
+    details: { category: string; reason: string; effectiveDate: string; reviewDate?: string; notifyOwner?: boolean }
+  ) => void;
+  adminRestoreProperty: (propertyId: string, reason: string) => void;
   adminVerifyLocation: (
     propertyId: string,
-    decision: 'UNDER_REVIEW' | 'VERIFIED' | 'CORRECTIONS_REQUIRED' | 'REJECTED',
+    decision: 'UNDER_REVIEW' | 'VERIFIED' | 'CORRECTIONS_REQUIRED' | 'REJECTED' | 'REVERIFICATION_REQUIRED',
     comment?: string
   ) => void;
   adminVerifyDocument: (
@@ -158,6 +182,74 @@ interface PGFinderContextValue {
     note?: string
   ) => void;
   toggleUserStatus: (userId: string) => void;
+  adminUpdateUser: (userId: string, patch: Partial<UserAccount>) => void;
+  adminSuspendUser: (userId: string, reason: string) => void;
+  adminRestoreUser: (userId: string, reason?: string) => void;
+  adminArchiveUser: (userId: string) => { ok: boolean; message: string };
+
+  unifiedDocuments: UnifiedDocumentRecord[];
+  logDocumentAccess: (docId: string) => void;
+  adminReviewUnifiedDocument: (
+    docId: string,
+    status: UnifiedDocumentRecord['verificationStatus'],
+    note?: string
+  ) => void;
+  archiveOrDeleteUnifiedDocument: (docId: string) => { ok: boolean; message: string };
+
+  planFeatures: PlanFeature[];
+  addPlanFeature: (feat: Omit<PlanFeature, 'id' | 'createdAt'>) => void;
+  updatePlanFeature: (id: string, patch: Partial<PlanFeature>) => void;
+  togglePlanFeatureStatus: (id: string) => void;
+
+  subscriptionPlans: SubscriptionPlan[];
+  addSubscriptionPlan: (plan: Omit<SubscriptionPlan, 'id'>) => void;
+  updateSubscriptionPlan: (id: string, patch: Partial<SubscriptionPlan>) => void;
+  duplicateSubscriptionPlan: (id: string) => void;
+  deleteOrArchiveSubscriptionPlan: (id: string) => { ok: boolean; message: string };
+
+  ownerSubscriptions: OwnerSubscriptionRecord[];
+  platformPayments: PlatformPaymentRecord[];
+  manageOwnerSubscription: (
+    subId: string,
+    action: 'change_plan' | 'extend' | 'cancel' | 'restore',
+    payload: { planId?: string; newEndDate?: string; reason: string }
+  ) => void;
+
+  featuredCampaigns: FeaturedCampaign[];
+  saveFeaturedCampaign: (camp: Omit<FeaturedCampaign, 'id' | 'impressions' | 'clicks'>, editId?: string) => { ok: boolean; message: string };
+  updateFeaturedCampaignStatus: (id: string, status: FeaturedCampaign['status'], newEndDate?: string) => void;
+  deleteFeaturedCampaign: (id: string) => { ok: boolean; message: string };
+
+  advertisers: AdvertiserAccount[];
+  localAdCampaigns: LocalAdCampaign[];
+  saveAdvertiser: (adv: Omit<AdvertiserAccount, 'id' | 'createdAt'>, editId?: string) => void;
+  updateAdvertiserStatus: (id: string, status: AdvertiserAccount['status']) => void;
+  saveLocalAdCampaign: (ad: Omit<LocalAdCampaign, 'id' | 'impressions' | 'clicks'>, editId?: string) => void;
+  updateLocalAdStatus: (id: string, status: LocalAdCampaign['status']) => void;
+  deleteLocalAdCampaign: (id: string) => { ok: boolean; message: string };
+
+  adminNotifications: AdminNotificationRecord[];
+  saveAdminNotification: (
+    rec: Omit<AdminNotificationRecord, 'id' | 'createdBy' | 'inAppReadCount' | 'publishedAt'>
+  ) => void;
+  updateAdminNotificationStatus: (
+    id: string,
+    status: AdminNotificationRecord['status']
+  ) => void;
+  duplicateAdminNotification: (id: string) => void;
+
+  adminReplySupportTicket: (
+    ticketId: string,
+    replyBody: string,
+    nextStatus?: SupportTicket['status'],
+    resolutionSummary?: string
+  ) => void;
+  adminAddSupportInternalNote: (ticketId: string, note: string) => void;
+  adminUpdateSupportTicketMeta: (
+    ticketId: string,
+    patch: Partial<Pick<SupportTicket, 'priority' | 'status' | 'assignedAdmin' | 'resolutionSummary'>>
+  ) => void;
+  moderateReviewStatus: (reviewId: string, action: 'Keep' | 'Hide') => void;
 
   addFloor: (floor: Omit<Floor, 'id'>) => void;
   editFloor: (floorId: string, patch: Partial<Floor>) => void;
@@ -315,22 +407,50 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(INITIAL_AUDIT_LOGS);
   const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
 
+  const [unifiedDocuments, setUnifiedDocuments] = useState<UnifiedDocumentRecord[]>(INITIAL_UNIFIED_DOCUMENTS);
+  const [planFeatures, setPlanFeatures] = useState<PlanFeature[]>(INITIAL_PLAN_FEATURES);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<SubscriptionPlan[]>(INITIAL_SUBSCRIPTION_PLANS);
+  const [ownerSubscriptions, setOwnerSubscriptions] = useState<OwnerSubscriptionRecord[]>(INITIAL_OWNER_SUBSCRIPTIONS);
+  const [platformPayments] = useState<PlatformPaymentRecord[]>(INITIAL_PLATFORM_PAYMENTS);
+  const [featuredCampaigns, setFeaturedCampaigns] = useState<FeaturedCampaign[]>(INITIAL_FEATURED_CAMPAIGNS);
+  const [advertisers, setAdvertisers] = useState<AdvertiserAccount[]>(INITIAL_ADVERTISERS);
+  const [localAdCampaigns, setLocalAdCampaigns] = useState<LocalAdCampaign[]>(INITIAL_LOCAL_AD_CAMPAIGNS);
+  const [adminNotifications, setAdminNotifications] = useState<AdminNotificationRecord[]>(INITIAL_ADMIN_NOTIFICATIONS);
+
   const [savedPropertyIds, setSavedPropertyIds] = useState<string[]>(['prop-2', 'prop-4']);
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(['prop-1', 'prop-2']);
   const [savedEventIds, setSavedEventIds] = useState<string[]>(['evt-1']);
   const [rsvpedEventIds, setRsvpedEventIds] = useState<string[]>(['evt-1']);
   const [waitlistedEventIds, setWaitlistedEventIds] = useState<string[]>([]);
 
-  const pushAudit = (action: string, entityType: string, entityId: string, summary: string) => {
+  const pushAudit = (
+    action: string,
+    entityType: string,
+    entityId: string,
+    summary: string,
+    meta?: {
+      category?: AuditCategory;
+      beforeValue?: string;
+      afterValue?: string;
+      reason?: string;
+      status?: 'Success' | 'Failed' | 'Blocked';
+    }
+  ) => {
     setAuditLogs((prev) => [
       {
-        id: `aud-${Date.now()}`,
+        id: `aud-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
         actorName: currentUser?.name || 'System',
         actorRole: currentUser?.role || 'SUPER_ADMIN',
+        category: meta?.category || 'Administrator',
         action,
         entityType,
         entityId,
         summary,
+        beforeValue: meta?.beforeValue,
+        afterValue: meta?.afterValue,
+        reason: meta?.reason,
+        status: meta?.status || 'Success',
+        ipOrDeviceSummary: 'Web Session · Browser',
         timestamp: new Date().toISOString(),
       },
       ...prev,
@@ -402,9 +522,14 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const updateCurrentUserProfile = (patch: Partial<UserAccount>) => {
     if (!currentUser) return;
-    const updated = { ...currentUser, ...patch };
+    // Security rule: never allow self-elevation of role or admin sub-role via profile edit
+    const { role: _ignoredRole, assignedAdminRole: _ignoredSubRole, ...safePatch } = patch;
+    const updated = { ...currentUser, ...safePatch };
     setCurrentUser(updated);
     setUsers((prev) => prev.map((u) => (u.id === currentUser.id ? updated : u)));
+    pushAudit('UPDATE_PROFILE', 'User', currentUser.id, `Updated profile details for ${updated.name}.`, {
+      category: currentUser.role === 'SUPER_ADMIN' ? 'Administrator' : currentUser.role === 'PG_OWNER' ? 'PG Owner' : 'Tenant',
+    });
   };
 
   const logout = () => {
@@ -506,6 +631,9 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     decision: 'UNDER_REVIEW' | 'APPROVED' | 'CORRECTIONS_REQUIRED' | 'REJECTED' | 'SUSPENDED',
     comment?: string
   ) => {
+    const existing = properties.find((p) => p.id === propertyId);
+    const nowStr = new Date().toLocaleString('en-IN');
+    const actor = currentUser?.name || 'Super Admin';
     setProperties((prev) =>
       prev.map((p) => {
         if (p.id !== propertyId) return p;
@@ -517,16 +645,34 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               ? 'PUBLISHED'
               : 'ELIGIBLE_FOR_LISTING'
             : p.listingStatus;
+        const nextHistory = [
+          {
+            id: `vh-${Date.now()}`,
+            status: decision,
+            actor,
+            timestamp: nowStr,
+            comment,
+          },
+          ...(p.verificationHistory || []),
+        ];
         return {
           ...p,
           approvalStatus: decision,
           listingStatus: nextListing,
           qrEnabled: decision === 'APPROVED' && p.locationVerificationStatus === 'VERIFIED' ? true : p.qrEnabled,
           adminComment: comment || p.adminComment,
+          reviewedBy: actor,
+          reviewedAt: nowStr,
+          verificationHistory: nextHistory,
         };
       })
     );
-    pushAudit(`PROPERTY_${decision}`, 'Property', propertyId, comment || `Property status updated to ${decision}.`);
+    pushAudit(`PROPERTY_${decision}`, 'Property', propertyId, comment || `Property status updated to ${decision}.`, {
+      category: 'Property',
+      beforeValue: existing?.approvalStatus,
+      afterValue: decision,
+      reason: comment,
+    });
     pushNotification(
       'PG_OWNER',
       `Property ${decision.replace(/_/g, ' ').toLowerCase()}`,
@@ -535,11 +681,113 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     );
   };
 
+  const adminSuspendProperty = (
+    propertyId: string,
+    details: { category: string; reason: string; effectiveDate: string; reviewDate?: string; notifyOwner?: boolean }
+  ) => {
+    const existing = properties.find((p) => p.id === propertyId);
+    const actor = currentUser?.name || 'Super Admin';
+    const nowStr = new Date().toLocaleString('en-IN');
+    setProperties((prev) =>
+      prev.map((p) =>
+        p.id === propertyId
+          ? {
+              ...p,
+              approvalStatus: 'SUSPENDED',
+              listingStatus: 'SUSPENDED',
+              isSponsored: false,
+              qrEnabled: false,
+              adminComment: `${details.category}: ${details.reason}`,
+              suspensionDetails: {
+                category: details.category,
+                reason: details.reason,
+                effectiveDate: details.effectiveDate,
+                reviewDate: details.reviewDate,
+                suspendedBy: actor,
+                suspendedAt: nowStr,
+              },
+              verificationHistory: [
+                {
+                  id: `vh-${Date.now()}`,
+                  status: 'SUSPENDED',
+                  actor,
+                  timestamp: nowStr,
+                  comment: `${details.category} — ${details.reason}`,
+                },
+                ...(p.verificationHistory || []),
+              ],
+            }
+          : p
+      )
+    );
+    setFeaturedCampaigns((prev) =>
+      prev.map((c) => (c.propertyId === propertyId && c.status === 'Active' ? { ...c, status: 'Paused' } : c))
+    );
+    pushAudit('SUSPEND_PROPERTY', 'Property', propertyId, `Suspended ${existing?.name || propertyId}: ${details.category} — ${details.reason}`, {
+      category: 'Property',
+      beforeValue: existing?.approvalStatus,
+      afterValue: 'SUSPENDED',
+      reason: details.reason,
+    });
+    if (details.notifyOwner !== false) {
+      pushNotification(
+        'PG_OWNER',
+        `Property suspended: ${existing?.name || 'PG Property'}`,
+        `${details.category}: ${details.reason}`,
+        '/owner/properties'
+      );
+    }
+  };
+
+  const adminRestoreProperty = (propertyId: string, reason: string) => {
+    const existing = properties.find((p) => p.id === propertyId);
+    const actor = currentUser?.name || 'Super Admin';
+    const nowStr = new Date().toLocaleString('en-IN');
+    setProperties((prev) =>
+      prev.map((p) => {
+        if (p.id !== propertyId) return p;
+        const canList = p.locationVerificationStatus === 'VERIFIED';
+        return {
+          ...p,
+          approvalStatus: 'APPROVED',
+          listingStatus: canList ? 'ELIGIBLE_FOR_LISTING' : 'NOT_LISTED',
+          suspensionDetails: undefined,
+          adminComment: reason,
+          verificationHistory: [
+            {
+              id: `vh-${Date.now()}`,
+              status: 'RESTORED_APPROVED',
+              actor,
+              timestamp: nowStr,
+              comment: reason,
+            },
+            ...(p.verificationHistory || []),
+          ],
+        };
+      })
+    );
+    pushAudit('RESTORE_PROPERTY', 'Property', propertyId, `Restored ${existing?.name || propertyId}: ${reason}`, {
+      category: 'Property',
+      beforeValue: existing?.approvalStatus,
+      afterValue: 'APPROVED',
+      reason,
+    });
+    pushNotification(
+      'PG_OWNER',
+      `Property restored: ${existing?.name || 'PG Property'}`,
+      reason,
+      '/owner/properties'
+    );
+  };
+
   const adminVerifyLocation = (
     propertyId: string,
-    decision: 'UNDER_REVIEW' | 'VERIFIED' | 'CORRECTIONS_REQUIRED' | 'REJECTED',
+    decision: 'UNDER_REVIEW' | 'VERIFIED' | 'CORRECTIONS_REQUIRED' | 'REJECTED' | 'REVERIFICATION_REQUIRED',
     comment?: string
   ) => {
+    const existing = properties.find((p) => p.id === propertyId);
+    const actor = currentUser?.name || 'Super Admin';
+    const nowStr = new Date().toLocaleString('en-IN');
     setProperties((prev) =>
       prev.map((p) => {
         if (p.id !== propertyId) return p;
@@ -550,10 +798,31 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           listingStatus: bothVerified && p.listingStatus === 'NOT_LISTED' ? 'ELIGIBLE_FOR_LISTING' : p.listingStatus,
           qrEnabled: bothVerified ? true : p.qrEnabled,
           adminComment: comment || p.adminComment,
+          locationReviewedBy: actor,
+          locationReviewedAt: nowStr,
+          locationNotes: comment || p.locationNotes,
+          locationHistory: [
+            {
+              id: `lh-${Date.now()}`,
+              status: decision,
+              actor,
+              timestamp: nowStr,
+              latitude: p.location?.latitude,
+              longitude: p.location?.longitude,
+              accuracy: p.location?.accuracy,
+              comment,
+            },
+            ...(p.locationHistory || []),
+          ],
         };
       })
     );
-    pushAudit(`LOCATION_${decision}`, 'Property', propertyId, comment || `Location verification updated to ${decision}.`);
+    pushAudit(`LOCATION_${decision}`, 'Property', propertyId, comment || `Location verification updated to ${decision}.`, {
+      category: 'Location Verification',
+      beforeValue: existing?.locationVerificationStatus,
+      afterValue: decision,
+      reason: comment,
+    });
     pushNotification(
       'PG_OWNER',
       `Location ${decision.replace(/_/g, ' ').toLowerCase()}`,
@@ -578,14 +847,550 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           : p
       )
     );
-    pushAudit('DOCUMENT_REVIEW', 'PropertyDocument', docId, `Document marked ${status}.`);
+    setUnifiedDocuments((prev) =>
+      prev.map((ud) =>
+        ud.propertyId === propertyId && (ud.id === docId || ud.fileName === properties.find((p) => p.id === propertyId)?.documents.find((d) => d.id === docId)?.name)
+          ? {
+              ...ud,
+              verificationStatus: status,
+              verifiedBy: currentUser?.name || 'Super Admin',
+              verifiedAt: new Date().toISOString().slice(0, 10),
+              rejectionOrReplacementNote: note,
+            }
+          : ud
+      )
+    );
+    pushAudit('DOCUMENT_REVIEW', 'PropertyDocument', docId, `Document marked ${status}.`, {
+      category: 'Document Access',
+      afterValue: status,
+      reason: note,
+    });
   };
 
   const toggleUserStatus = (userId: string) => {
+    const existing = users.find((u) => u.id === userId);
+    const nextStatus = existing?.status === 'Active' ? 'Suspended' : 'Active';
     setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, status: u.status === 'Active' ? 'Suspended' : 'Active' } : u))
+      prev.map((u) => (u.id === userId ? { ...u, status: nextStatus } : u))
     );
-    pushAudit('TOGGLE_USER_STATUS', 'User', userId, 'Updated account active/suspended status.');
+    pushAudit('TOGGLE_USER_STATUS', 'User', userId, `Updated ${existing?.name || userId} status to ${nextStatus}.`, {
+      category: existing?.role === 'PG_OWNER' ? 'PG Owner' : 'Tenant',
+      beforeValue: existing?.status,
+      afterValue: nextStatus,
+    });
+  };
+
+  const adminUpdateUser = (userId: string, patch: Partial<UserAccount>) => {
+    const existing = users.find((u) => u.id === userId);
+    const { role: _r, ...safePatch } = patch;
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...safePatch } : u)));
+    pushAudit('ADMIN_EDIT_USER', 'User', userId, `Updated permitted profile fields for ${existing?.name || userId}.`, {
+      category: existing?.role === 'PG_OWNER' ? 'PG Owner' : 'Tenant',
+    });
+  };
+
+  const adminSuspendUser = (userId: string, reason: string) => {
+    const existing = users.find((u) => u.id === userId);
+    const actor = currentUser?.name || 'Super Admin';
+    const nowStr = new Date().toISOString().slice(0, 10);
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === userId
+          ? { ...u, status: 'Suspended', suspendedReason: reason, suspendedAt: nowStr, suspendedBy: actor }
+          : u
+      )
+    );
+    if (existing?.role === 'PG_OWNER') {
+      setProperties((prev) =>
+        prev.map((p) => (p.ownerId === userId && p.listingStatus === 'PUBLISHED' ? { ...p, listingStatus: 'SUSPENDED' } : p))
+      );
+    }
+    pushAudit('SUSPEND_USER', 'User', userId, `Suspended ${existing?.name || userId}: ${reason}`, {
+      category: existing?.role === 'PG_OWNER' ? 'PG Owner' : 'Tenant',
+      beforeValue: existing?.status,
+      afterValue: 'Suspended',
+      reason,
+    });
+    pushNotification(
+      existing?.role || 'TENANT',
+      'Account suspended by Super Admin',
+      reason,
+      existing?.role === 'PG_OWNER' ? '/owner/profile' : '/tenant/profile'
+    );
+  };
+
+  const adminRestoreUser = (userId: string, reason?: string) => {
+    const existing = users.find((u) => u.id === userId);
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === userId ? { ...u, status: 'Active', suspendedReason: undefined, suspendedAt: undefined } : u
+      )
+    );
+    pushAudit('RESTORE_USER', 'User', userId, `Reactivated ${existing?.name || userId}${reason ? `: ${reason}` : '.'}`, {
+      category: existing?.role === 'PG_OWNER' ? 'PG Owner' : 'Tenant',
+      beforeValue: existing?.status,
+      afterValue: 'Active',
+      reason,
+    });
+  };
+
+  const adminArchiveUser = (userId: string): { ok: boolean; message: string } => {
+    const existing = users.find((u) => u.id === userId);
+    if (!existing) return { ok: false, message: 'User not found.' };
+    const hasActiveStay = stays.some((s) => s.tenantId === userId && s.status === 'Active');
+    const hasProps = properties.some((p) => p.ownerId === userId && !p.archived);
+    if (hasActiveStay || hasProps) {
+      return {
+        ok: false,
+        message: 'Cannot archive user with active stays or active properties. Historical financial records must be preserved.',
+      };
+    }
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, archived: true, status: 'Suspended' } : u)));
+    pushAudit('ARCHIVE_USER', 'User', userId, `Archived user ${existing.name} (historical records preserved).`, {
+      category: existing.role === 'PG_OWNER' ? 'PG Owner' : 'Tenant',
+    });
+    return { ok: true, message: `${existing.name} archived safely.` };
+  };
+
+  const logDocumentAccess = (docId: string) => {
+    const doc = unifiedDocuments.find((d) => d.id === docId);
+    if (!doc) return;
+    pushAudit('DOCUMENT_VIEWED', 'UnifiedDocument', docId, `Viewed ${doc.category} document "${doc.fileName}" (${doc.ownerOrTenantName}).`, {
+      category: 'Document Access',
+    });
+  };
+
+  const adminReviewUnifiedDocument = (
+    docId: string,
+    status: UnifiedDocumentRecord['verificationStatus'],
+    note?: string
+  ) => {
+    const doc = unifiedDocuments.find((d) => d.id === docId);
+    const actor = currentUser?.name || 'Super Admin';
+    const today = new Date().toISOString().slice(0, 10);
+    setUnifiedDocuments((prev) =>
+      prev.map((d) =>
+        d.id === docId
+          ? {
+              ...d,
+              verificationStatus: status,
+              verifiedBy: actor,
+              verifiedAt: today,
+              rejectionOrReplacementNote: note,
+            }
+          : d
+      )
+    );
+    if (doc?.propertyId) {
+      setProperties((prev) =>
+        prev.map((p) =>
+          p.id === doc.propertyId
+            ? {
+                ...p,
+                documents: p.documents.map((pd) =>
+                  pd.name === doc.fileName ? { ...pd, status, reviewNote: note } : pd
+                ),
+              }
+            : p
+        )
+      );
+    }
+    if (doc?.stayId && (status === 'Verified' || status === 'Rejected')) {
+      setStays((prev) =>
+        prev.map((s) =>
+          s.id === doc.stayId ? { ...s, documentStatus: status === 'Verified' ? 'Verified' : 'Pending' } : s
+        )
+      );
+    }
+    pushAudit(`DOCUMENT_${status.toUpperCase().replace(/\s+/g, '_')}`, 'UnifiedDocument', docId, `Marked "${doc?.fileName || docId}" as ${status}.`, {
+      category: 'Document Access',
+      beforeValue: doc?.verificationStatus,
+      afterValue: status,
+      reason: note,
+    });
+    if (doc) {
+      pushNotification(
+        doc.category === 'Tenant' ? 'TENANT' : 'PG_OWNER',
+        `Document ${status.toLowerCase()}`,
+        `${doc.fileName} (${doc.documentType}) marked ${status}${note ? `: ${note}` : '.'}`,
+        doc.category === 'Tenant' ? '/tenant/my-pg' : '/owner/properties'
+      );
+    }
+  };
+
+  const archiveOrDeleteUnifiedDocument = (docId: string): { ok: boolean; message: string } => {
+    const doc = unifiedDocuments.find((d) => d.id === docId);
+    if (!doc) return { ok: false, message: 'Document not found.' };
+    if (doc.verificationStatus === 'Verified') {
+      setUnifiedDocuments((prev) => prev.map((d) => (d.id === docId ? { ...d, archived: true } : d)));
+      pushAudit('ARCHIVE_DOCUMENT', 'UnifiedDocument', docId, `Archived verified compliance document "${doc.fileName}".`, {
+        category: 'Document Access',
+      });
+      return { ok: true, message: 'Verified compliance document archived (preserved for audit).' };
+    }
+    setUnifiedDocuments((prev) => prev.filter((d) => d.id !== docId));
+    pushAudit('DELETE_DOCUMENT', 'UnifiedDocument', docId, `Removed non-verified draft/duplicate document "${doc.fileName}".`, {
+      category: 'Document Access',
+    });
+    return { ok: true, message: 'Document removed.' };
+  };
+
+  const addPlanFeature = (feat: Omit<PlanFeature, 'id' | 'createdAt'>) => {
+    const id = `feat-${Date.now()}`;
+    setPlanFeatures((prev) => [{ ...feat, id, createdAt: new Date().toISOString().slice(0, 10) }, ...prev]);
+    pushAudit('CREATE_PLAN_FEATURE', 'PlanFeature', id, `Created plan feature ${feat.name} (${feat.code}).`, {
+      category: 'Financial',
+    });
+  };
+
+  const updatePlanFeature = (id: string, patch: Partial<PlanFeature>) => {
+    setPlanFeatures((prev) => prev.map((f) => (f.id === id ? { ...f, ...patch } : f)));
+    pushAudit('UPDATE_PLAN_FEATURE', 'PlanFeature', id, `Updated plan feature ${patch.name || id}.`, {
+      category: 'Financial',
+    });
+  };
+
+  const togglePlanFeatureStatus = (id: string) => {
+    setPlanFeatures((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, status: f.status === 'Active' ? 'Inactive' : 'Active' } : f))
+    );
+  };
+
+  const addSubscriptionPlan = (plan: Omit<SubscriptionPlan, 'id'>) => {
+    const id = `plan-${Date.now()}`;
+    setSubscriptionPlans((prev) => [{ ...plan, id }, ...prev]);
+    pushAudit('CREATE_SUBSCRIPTION_PLAN', 'SubscriptionPlan', id, `Created plan ${plan.name} (₹${plan.priceInr}).`, {
+      category: 'Financial',
+    });
+  };
+
+  const updateSubscriptionPlan = (id: string, patch: Partial<SubscriptionPlan>) => {
+    setSubscriptionPlans((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+    pushAudit('UPDATE_SUBSCRIPTION_PLAN', 'SubscriptionPlan', id, `Updated subscription plan ${patch.name || id}.`, {
+      category: 'Financial',
+    });
+  };
+
+  const duplicateSubscriptionPlan = (id: string) => {
+    const src = subscriptionPlans.find((p) => p.id === id);
+    if (!src) return;
+    const copyId = `plan-${Date.now()}`;
+    setSubscriptionPlans((prev) => [
+      {
+        ...src,
+        id: copyId,
+        name: `${src.name} Copy`,
+        code: `${src.code}_COPY`,
+        status: 'Inactive',
+      },
+      ...prev,
+    ]);
+  };
+
+  const deleteOrArchiveSubscriptionPlan = (id: string): { ok: boolean; message: string } => {
+    const inUse = ownerSubscriptions.some((s) => s.planId === id);
+    if (inUse) {
+      setSubscriptionPlans((prev) => prev.map((p) => (p.id === id ? { ...p, status: 'Archived' } : p)));
+      return { ok: true, message: 'Plan has linked subscribers and was archived instead of deleted.' };
+    }
+    setSubscriptionPlans((prev) => prev.filter((p) => p.id !== id));
+    return { ok: true, message: 'Unused subscription plan deleted.' };
+  };
+
+  const manageOwnerSubscription = (
+    subId: string,
+    action: 'change_plan' | 'extend' | 'cancel' | 'restore',
+    payload: { planId?: string; newEndDate?: string; reason: string }
+  ) => {
+    const existing = ownerSubscriptions.find((s) => s.id === subId);
+    if (!existing) return;
+    const nextPlan = payload.planId ? subscriptionPlans.find((p) => p.id === payload.planId) : undefined;
+    setOwnerSubscriptions((prev) =>
+      prev.map((s) => {
+        if (s.id !== subId) return s;
+        if (action === 'change_plan' && nextPlan) {
+          return { ...s, planId: nextPlan.id, planName: nextPlan.name, amountInr: nextPlan.priceInr, notes: payload.reason };
+        }
+        if (action === 'extend' && payload.newEndDate) {
+          return { ...s, endDate: payload.newEndDate, status: 'Active', notes: payload.reason };
+        }
+        if (action === 'cancel') {
+          return { ...s, status: 'Cancelled', notes: payload.reason };
+        }
+        return { ...s, status: 'Active', notes: payload.reason };
+      })
+    );
+    if (action === 'change_plan' && nextPlan && (nextPlan.name === 'Basic' || nextPlan.name === 'Pro' || nextPlan.name === 'Business')) {
+      setUsers((prev) =>
+        prev.map((u) => (u.id === existing.ownerId ? { ...u, subscriptionPlan: nextPlan.name as UserAccount['subscriptionPlan'] } : u))
+      );
+    }
+    pushAudit(`SUBSCRIPTION_${action.toUpperCase()}`, 'OwnerSubscription', subId, `${existing.ownerName}: ${payload.reason}`, {
+      category: 'Financial',
+      beforeValue: `${existing.planName} (${existing.status})`,
+      afterValue: nextPlan ? nextPlan.name : action,
+      reason: payload.reason,
+    });
+  };
+
+  const saveFeaturedCampaign = (
+    camp: Omit<FeaturedCampaign, 'id' | 'impressions' | 'clicks'>,
+    editId?: string
+  ): { ok: boolean; message: string } => {
+    const prop = properties.find((p) => p.id === camp.propertyId);
+    if (!prop || prop.approvalStatus !== 'APPROVED' || prop.locationVerificationStatus !== 'VERIFIED') {
+      return { ok: false, message: 'Only Approved and GPS-Verified properties can be featured.' };
+    }
+    if (editId) {
+      setFeaturedCampaigns((prev) => prev.map((c) => (c.id === editId ? { ...c, ...camp } : c)));
+    } else {
+      setFeaturedCampaigns((prev) => [{ ...camp, id: `fcmp-${Date.now()}`, impressions: 0, clicks: 0 }, ...prev]);
+    }
+    if (camp.status === 'Active') {
+      setProperties((prev) => prev.map((p) => (p.id === camp.propertyId ? { ...p, isSponsored: true } : p)));
+    }
+    pushAudit(editId ? 'UPDATE_FEATURED_PG' : 'CREATE_FEATURED_PG', 'FeaturedCampaign', editId || camp.propertyId, `Saved featured campaign for ${camp.propertyName}.`, {
+      category: 'Financial',
+    });
+    return { ok: true, message: 'Featured PG campaign saved.' };
+  };
+
+  const updateFeaturedCampaignStatus = (id: string, status: FeaturedCampaign['status'], newEndDate?: string) => {
+    const target = featuredCampaigns.find((c) => c.id === id);
+    setFeaturedCampaigns((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status, endDate: newEndDate || c.endDate } : c))
+    );
+    if (target) {
+      setProperties((prev) =>
+        prev.map((p) => (p.id === target.propertyId ? { ...p, isSponsored: status === 'Active' } : p))
+      );
+      pushAudit('FEATURED_PG_STATUS', 'FeaturedCampaign', id, `Updated ${target.propertyName} featured status to ${status}.`, {
+        category: 'Financial',
+        beforeValue: target.status,
+        afterValue: status,
+      });
+    }
+  };
+
+  const deleteFeaturedCampaign = (id: string): { ok: boolean; message: string } => {
+    const target = featuredCampaigns.find((c) => c.id === id);
+    if (!target) return { ok: false, message: 'Campaign not found.' };
+    if (target.status !== 'Draft') {
+      setFeaturedCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, status: 'Archived' } : c)));
+      return { ok: true, message: 'Non-draft campaign archived to preserve history.' };
+    }
+    setFeaturedCampaigns((prev) => prev.filter((c) => c.id !== id));
+    return { ok: true, message: 'Draft featured campaign deleted.' };
+  };
+
+  const saveAdvertiser = (adv: Omit<AdvertiserAccount, 'id' | 'createdAt'>, editId?: string) => {
+    if (editId) {
+      setAdvertisers((prev) => prev.map((a) => (a.id === editId ? { ...a, ...adv } : a)));
+    } else {
+      setAdvertisers((prev) => [{ ...adv, id: `adv-${Date.now()}`, createdAt: new Date().toISOString().slice(0, 10) }, ...prev]);
+    }
+  };
+
+  const updateAdvertiserStatus = (id: string, status: AdvertiserAccount['status']) => {
+    setAdvertisers((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+  };
+
+  const saveLocalAdCampaign = (ad: Omit<LocalAdCampaign, 'id' | 'impressions' | 'clicks'>, editId?: string) => {
+    if (editId) {
+      setLocalAdCampaigns((prev) => prev.map((a) => (a.id === editId ? { ...a, ...ad } : a)));
+    } else {
+      setLocalAdCampaigns((prev) => [{ ...ad, id: `lad-${Date.now()}`, impressions: 0, clicks: 0 }, ...prev]);
+    }
+    pushAudit(editId ? 'UPDATE_LOCAL_AD' : 'CREATE_LOCAL_AD', 'LocalAdCampaign', editId || ad.advertiserId, `Saved local ad "${ad.title}".`, {
+      category: 'Financial',
+    });
+  };
+
+  const updateLocalAdStatus = (id: string, status: LocalAdCampaign['status']) => {
+    setLocalAdCampaigns((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+    pushAudit('LOCAL_AD_STATUS', 'LocalAdCampaign', id, `Updated local ad status to ${status}.`, {
+      category: 'Financial',
+    });
+  };
+
+  const deleteLocalAdCampaign = (id: string): { ok: boolean; message: string } => {
+    const ad = localAdCampaigns.find((a) => a.id === id);
+    if (!ad) return { ok: false, message: 'Ad not found.' };
+    if (ad.status !== 'Draft') {
+      setLocalAdCampaigns((prev) => prev.map((a) => (a.id === id ? { ...a, status: 'Archived' } : a)));
+      return { ok: true, message: 'Published/active campaign archived.' };
+    }
+    setLocalAdCampaigns((prev) => prev.filter((a) => a.id !== id));
+    return { ok: true, message: 'Draft local ad deleted.' };
+  };
+
+  const saveAdminNotification = (
+    rec: Omit<AdminNotificationRecord, 'id' | 'createdBy' | 'inAppReadCount' | 'publishedAt'>
+  ) => {
+    const id = `antf-${Date.now()}`;
+    const publishedAt = rec.status === 'Published' ? new Date().toLocaleString('en-IN') + ' IST' : undefined;
+    setAdminNotifications((prev) => [
+      {
+        ...rec,
+        id,
+        createdBy: currentUser?.name || 'Super Admin',
+        inAppReadCount: 0,
+        publishedAt,
+      },
+      ...prev,
+    ]);
+    if (rec.status === 'Published' && rec.channels.includes('In-App')) {
+      const targetRole: UserRole | 'ALL' =
+        rec.targetAudienceMode === 'All PG Owners' ||
+        rec.targetAudienceMode === 'Specific Property Owners' ||
+        rec.targetAudienceMode === 'Active Subscribers' ||
+        rec.targetAudienceMode === 'Expired Subscribers'
+          ? 'PG_OWNER'
+          : rec.targetAudienceMode === 'All Tenants' || rec.targetAudienceMode === 'Specific Property Tenants'
+          ? 'TENANT'
+          : 'ALL';
+      pushNotification(targetRole, rec.title, rec.message);
+    }
+    pushAudit('ADMIN_NOTIFICATION', 'AdminNotification', id, `${rec.status} notification "${rec.title}" (${rec.targetAudienceMode}).`, {
+      category: 'Administrator',
+    });
+  };
+
+  const updateAdminNotificationStatus = (id: string, status: AdminNotificationRecord['status']) => {
+    const target = adminNotifications.find((n) => n.id === id);
+    setAdminNotifications((prev) =>
+      prev.map((n) =>
+        n.id === id
+          ? {
+              ...n,
+              status,
+              publishedAt: status === 'Published' ? new Date().toLocaleString('en-IN') + ' IST' : n.publishedAt,
+            }
+          : n
+      )
+    );
+    if (status === 'Published' && target && target.channels.includes('In-App')) {
+      const role: UserRole | 'ALL' = target.targetAudienceMode.includes('Owner')
+        ? 'PG_OWNER'
+        : target.targetAudienceMode.includes('Tenant')
+        ? 'TENANT'
+        : 'ALL';
+      pushNotification(role, target.title, target.message);
+    }
+    pushAudit('ADMIN_NOTIFICATION_STATUS', 'AdminNotification', id, `Notification "${target?.title || id}" changed to ${status}.`, {
+      category: 'Administrator',
+    });
+  };
+
+  const duplicateAdminNotification = (id: string) => {
+    const src = adminNotifications.find((n) => n.id === id);
+    if (!src) return;
+    setAdminNotifications((prev) => [
+      {
+        ...src,
+        id: `antf-${Date.now()}`,
+        title: `${src.title} (Copy)`,
+        status: 'Draft',
+        publishedAt: undefined,
+        inAppReadCount: 0,
+      },
+      ...prev,
+    ]);
+  };
+
+  const adminReplySupportTicket = (
+    ticketId: string,
+    replyBody: string,
+    nextStatus?: SupportTicket['status'],
+    resolutionSummary?: string
+  ) => {
+    const tkt = supportTickets.find((t) => t.id === ticketId);
+    const nowStr = new Date().toLocaleString('en-IN');
+    const actor = currentUser?.name || 'Super Admin';
+    setSupportTickets((prev) =>
+      prev.map((t) =>
+        t.id === ticketId
+          ? {
+              ...t,
+              status: nextStatus || 'Waiting for User',
+              lastReply: replyBody,
+              updatedAt: new Date().toISOString().slice(0, 10),
+              resolutionSummary: resolutionSummary ?? t.resolutionSummary,
+              messages: [
+                ...(t.messages || []),
+                {
+                  id: `msg-${Date.now()}`,
+                  senderName: `${actor} (Support Admin)`,
+                  senderRole: 'SUPER_ADMIN',
+                  body: replyBody,
+                  createdAt: nowStr,
+                },
+              ],
+            }
+          : t
+      )
+    );
+    if (tkt) {
+      pushNotification(
+        tkt.userRole,
+        `Support reply on ${tkt.ticketCode || tkt.id}`,
+        replyBody,
+        tkt.userRole === 'TENANT' ? '/tenant/profile' : '/owner/profile'
+      );
+      pushAudit('SUPPORT_TICKET_REPLY', 'SupportTicket', ticketId, `Replied to ${tkt.userName}'s ticket (${tkt.subject}).`, {
+        category: 'Administrator',
+        afterValue: nextStatus || 'Waiting for User',
+      });
+    }
+  };
+
+  const adminAddSupportInternalNote = (ticketId: string, note: string) => {
+    const actor = currentUser?.name || 'Super Admin';
+    setSupportTickets((prev) =>
+      prev.map((t) =>
+        t.id === ticketId
+          ? {
+              ...t,
+              internalNotes: [
+                ...(t.internalNotes || []),
+                {
+                  id: `in-${Date.now()}`,
+                  authorName: actor,
+                  note,
+                  createdAt: new Date().toLocaleString('en-IN'),
+                },
+              ],
+            }
+          : t
+      )
+    );
+  };
+
+  const adminUpdateSupportTicketMeta = (
+    ticketId: string,
+    patch: Partial<Pick<SupportTicket, 'priority' | 'status' | 'assignedAdmin' | 'resolutionSummary'>>
+  ) => {
+    setSupportTickets((prev) =>
+      prev.map((t) =>
+        t.id === ticketId ? { ...t, ...patch, updatedAt: new Date().toISOString().slice(0, 10) } : t
+      )
+    );
+    pushAudit('UPDATE_SUPPORT_TICKET', 'SupportTicket', ticketId, `Updated support ticket metadata (${Object.keys(patch).join(', ')}).`, {
+      category: 'Administrator',
+    });
+  };
+
+  const moderateReviewStatus = (reviewId: string, action: 'Keep' | 'Hide') => {
+    setPropertyReviews((prev) =>
+      prev.map((r) =>
+        r.id === reviewId
+          ? { ...r, reportedStatus: 'Reviewed', reportReason: `${r.reportReason || ''} (Admin decision: ${action})`.trim() }
+          : r
+      )
+    );
+    pushAudit('MODERATE_REVIEW', 'PropertyReview', reviewId, `Moderated reported review: ${action}.`, {
+      category: 'Administrator',
+    });
   };
 
   const addFloor = (floor: Omit<Floor, 'id'>) => {
@@ -1200,8 +2005,16 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     decision: 'Awaiting Tenant Permission' | 'Rejected',
     note?: string
   ) => {
+    const req = locationRequests.find((r) => r.id === reqId);
     setLocationRequests((prev) =>
       prev.map((r) => (r.id === reqId ? { ...r, status: decision, adminNote: note } : r))
+    );
+    pushAudit(
+      decision === 'Awaiting Tenant Permission' ? 'FORWARD_CONSENT_PROMPT' : 'REJECT_LOCATION_SHARE_REQ',
+      'LocationSharingRequest',
+      reqId,
+      `${decision} for ${req?.ownerName || 'Owner'} → ${req?.tenantName || 'Tenant'}${note ? `: ${note}` : ''}`,
+      { category: 'Location Sharing Requests', beforeValue: req?.status, afterValue: decision, reason: note }
     );
     if (decision === 'Awaiting Tenant Permission') {
       pushNotification(
@@ -1458,16 +2271,34 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const createSupportTicket = (ticket: Omit<SupportTicket, 'id' | 'createdAt' | 'status' | 'lastReply'>) => {
+    const nowDate = new Date().toISOString().slice(0, 10);
+    const id = `tkt-${Date.now()}`;
+    const code = `SUP-2026-${Math.floor(1100 + Math.random() * 8800)}`;
     setSupportTickets((prev) => [
       {
         ...ticket,
-        id: `tkt-${Date.now()}`,
-        createdAt: new Date().toISOString().slice(0, 10),
+        id,
+        ticketCode: code,
+        userEmail: ticket.userEmail || currentUser?.email,
+        userMobile: ticket.userMobile || currentUser?.mobile,
+        createdAt: nowDate,
+        updatedAt: nowDate,
         status: 'Open',
         lastReply: 'Awaiting support agent assignment.',
+        messages: [
+          {
+            id: `msg-${Date.now()}`,
+            senderName: ticket.userName,
+            senderRole: ticket.userRole,
+            body: ticket.description || ticket.subject,
+            createdAt: new Date().toLocaleString('en-IN'),
+          },
+        ],
+        internalNotes: [],
       },
       ...prev,
     ]);
+    pushNotification('SUPER_ADMIN', `New support ticket ${code}`, `${ticket.userName}: ${ticket.subject}`, '/admin/support');
   };
 
   const updateTicketStatus = (ticketId: string, status: SupportTicket['status'], reply?: string) => {
@@ -1543,9 +2374,50 @@ export const PGFinderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         togglePropertyQr,
         regeneratePropertyQr,
         adminReviewProperty,
+        adminSuspendProperty,
+        adminRestoreProperty,
         adminVerifyLocation,
         adminVerifyDocument,
         toggleUserStatus,
+        adminUpdateUser,
+        adminSuspendUser,
+        adminRestoreUser,
+        adminArchiveUser,
+        unifiedDocuments,
+        logDocumentAccess,
+        adminReviewUnifiedDocument,
+        archiveOrDeleteUnifiedDocument,
+        planFeatures,
+        addPlanFeature,
+        updatePlanFeature,
+        togglePlanFeatureStatus,
+        subscriptionPlans,
+        addSubscriptionPlan,
+        updateSubscriptionPlan,
+        duplicateSubscriptionPlan,
+        deleteOrArchiveSubscriptionPlan,
+        ownerSubscriptions,
+        platformPayments,
+        manageOwnerSubscription,
+        featuredCampaigns,
+        saveFeaturedCampaign,
+        updateFeaturedCampaignStatus,
+        deleteFeaturedCampaign,
+        advertisers,
+        localAdCampaigns,
+        saveAdvertiser,
+        updateAdvertiserStatus,
+        saveLocalAdCampaign,
+        updateLocalAdStatus,
+        deleteLocalAdCampaign,
+        adminNotifications,
+        saveAdminNotification,
+        updateAdminNotificationStatus,
+        duplicateAdminNotification,
+        adminReplySupportTicket,
+        adminAddSupportInternalNote,
+        adminUpdateSupportTicketMeta,
+        moderateReviewStatus,
         addFloor,
         editFloor,
         deleteOrDeactivateFloor,

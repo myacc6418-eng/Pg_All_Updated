@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
+  Activity,
   Bell,
   Building2,
   CalendarDays,
   ClipboardCheck,
   Compass,
+  CreditCard,
+  FileCheck2,
+  HelpCircle,
   House,
   LayoutDashboard,
   LogOut,
   MapPin,
-  Menu,
+  Megaphone,
   Search,
   ShieldCheck,
+  Sparkles,
   UserRound,
   Users,
   Wallet,
@@ -78,15 +83,24 @@ const ADMIN_BOTTOM_TABS: NavItem[] = [
   { label: 'Properties', to: '/admin/properties', icon: <Building2 className="w-5 h-5" /> },
   { label: 'Users', to: '/admin/users', icon: <Users className="w-5 h-5" /> },
   { label: 'Approvals', to: '/admin/approvals', icon: <ClipboardCheck className="w-5 h-5" /> },
-  { label: 'More', to: '/admin/more', icon: <Menu className="w-5 h-5" /> },
+  { label: 'Profile', to: '/admin/profile', icon: <UserRound className="w-5 h-5" /> },
 ];
 
 const ADMIN_SIDEBAR: NavItem[] = [
   { group: 'Overview', label: 'Dashboard', to: '/admin/dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
-  { group: 'Verification', label: 'Approvals & GPS', to: '/admin/approvals', icon: <ClipboardCheck className="w-4 h-4" /> },
-  { group: 'Property Management', label: 'All Properties', to: '/admin/properties', icon: <Building2 className="w-4 h-4" /> },
-  { group: 'User Management', label: 'Owners & Tenants', to: '/admin/users', icon: <Users className="w-4 h-4" /> },
-  { group: 'Platform Operations', label: 'Platform Controls', to: '/admin/more', icon: <ShieldCheck className="w-4 h-4" /> },
+  { group: 'Verification', label: 'Property Approvals', to: '/admin/approvals', icon: <ClipboardCheck className="w-4 h-4" /> },
+  { group: 'Verification', label: 'Location Verification', to: '/admin/locations', icon: <MapPin className="w-4 h-4" /> },
+  { group: 'Verification', label: 'Document Center', to: '/admin/documents', icon: <FileCheck2 className="w-4 h-4" /> },
+  { group: 'Entities', label: 'All Properties', to: '/admin/properties', icon: <Building2 className="w-4 h-4" /> },
+  { group: 'Entities', label: 'Owners & Tenants', to: '/admin/users', icon: <Users className="w-4 h-4" /> },
+  { group: 'Monetization', label: 'Subscriptions & Plans', to: '/admin/subscriptions', icon: <CreditCard className="w-4 h-4" /> },
+  { group: 'Monetization', label: 'Featured PGs', to: '/admin/featured', icon: <Sparkles className="w-4 h-4" /> },
+  { group: 'Monetization', label: 'Local Ads & Advertisers', to: '/admin/local-ads', icon: <Store className="w-4 h-4" /> },
+  { group: 'Governance', label: 'Notifications', to: '/admin/notifications', icon: <Megaphone className="w-4 h-4" /> },
+  { group: 'Governance', label: 'Support & Reviews', to: '/admin/support', icon: <HelpCircle className="w-4 h-4" /> },
+  { group: 'Governance', label: 'Audit Logs', to: '/admin/audit', icon: <Activity className="w-4 h-4" /> },
+  { group: 'Platform', label: 'Events, AdMob & CMS', to: '/admin/more', icon: <ShieldCheck className="w-4 h-4" /> },
+  { group: 'Platform', label: 'Admin Profile', to: '/admin/profile', icon: <UserRound className="w-4 h-4" /> },
 ];
 
 export const DashboardShell: React.FC<{ role: UserRole }> = ({ role }) => {

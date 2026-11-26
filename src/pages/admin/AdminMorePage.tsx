@@ -1,42 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { ArrowRight, LogOut } from 'lucide-react';
 import { usePGFinder } from '../../context/PGFinderContext';
 import { StatusText, ThemeSwitch } from '../../components/ui/Primitives';
 import { formatINR } from '../../utils/formatters';
 import { IMG_EVENT, INDIAN_CITIES } from '../../data/demoData';
 import { StartupEvent } from '../../types/pgfinder';
 
-type AdminSection =
-  | 'events'
-  | 'subscriptions'
-  | 'payments'
-  | 'ads'
-  | 'admob'
-  | 'support'
-  | 'cms'
-  | 'audit'
-  | 'system';
+type AdminSection = 'events' | 'admob' | 'cms' | 'system';
 
 export const AdminMorePage: React.FC = () => {
   const {
     events,
     createEvent,
     toggleEventStatus,
-    supportTickets,
-    updateTicketStatus,
-    locationRequests,
-    adminReviewLocationRequest,
-    propertyReviews,
-    auditLogs,
-    properties,
-    localBusinesses,
     logout,
   } = usePGFinder();
 
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialSection = (searchParams.get('section') as AdminSection) || 'events';
+  const rawSection = searchParams.get('section') || 'events';
+
+  // Redirect legacy ?section= links cleanly to the dedicated full-page modules
+  useEffect(() => {
+    if (rawSection === 'subscriptions') navigate('/admin/subscriptions', { replace: true });
+    else if (rawSection === 'payments') navigate('/admin/subscriptions?tab=payments', { replace: true });
+    else if (rawSection === 'ads') navigate('/admin/featured', { replace: true });
+    else if (rawSection === 'support') navigate('/admin/support', { replace: true });
+    else if (rawSection === 'audit') navigate('/admin/audit', { replace: true });
+  }, [rawSection, navigate]);
+
+  const initialSection: AdminSection =
+    rawSection === 'admob' || rawSection === 'cms' || rawSection === 'system'
+      ? rawSection
+      : 'events';
   const [section, setSection] = useState<AdminSection>(initialSection);
 
   const [evtTitle, setEvtTitle] = useState('');
@@ -59,20 +56,20 @@ export const AdminMorePage: React.FC = () => {
 
   const navButtons: { id: AdminSection; label: string }[] = [
     { id: 'events', label: 'Startup Events' },
-    { id: 'subscriptions', label: 'Subscriptions' },
-    { id: 'payments', label: 'Platform Payments' },
-    { id: 'ads', label: 'Featured & Local Ads' },
-    { id: 'admob', label: 'AdMob' },
-    { id: 'support', label: 'Support & Reviews' },
+    { id: 'admob', label: 'AdMob Architecture' },
     { id: 'cms', label: 'CMS & Settings' },
-    { id: 'audit', label: 'Audit Logs' },
     { id: 'system', label: 'System Health' },
   ];
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold font-display">Platform Operations &amp; Monetization</h1>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h1 className="text-xl font-bold font-display">Events, AdMob, CMS &amp; System Operations</h1>
+          <p className="text-xs text-[#64748B] dark:text-[#9CA3AF] mt-0.5">
+            Manage Startup Connect events, Google AdMob placement boundaries, CMS rules, and environment readiness.
+          </p>
+        </div>
         <button
           type="button"
           onClick={() => {
@@ -83,6 +80,26 @@ export const AdminMorePage: React.FC = () => {
         >
           <LogOut className="w-3.5 h-3.5" /> Logout
         </button>
+      </div>
+
+      {/* Quick shortcut bar to dedicated Admin modules */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        {[
+          { label: 'Subscriptions & Plans', to: '/admin/subscriptions' },
+          { label: 'Featured & Local Ads', to: '/admin/featured' },
+          { label: 'Notifications Broadcast', to: '/admin/notifications' },
+          { label: 'Support & Audit Logs', to: '/admin/support' },
+        ].map((link) => (
+          <button
+            key={link.to}
+            type="button"
+            onClick={() => navigate(link.to)}
+            className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] flex items-center justify-between font-medium hover:border-[#047857]/40"
+          >
+            <span className="truncate">{link.label}</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#047857] shrink-0" />
+          </button>
+        ))}
       </div>
 
       <div className="flex items-center gap-1 overflow-x-auto pb-1">
@@ -147,9 +164,7 @@ export const AdminMorePage: React.FC = () => {
                 className="h-9 px-2 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
               >
                 {['Startup Networking', 'Entrepreneurship', 'Technology', 'AI and Innovation', 'Founder Meetups', 'Investor Events', 'Workshops', 'Hackathons'].map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                  <option key={c} value={c}>{c}</option>
                 ))}
               </select>
               <select
@@ -158,9 +173,7 @@ export const AdminMorePage: React.FC = () => {
                 className="h-9 px-2 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
               >
                 {INDIAN_CITIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                  <option key={c} value={c}>{c}</option>
                 ))}
               </select>
             </div>
@@ -184,7 +197,7 @@ export const AdminMorePage: React.FC = () => {
                 type="datetime-local"
                 value={evtDate}
                 onChange={(e) => setEvtDate(e.target.value)}
-                className="h-9 px-2 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
+                className="h-9 px-2 rounded-xl border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937] font-mono-num"
               />
             </div>
             <label className="flex items-center gap-2">
@@ -221,7 +234,7 @@ export const AdminMorePage: React.FC = () => {
                 <div>
                   <div className="font-semibold">{e.title}</div>
                   <div className="text-[#64748B]">
-                    {e.city} · {e.registeredCount}/{e.capacity} registered · {e.isFree ? 'Free' : formatINR(e.priceInr || 0)}
+                    {e.city} · <span className="font-mono-num">{e.registeredCount}/{e.capacity}</span> registered · {e.isFree ? 'Free' : formatINR(e.priceInr || 0)}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -240,71 +253,11 @@ export const AdminMorePage: React.FC = () => {
         </div>
       )}
 
-      {section === 'subscriptions' && (
-        <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-3 text-xs">
-          <h2 className="text-sm font-semibold">Subscription Plans &amp; Listing Entitlements</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {[
-              { plan: 'Basic', price: '₹0/mo', listings: '0 included (₹299/property future fee)', grace: 'N/A' },
-              { plan: 'Pro', price: '₹199/mo', listings: 'Up to 5 active public listings', grace: `${graceDays} days` },
-              { plan: 'Business', price: '₹499/mo', listings: 'Up to 20 active listings + Staff ops', grace: `${graceDays} days` },
-            ].map((p) => (
-              <div key={p.plan} className="p-3.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] space-y-1">
-                <div className="font-bold text-sm">{p.plan} — {p.price}</div>
-                <div className="text-[#64748B]">{p.listings}</div>
-                <div>Grace Period: {p.grace}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {section === 'payments' && (
-        <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-3 text-xs">
-          <h2 className="text-sm font-semibold">Platform Payments &amp; Refunds</h2>
-          <p className="text-[#64748B] dark:text-[#9CA3AF]">
-            Payment gateway webhook processor is abstracted and not connected in UI prototype mode. No fabricated successful transactions are generated. Future categories: ₹299 Listing Fees, Subscriptions, Featured PGs, Local Business Ads.
-          </p>
-        </div>
-      )}
-
-      {section === 'ads' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-2.5">
-            <h2 className="text-sm font-semibold">Featured PG Packages (₹299 / ₹799 / ₹1,999)</h2>
-            {properties
-              .filter((p) => p.isSponsored)
-              .map((p) => (
-                <div key={p.id} className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] flex justify-between">
-                  <span className="font-semibold">{p.name}</span>
-                  <span className="text-[#D97706] font-medium">Sponsored · Verified</span>
-                </div>
-              ))}
-          </div>
-          <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-2.5">
-            <h2 className="text-sm font-semibold">Local Business Campaigns (₹499 / ₹1,499 / ₹3,999)</h2>
-            {localBusinesses
-              .filter((b) => b.isSponsored)
-              .map((b) => (
-                <div key={b.id} className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151] flex justify-between">
-                  <div>
-                    <div className="font-semibold">{b.name}</div>
-                    <div className="text-[#64748B]">
-                      {b.category} · {b.locality}, {b.city}
-                    </div>
-                  </div>
-                  <span className="text-[#D97706] font-medium">Sponsored</span>
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
-
       {section === 'admob' && (
         <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-3 text-xs">
           <h2 className="text-sm font-semibold">Google AdMob Architecture &amp; Placements</h2>
           <div className="p-3 rounded-xl border border-[#D97706]/30 bg-[#D97706]/10 text-[#111827] dark:text-[#F9FAFB]">
-            Reporting integration not configured. Browser previews render clearly labeled test-mode placeholders on Tenant Explore, PG Finder Local, and Event Discovery only.
+            Reporting integration not configured. Browser previews render clearly labeled test-mode placeholders on Tenant Explore, PG Finder Local, and Event Discovery only — strictly separate from Featured PGs and Local Business Ads.
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="p-3 rounded-xl border border-[#E2E8F0] dark:border-[#374151]">
@@ -319,108 +272,6 @@ export const AdminMorePage: React.FC = () => {
               <div className="font-semibold">Mode &amp; Safeguards</div>
               <div className="text-[#64748B] mt-1">Test Ad Units · Frequency Capped · Age-Appropriate</div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {section === 'support' && (
-        <div className="space-y-4 text-xs">
-          <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-3">
-            <h2 className="text-sm font-semibold">Location Sharing Requests (Admin Legitimacy Review)</h2>
-            {locationRequests.map((lr) => (
-              <div key={lr.id} className="p-3 rounded-xl border border-[#E2E8F0] dark:border-[#374151] flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <div className="font-semibold">
-                    {lr.ownerName} → {lr.tenantName} ({lr.category})
-                  </div>
-                  <div className="text-[#64748B]">
-                    {lr.reason} — {lr.explanation}
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <StatusText status={lr.status} />
-                  {(lr.status === 'Submitted' || lr.status === 'Under Admin Review') && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          adminReviewLocationRequest(
-                            lr.id,
-                            'Awaiting Tenant Permission',
-                            'Approved for tenant voluntary consent review.'
-                          )
-                        }
-                        className="px-3 py-1.5 rounded-lg bg-[#047857] text-white font-semibold"
-                      >
-                        Approve Forwarding
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          adminReviewLocationRequest(
-                            lr.id,
-                            'Rejected',
-                            'Reason insufficient for safety location request.'
-                          )
-                        }
-                        className="px-3 py-1.5 rounded-lg border border-[#DC2626] text-[#DC2626] font-semibold"
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-3">
-            <h2 className="text-sm font-semibold">
-              Reported PG Reviews ({propertyReviews.filter((r) => r.reportedStatus !== 'None').length})
-            </h2>
-            {propertyReviews.filter((r) => r.reportedStatus !== 'None').length === 0 ? (
-              <p className="text-[#64748B]">No owner-reported reviews awaiting moderation.</p>
-            ) : (
-              propertyReviews
-                .filter((r) => r.reportedStatus !== 'None')
-                .map((r) => (
-                  <div key={r.id} className="p-3 rounded-xl border border-[#E2E8F0] dark:border-[#374151] space-y-1">
-                    <div className="flex justify-between font-semibold">
-                      <span>{r.tenantDisplayName} ({r.overallRating} ★)</span>
-                      <StatusText status={r.reportedStatus} />
-                    </div>
-                    <div className="text-[#64748B]">Reason: {r.reportReason}</div>
-                  </div>
-                ))
-            )}
-          </div>
-
-          <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-3">
-            <h2 className="text-sm font-semibold">Support Tickets</h2>
-            {supportTickets.map((t) => (
-              <div key={t.id} className="p-3 rounded-xl border border-[#E2E8F0] dark:border-[#374151] space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold">{t.subject}</span>
-                  <StatusText status={t.status} />
-                </div>
-                <div className="text-[#64748B]">
-                  {t.userName} ({t.userRole}) · {t.category} · {t.createdAt}
-                </div>
-                <div className="flex items-center gap-2 pt-1">
-                  <select
-                    value={t.status}
-                    onChange={(e) => updateTicketStatus(t.id, e.target.value as typeof t.status)}
-                    className="h-8 px-2 rounded-lg border border-[#E2E8F0] dark:border-[#374151] bg-[#F8FAFC] dark:bg-[#1F2937]"
-                  >
-                    {['Open', 'Assigned', 'In Progress', 'Awaiting Response', 'Resolved', 'Closed'].map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       )}
@@ -453,25 +304,6 @@ export const AdminMorePage: React.FC = () => {
             </div>
           </div>
           <div className="text-[#64748B]">Currency: INR (₹) · Business Timezone: Asia/Kolkata</div>
-        </div>
-      )}
-
-      {section === 'audit' && (
-        <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#374151] bg-white dark:bg-[#111827] p-4 space-y-2 text-xs">
-          <h2 className="text-sm font-semibold">Audit Logs</h2>
-          {auditLogs.map((a) => (
-            <div key={a.id} className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#374151]">
-              <div className="flex justify-between font-semibold">
-                <span>
-                  {a.action} · {a.entityType} ({a.entityId})
-                </span>
-                <span className="text-[#64748B] font-mono-num">{a.timestamp.slice(0, 16).replace('T', ' ')}</span>
-              </div>
-              <div className="text-[#64748B] mt-0.5">
-                {a.actorName} ({a.actorRole}): {a.summary}
-              </div>
-            </div>
-          ))}
         </div>
       )}
 

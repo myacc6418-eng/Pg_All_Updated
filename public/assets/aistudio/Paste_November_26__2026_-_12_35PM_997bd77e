@@ -1,0 +1,3247 @@
+# PG FINDER — PG OWNER QUICK LINKS AND COMPLETE SUPER ADMIN DASHBOARD UPGRADE
+
+## 1. Project objective
+
+Act as a senior full-stack software engineer, database architect, mobile application developer, and professional UI/UX designer.
+
+You are working on the existing PG Finder application.
+
+The application already contains three dashboards:
+
+- Super Admin Dashboard
+- PG Owner Dashboard
+- Tenant Dashboard
+
+Your task is to improve the PG Owner Dashboard quick links layout and comprehensively upgrade the Super Admin Dashboard.
+
+The application is designed for the Indian PG accommodation market.
+
+The interface must be professional, compact, simple, responsive, and easy to understand.
+
+Do not rebuild the application from scratch.
+
+Inspect the existing implementation before modifying any files.
+
+---
+
+# PART 1 — STRICT IMPLEMENTATION REQUIREMENTS
+
+## 2. Preserve existing functionality
+
+Follow these requirements throughout implementation:
+
+- Preserve existing authentication.
+- Preserve role-based authorization.
+- Preserve the existing database architecture.
+- Preserve existing routes wherever possible.
+- Preserve existing API integrations.
+- Preserve existing working functionality.
+- Preserve Light, Dark, and System themes.
+- Preserve the existing design system.
+- Preserve existing property approval workflows.
+- Preserve existing tenant onboarding workflows.
+- Preserve existing owner financial management.
+- Preserve existing tenant functionality.
+- Do not create separate disconnected applications.
+- Do not create duplicate modules.
+- Do not create unnecessary mock datasets.
+- Do not introduce excessive animations.
+- Do not introduce oversized cards.
+- Do not create buttons that have no functionality.
+- Do not claim production functionality exists when only the UI is implemented.
+
+Focus on improving existing pages and components.
+
+All three dashboards must continue to use shared, consistent application data.
+
+---
+
+# PART 2 — PG OWNER DASHBOARD QUICK LINKS
+
+## 3. Remove category-wise quick link separation
+
+Currently, the PG Owner Dashboard displays quick links under separate headings:
+
+- Property Management
+- Tenant Management
+- Finance
+- Daily Operations
+- Analytics and Administration
+
+Remove these category headings from the quick links section.
+
+Remove the separate group containers.
+
+Remove unnecessary gaps between operation groups.
+
+Do not remove the individual operation links.
+
+Instead, display all existing quick links in one continuous responsive grid.
+
+### Section heading
+
+Quick Links
+
+### Section description
+
+Manage all your PG operations.
+
+Remove the unnecessarily long heading "All Operations & Quick Links" if present.
+
+---
+
+## 4. Quick links ordering
+
+Display the existing operations in the following order:
+
+1. Add PG
+2. My Properties
+3. Floors & Vacancies
+4. Rooms & Beds
+5. QR Onboarding
+6. All Tenants
+7. Joining Requests
+8. Transfer Tenant
+9. Checkouts
+10. Tenant Documents
+11. Rent Collection
+12. Payment History
+13. Security Deposits
+14. Business Expenses
+15. Maintenance
+16. Scheduled Tasks
+17. PG Rules & Policies
+18. Complaints
+19. Food & Mess Menu
+20. Notices
+21. Parcels
+22. Staff Management
+23. Tracking Center
+24. Reports & Analytics
+25. Reviews & Ratings
+26. Location Requests
+27. Subscription & Plans
+28. Startup Events
+29. PG Finder Local
+
+Inspect the current operation list and preserve all existing functionality.
+
+If the application has 28 operations rather than 29, render the actual available operations.
+
+Do not delete an existing module merely to achieve an exact number of grid items.
+
+---
+
+## 5. Equal-sized quick link grid
+
+All quick link cards must have:
+
+- Equal width
+- Equal height
+- Equal padding
+- Equal border radius
+- Equal icon size
+- Consistent text size
+- Consistent alignment
+- Consistent spacing
+
+Use CSS Grid rather than separate category-based layouts.
+
+### Responsive grid
+
+- Very small mobile screens: 3 columns where necessary
+- Standard mobile screens: 4 columns
+- Tablets: 5 or 6 columns
+- Desktop: 7 or 8 columns
+- Large desktop: 8 columns where appropriate
+
+Use responsive breakpoints based on available content width.
+
+Do not stretch the final row's cards to fill remaining space.
+
+Every card must maintain the same dimensions.
+
+For 28 operations on standard mobile screens, the result should be four columns and seven rows.
+
+### Suggested styling
+
+- Compact card height: approximately 88–100px on mobile
+- Icon size: approximately 22–26px
+- Grid gap: approximately 8–12px
+- Border radius: approximately 10–12px
+- Subtle border
+- Minimal shadow
+- Centered icon
+- Centered label
+- Maximum two lines for labels
+
+Use existing theme tokens.
+
+Do not hardcode colors that break Dark mode.
+
+### Notification counts
+
+Preserve existing pending count indicators.
+
+Examples:
+
+- Joining Requests: 2
+- Maintenance: 2
+- Complaints: 2
+- Parcels: 1
+- Tracking Center: 1
+
+Position these indicators consistently in the top-right corner of the corresponding quick link card.
+
+Do not allow badges to change card dimensions.
+
+Counts must come from the relevant application data.
+
+### Interaction
+
+Clicking any quick link must immediately open the associated page.
+
+Do not introduce expandable operation sections.
+
+Do not introduce a More Operations button.
+
+Do not change any other PG Owner Dashboard functionality unnecessarily.
+
+---
+
+# PART 3 — SUPER ADMIN DASHBOARD DESIGN SYSTEM
+
+## 6. Professional administration interface
+
+Transform the existing Super Admin Dashboard into a complete administration and operations management interface.
+
+The administrator must be able to manage:
+
+- PG Owners
+- Tenants
+- Properties
+- Property Approvals
+- Location Verification
+- Documents
+- Subscriptions
+- Featured PGs
+- Local Advertisements
+- Notifications
+- Support
+- Audit Logs
+- Administrator Profile
+
+Preserve all additional existing administrative modules.
+
+Use a consistent table-based design across operational pages.
+
+### General design
+
+- Clean background
+- Compact page headings
+- Consistent table styling
+- Clear search fields
+- Simple dropdown filters
+- Recognizable icons
+- Readable typography
+- Minimal shadows
+- Consistent action buttons
+- Responsive layouts
+- Accessible colors
+
+Avoid large individual record cards for administrative records.
+
+Use summary cards only where they provide meaningful overview statistics.
+
+---
+
+## 7. Standard administrative table component
+
+Create or reuse a shared administrative data table component.
+
+The component should support:
+
+- Search
+- Column headings
+- Sorting
+- Pagination
+- Date range filters
+- Status filters
+- Property filters
+- Owner filters
+- City filters
+- State filters
+- Loading state
+- Empty state
+- Error state
+- Refresh
+- Export where appropriate
+- Row actions
+
+Use server-side pagination and filtering where the backend supports it.
+
+Suggested page sizes:
+
+- 10 records
+- 25 records
+- 50 records
+- 100 records
+
+Do not load an unlimited number of records at once.
+
+### Table action buttons
+
+Use consistent icons and labels:
+
+| Action | Icon | Treatment |
+|---|---|---|
+| View | Eye | Blue or neutral |
+| Edit | Pencil | Neutral |
+| Delete | Trash2 | Red |
+| Approve | CheckCircle | Green |
+| Reject | XCircle | Red |
+| Suspend | Ban | Red or amber |
+| Restore | RotateCcw | Green |
+| Location | MapPin | Blue |
+| Download | Download | Neutral |
+| Message | MessageSquare | Neutral |
+
+On smaller screens, use compact buttons or an accessible row action menu.
+
+Important actions must remain easy to discover.
+
+### Status colors
+
+- Approved: Green
+- Verified: Green
+- Active: Green
+- Paid: Green
+- Published: Green
+- Pending: Amber
+- Under Review: Blue
+- Corrections Required: Orange
+- Rejected: Red
+- Suspended: Red
+- Expired: Gray
+- Archived: Gray
+- Draft: Gray
+
+Always display readable status text alongside colors.
+
+---
+
+# PART 4 — PROPERTY VERIFICATION
+
+## 8. Property approval and verification table
+
+Redesign the existing Property Verification or Property Approvals page.
+
+Display all property registration applications in a professional table.
+
+### Summary statistics
+
+Display compact summary cards:
+
+- Total Applications
+- Pending Verification
+- Under Review
+- Approved
+- Rejected
+- Corrections Required
+
+Clicking a summary card should apply the relevant status filter.
+
+### Property verification table
+
+Include the following columns:
+
+- Application ID
+- Property ID
+- PG Name
+- Owner Name
+- Owner Mobile Number
+- Property Type
+- Accommodation Category
+- City
+- Locality
+- Submitted Date
+- Last Updated Date
+- Document Status
+- Location Status
+- Approval Status
+- Actions
+
+### Search
+
+Allow searching by:
+
+- PG Name
+- Property ID
+- Application ID
+- Owner Name
+- Owner Mobile Number
+- City
+- Locality
+
+### Filters
+
+- All States
+- State
+- District
+- City
+- Accommodation Category
+- Property Type
+- Approval Status
+- Document Verification Status
+- Location Verification Status
+- Submitted Date Range
+
+### Actions
+
+- View
+- Edit
+- Approve
+- Reject
+- Request Corrections
+- Delete eligible drafts
+- Archive eligible records
+
+---
+
+## 9. Property verification details
+
+When the administrator clicks View, open a detailed property verification page.
+
+Use a clean tab-based layout.
+
+### Tab 1 — Property Overview
+
+Display:
+
+- PG Name
+- Property ID
+- Application ID
+- Property Description
+- Property Type
+- Accommodation Category
+- Established Year
+- Food Availability
+- Property Amenities
+- Registration Date
+- Current Approval Status
+
+### Tab 2 — Owner Details
+
+Display:
+
+- Owner ID
+- Full Name
+- Mobile Number
+- Alternate Mobile Number
+- Email
+- Business Name
+- Account Status
+- Registration Date
+- Number of Properties
+
+### Tab 3 — Address and Location
+
+Display:
+
+- State
+- District
+- City
+- Locality
+- Complete Address
+- PIN Code
+- Landmark
+- Submitted Latitude
+- Submitted Longitude
+- Location Accuracy if available
+- Location Capture Date
+- Location Verification Status
+
+Provide an Open in Google Maps button for the registered property location.
+
+### Tab 4 — Property Photographs
+
+Display:
+
+- Cover Photograph
+- All submitted property photographs
+- Photograph upload dates
+- Full-screen image preview
+
+The initial property registration requires at least four property photographs.
+
+Room and bathroom photographs belong to the later inventory management workflow.
+
+Do not require room photographs for initial property approval.
+
+### Tab 5 — Documents
+
+Display:
+
+- Document Type
+- Document Name
+- Upload Date
+- Verification Status
+- Document Preview
+- Verification Remarks
+
+Allow authorized document verification.
+
+### Tab 6 — Verification History
+
+Display:
+
+- Application Submission
+- Review Started
+- Corrections Requested
+- Resubmission
+- Approval
+- Rejection
+- Administrator Remarks
+- Relevant timestamps
+
+---
+
+## 10. Property approval workflow
+
+Preserve the following lifecycle:
+
+Draft → Submitted → Under Review → Approved or Corrections Required or Rejected
+
+When corrections are requested:
+
+- Require a correction reason.
+- Allow the owner to update the relevant details.
+- Allow resubmission.
+- Preserve previous verification history.
+
+When rejected:
+
+- Require a rejection reason.
+- Notify the owner.
+- Preserve the application record.
+
+When approved:
+
+- Record the approving administrator.
+- Record the approval date.
+- Notify the PG owner.
+- Update the property's eligibility.
+
+After the required property and location approvals are complete, the owner can manage floors, rooms, beds, bathrooms, rents, and internal operations.
+
+Do not automatically publish the property to the public marketplace.
+
+The future ₹299 official listing payment is a separate entitlement workflow.
+
+Do not implement a new payment gateway or activate the listing fee as part of this update.
+
+---
+
+# PART 5 — LOCATION VERIFICATION
+
+## 11. Dedicated location verification table
+
+Redesign the existing Location Verification page.
+
+Display property location verification requests in a searchable, filterable table.
+
+### Summary cards
+
+- Total Location Requests
+- Pending Verification
+- Under Review
+- Verified Locations
+- Rejected Locations
+- Reverification Required
+
+### Table columns
+
+- Location Request ID
+- Property ID
+- PG Name
+- Owner Name
+- Owner Mobile Number
+- City
+- Locality
+- Submitted Latitude
+- Submitted Longitude
+- Accuracy
+- Submitted Date
+- Verification Status
+- Actions
+
+On mobile, place coordinate details inside expandable rows if necessary.
+
+### Search
+
+Support:
+
+- Property ID
+- PG Name
+- Owner Name
+- Mobile Number
+- City
+- Locality
+- PIN Code
+
+### Filters
+
+- State
+- District
+- City
+- Location Verification Status
+- Property Approval Status
+- Submitted Date
+- Verification Date
+
+### Actions
+
+- View
+- Open Property Location
+- Verify
+- Reject
+- Request Reverification
+- Edit authorized verification remarks
+- Archive eligible requests
+
+---
+
+## 12. Location verification details page
+
+When clicking View, display complete property details.
+
+### Property information
+
+- Property Name
+- Property ID
+- Property Type
+- Owner Name
+- Owner Mobile Number
+- Owner Email
+- Complete Address
+- City
+- Locality
+- PIN Code
+- Landmark
+
+### GPS information
+
+- Submitted Latitude
+- Submitted Longitude
+- Location Accuracy
+- Capture Timestamp
+- Submission Timestamp
+- Location Verification Status
+
+### Property photographs
+
+Display all submitted property photographs.
+
+### Map preview
+
+Display the registered property location on a map if an existing map integration is available.
+
+Show a marker representing the submitted coordinates.
+
+If no embedded map integration exists, retain the Open in Google Maps button.
+
+Do not introduce an unnecessary paid Maps API dependency.
+
+### Open in Google Maps
+
+Create a clearly visible button:
+
+Open in Google Maps
+
+When clicked, open Google Maps using the submitted property latitude and longitude.
+
+Use the supported Google Maps URL format:
+
+`https://www.google.com/maps/search/?api=1&query=LATITUDE,LONGITUDE`
+
+Replace the placeholders with validated property coordinates.
+
+On mobile, allow the operating system to open Google Maps where supported.
+
+On desktop, open Google Maps in a new tab.
+
+Validate latitude and longitude before constructing the URL.
+
+If coordinates are unavailable, disable the button and display:
+
+"Property location has not been submitted."
+
+Do not display a fabricated location.
+
+### Verification actions
+
+Provide:
+
+- Mark Location Verified
+- Reject Location
+- Request New Location
+- Add Verification Notes
+
+Require appropriate confirmation.
+
+Record the administrator ID, decision, reason, and timestamp.
+
+Opening a map alone must not automatically mark a property as verified.
+
+---
+
+# PART 6 — PG OWNER MANAGEMENT
+
+## 13. PG owners management table
+
+Redesign the PG Owners page.
+
+### Summary cards
+
+- Total Owners
+- Active Owners
+- New Owners This Month
+- Suspended Owners
+- Owners with Approved Properties
+- Owners with Active Subscriptions
+
+### Table columns
+
+- Owner ID
+- Owner Name
+- Mobile Number
+- Email
+- Business Name
+- City
+- Total Properties
+- Approved Properties
+- Active Tenants
+- Subscription Plan
+- Registration Date
+- Last Active
+- Account Status
+- Actions
+
+### Search
+
+Support:
+
+- Owner Name
+- Owner ID
+- Mobile Number
+- Email
+- Business Name
+- Property Name
+
+### Filters
+
+- State
+- City
+- Account Status
+- Subscription Plan
+- Registration Date
+- Property Approval Status
+- Owners With Properties
+- Owners Without Properties
+
+### Actions
+
+- View
+- Edit permitted account details
+- View Properties
+- View Subscription
+- Suspend
+- Restore
+- Archive or Delete where permitted
+
+Do not allow the administrator to view passwords, OTP values, authentication tokens, or private credentials.
+
+---
+
+## 14. PG owner detailed profile
+
+When clicking View, open a detailed owner profile.
+
+### Overview tab
+
+- Profile Photograph
+- Owner ID
+- Full Name
+- Mobile Number
+- Alternate Mobile Number
+- Email
+- Business Name
+- Business Address
+- Account Status
+- Registration Date
+- Last Active Timestamp
+
+### Properties tab
+
+Display a table of properties belonging to the owner.
+
+Include:
+
+- Property Name
+- City
+- Approval Status
+- Location Status
+- Listing Status
+- Total Rooms
+- Total Beds
+- Occupied Beds
+- Available Beds
+- Active Tenants
+
+Provide View Property and Open Property Location actions.
+
+### Subscription tab
+
+Display:
+
+- Current Plan
+- Subscription Status
+- Start Date
+- Expiry Date
+- Renewal History
+- Entitlements
+- Platform Payment History
+
+### Documents tab
+
+Display authorized owner and property verification documents.
+
+### Support tab
+
+Display support tickets associated with the owner.
+
+### Activity tab
+
+Display authorized account and administrative activity history.
+
+Do not treat the owner's registered property address as their personal current location.
+
+---
+
+## 15. Owner suspension
+
+When clicking Suspend:
+
+- Open a confirmation dialog.
+- Require a suspension reason.
+- Display affected permissions.
+- Record the administrator performing the action.
+- Notify the owner.
+- Preserve all records.
+
+Apply suspension consistently across authentication, management permissions, and public listing eligibility according to the existing account policy.
+
+Do not automatically delete tenant records, payments, deposits, or active stay history.
+
+Provide a Restore Account action for authorized administrators.
+
+---
+
+# PART 7 — TENANT MANAGEMENT
+
+## 16. Super Admin tenant table
+
+Redesign the Tenants page into a complete management table.
+
+### Summary cards
+
+- Total Registered Tenants
+- Active PG Tenants
+- Tenants Without Active Stay
+- New Tenants This Month
+- Previous Tenants
+- Suspended Accounts
+
+### Table columns
+
+- Tenant ID
+- Tenant Name
+- Mobile Number
+- Email
+- Current PG
+- PG Owner
+- City
+- Floor
+- Room
+- Bed
+- Joining Date
+- Stay Status
+- Account Status
+- Last Active
+- Actions
+
+### Search
+
+Allow searching by:
+
+- Tenant Name
+- Tenant ID
+- Mobile Number
+- Email
+- PG Name
+- Room Number
+
+### Filters
+
+- State
+- City
+- Property
+- PG Owner
+- Stay Status
+- Account Status
+- Joining Date
+- Registration Date
+- Document Verification Status
+
+### Actions
+
+- View
+- Edit permitted account details
+- View Stay
+- View Registered PG Location
+- View Authorized Location Share where applicable
+- Suspend
+- Restore
+- Archive or Delete where permitted
+
+Do not display precise personal coordinates in the general tenant table.
+
+---
+
+## 17. Tenant detailed profile
+
+When the administrator clicks View, display a professional detailed profile.
+
+### Personal information
+
+- Profile Photograph
+- Tenant ID
+- Full Name
+- Mobile Number
+- Email
+- Registration Date
+- Account Status
+- Last Active Timestamp
+
+### Accommodation information
+
+- Current PG
+- Property ID
+- Owner Name
+- Floor
+- Room
+- Bed
+- Sharing Type
+- Joining Date
+- Stay Status
+- Agreed Rent
+- Security Deposit Status
+
+### Registered PG location
+
+Display:
+
+- Property Address
+- City
+- Locality
+- Property Latitude
+- Property Longitude
+- Open PG in Google Maps
+
+Clearly identify these coordinates as the accommodation's registered location, not the tenant's current location.
+
+### Documents
+
+Display authorized verification documents and their statuses.
+
+### Stay history
+
+Display:
+
+- Previous PGs
+- Joining Dates
+- Checkout Dates
+- Room Transfers
+- Stay Status
+
+### Financial overview
+
+Display authorized official accommodation records where necessary for administrative support:
+
+- Rent Status
+- Deposit Status
+- Outstanding Accommodation Dues
+- Relevant Payment History
+
+Do not expose the tenant's private personal expense tracker.
+
+### Complaints and support
+
+Display relevant support tickets, complaints, and resolution history.
+
+### Location sharing
+
+Display location request and consent status only to administrators with the appropriate permissions.
+
+A previously shared personal location may be viewed only when:
+
+- The user voluntarily shared it.
+- The purpose is legitimate and documented.
+- The administrator is authorized.
+- The permission has not expired.
+- The permission has not been revoked.
+- Applicable age and privacy protections are satisfied.
+
+Clearly label the shared timestamp and expiry.
+
+Do not describe an old shared location as a live location.
+
+Do not automatically collect tenant GPS coordinates during login, app opening, or background activity.
+
+---
+
+# PART 8 — ALL PROPERTIES MANAGEMENT
+
+## 18. Complete properties table
+
+Redesign the existing All Properties page.
+
+This page must display all registered PG properties, not just pending verification requests.
+
+### Summary cards
+
+- Total Properties
+- Approved Properties
+- Published Properties
+- Unpublished Properties
+- Pending Properties
+- Suspended Properties
+- Total Available Beds
+
+### Table columns
+
+- Property ID
+- Cover Photograph
+- PG Name
+- Owner Name
+- Owner Mobile Number
+- Property Type
+- City
+- Locality
+- Total Floors
+- Total Rooms
+- Total Beds
+- Occupied Beds
+- Available Beds
+- Approval Status
+- Location Status
+- Listing Status
+- Overall Rating
+- Registration Date
+- Actions
+
+### Search
+
+- PG Name
+- Property ID
+- Owner Name
+- Mobile Number
+- City
+- Locality
+
+### Filters
+
+- State
+- City
+- Locality
+- Owner
+- Accommodation Category
+- Property Type
+- Approval Status
+- Location Verification Status
+- Listing Status
+- Featured Status
+- Food Availability
+- Occupancy Range
+- Rating Range
+
+### Actions
+
+- View
+- Edit
+- View Owner
+- View Tenants
+- View Floors and Rooms
+- View Vacancies
+- View Documents
+- Open in Google Maps
+- Suspend
+- Restore
+- Unpublish
+- Archive
+- Delete eligible drafts
+
+---
+
+## 19. Property detailed administration page
+
+When clicking View, display:
+
+### Overview
+
+- Property Information
+- Property Description
+- Owner Details
+- Address
+- Amenities
+- Property Photographs
+- Registration Status
+- Approval Status
+- Location Verification Status
+- Listing Status
+
+### Inventory
+
+Display:
+
+- Floors
+- Rooms
+- Bathrooms
+- Sharing Configurations
+- Beds
+- Rent Configuration
+- Room Photographs
+- Bathroom Photographs
+
+### Occupancy
+
+Display:
+
+- Total Beds
+- Occupied Beds
+- Available Beds
+- Reserved Beds
+- Maintenance Beds
+- Occupancy Percentage
+
+### Tenants
+
+Display a property-specific tenant table.
+
+### Reviews
+
+Display overall and category-wise ratings, review messages, and moderation status.
+
+### Documents
+
+Display property-related documents.
+
+### Location
+
+Display registered property coordinates and Open in Google Maps.
+
+### Listing and promotion
+
+Display:
+
+- Public Listing Status
+- Listing Entitlement
+- Featured Status
+- Promotion History
+
+### Administrative history
+
+Display approval, verification, suspension, restoration, and modification history.
+
+---
+
+## 20. Property suspension workflow
+
+Allow authorized administrators to suspend a property.
+
+Require:
+
+- Suspension Category
+- Detailed Reason
+- Effective Date
+- Optional Review Date
+- Administrator Confirmation
+
+Suspension categories:
+
+- Incorrect Information
+- Invalid Documents
+- Location Verification Issue
+- Policy Violation
+- Safety Concern
+- Fraudulent Listing
+- Owner Account Issue
+- Other
+
+After suspension:
+
+- Remove the property from public discovery.
+- Prevent new public joining requests where appropriate.
+- Notify the owner.
+- Preserve existing tenant records.
+- Preserve financial history.
+- Preserve administrative history.
+- Apply appropriate restrictions without unnecessarily disrupting existing tenants' essential services.
+
+Provide a Restore Property action.
+
+Require a restoration reason and authorization.
+
+---
+
+# PART 9 — DOCUMENT MANAGEMENT
+
+## 21. Central document management system
+
+Redesign the Documents page into a unified document verification center.
+
+This module contains documents associated with:
+
+- PG Owners
+- PG Properties
+- Tenants
+
+Create tabs:
+
+- All Documents
+- Owner Documents
+- Property Documents
+- Tenant Documents
+- Pending Verification
+- Verified Documents
+- Rejected Documents
+
+### Summary cards
+
+- Total Documents
+- Pending Verification
+- Verified
+- Rejected
+- Corrections Required
+- Expiring Documents
+
+### Table columns
+
+- Document ID
+- Document Category
+- Document Type
+- Associated User
+- Associated Property
+- Uploaded By
+- Upload Date
+- Expiry Date if applicable
+- Verification Status
+- Verified By
+- Last Updated
+- Actions
+
+### Search
+
+- Document ID
+- Document Name
+- Owner Name
+- Tenant Name
+- Property Name
+- Document Type
+
+### Filters
+
+- Document Category
+- Document Type
+- Property
+- Owner
+- Tenant
+- Verification Status
+- Upload Date
+- Expiry Date
+
+### Actions
+
+- View
+- Preview
+- Download where authorized
+- Verify
+- Reject
+- Request Replacement
+- Edit Verification Remarks
+- Archive
+- Delete where legally and operationally appropriate
+
+---
+
+## 22. Document details and preview
+
+When clicking View, display:
+
+- Document Metadata
+- Associated Account
+- Associated Property
+- Upload Date
+- Verification Status
+- Verification History
+- Administrator Remarks
+
+Support secure preview for:
+
+- PDF
+- JPEG
+- PNG
+- Other supported image formats
+
+Use private storage and authorized access.
+
+Do not expose private document storage URLs publicly.
+
+Do not display complete sensitive identification numbers in general tables.
+
+Do not introduce unnecessary collection of Aadhaar numbers or identity document copies.
+
+Document access must be recorded in audit logs.
+
+---
+
+# PART 10 — SUBSCRIPTIONS AND PLAN MANAGEMENT
+
+## 23. Subscription management overview
+
+Redesign the Subscriptions module.
+
+Create tabs:
+
+1. Subscription Plans
+2. Plan Features
+3. Active Subscriptions
+4. Expired Subscriptions
+5. Payment History
+6. Listing Entitlements
+
+### Summary cards
+
+- Total Plans
+- Active Subscriptions
+- Expired Subscriptions
+- Upcoming Renewals
+- Monthly Recurring Revenue
+- Subscription Revenue
+
+Calculate revenue from confirmed platform payment records only.
+
+Do not include PG owners' rent collection as platform revenue.
+
+---
+
+## 24. Subscription plans table
+
+Display:
+
+- Plan ID
+- Plan Name
+- Description
+- Monthly Price
+- Yearly Price if supported
+- Maximum Properties
+- Maximum Published Listings
+- Total Features
+- Active Subscribers
+- Plan Status
+- Created Date
+- Updated Date
+- Actions
+
+### Actions
+
+- Add Plan
+- View
+- Edit
+- Duplicate Plan
+- Activate
+- Deactivate
+- Archive
+- Delete eligible unused plans
+
+---
+
+## 25. Add subscription plan
+
+When clicking Add Plan, open a professional form.
+
+### Basic information
+
+- Plan Name
+- Plan Code
+- Short Description
+- Detailed Description
+- Monthly Price
+- Yearly Price if applicable
+- Currency
+- Billing Frequency
+- Display Order
+- Plan Status
+
+Default currency must be INR.
+
+### Plan limits
+
+Allow administrators to configure:
+
+- Maximum Managed Properties
+- Maximum Published Properties
+- Maximum Staff Accounts
+- Maximum Subscription-Covered Listings
+- Report Access
+- Advanced Management Access
+
+Only include limits that are supported by the entitlement system.
+
+Do not introduce artificial limits that cannot be enforced.
+
+### Plan features
+
+Allow selection of existing features using checkboxes or toggle controls.
+
+Examples:
+
+- Property Management
+- Tenant Management
+- Room Management
+- Rent Collection
+- Deposit Management
+- Expense Tracker
+- QR Onboarding
+- Maintenance Management
+- Complaints Management
+- Basic Reports
+- Advanced Reports
+- Staff Management
+- Bulk Reminders
+- Multi-Property Management
+- Priority Support
+- Advanced Operational Tracking
+
+Personal location access must never be unlocked merely by purchasing a subscription.
+
+### Additional settings
+
+- Recommended Plan
+- Popular Plan
+- Trial Period if supported
+- Grace Period
+- Renewal Configuration
+- Plan Visibility
+- Terms and Conditions
+
+Preserve the existing commercial configuration.
+
+Do not change current plan prices without explicit administrator action.
+
+---
+
+## 26. Plan features management
+
+Create a separate Plan Features tab.
+
+Allow administrators to:
+
+- Add Feature
+- View Feature
+- Edit Feature
+- Activate Feature
+- Deactivate Feature
+- Archive Feature
+- Assign Feature to Plans
+- Remove Feature from Future Plan Versions
+
+### Feature fields
+
+- Feature ID
+- Feature Name
+- Feature Code
+- Feature Description
+- Feature Category
+- Feature Status
+- Display Order
+
+### Feature categories
+
+- Property Management
+- Tenant Management
+- Finance
+- Reports
+- Staff Management
+- Daily Operations
+- Marketing
+- Support
+
+### Feature table
+
+Display:
+
+- Feature Name
+- Feature Code
+- Category
+- Assigned Plans
+- Status
+- Created Date
+- Actions
+
+Use stable feature identifiers for backend entitlement checks.
+
+Do not rely solely on feature display names.
+
+---
+
+## 27. Active subscription management
+
+Display a table containing:
+
+- Subscription ID
+- Owner Name
+- Owner ID
+- Plan Name
+- Billing Amount
+- Start Date
+- Expiry Date
+- Renewal Date
+- Payment Status
+- Subscription Status
+- Actions
+
+### Filters
+
+- Plan
+- Subscription Status
+- Payment Status
+- Start Date
+- Expiry Date
+- Owner
+
+### Actions
+
+- View
+- View Payment History
+- Change Plan through authorized workflow
+- Cancel Subscription
+- Extend Subscription with reason
+- Restore eligible Subscription
+
+Do not silently modify existing customer subscription agreements.
+
+Preserve plan versions and historical pricing.
+
+Do not permanently delete plans associated with existing subscribers or payment history.
+
+---
+
+# PART 11 — FEATURED PG MANAGEMENT
+
+## 28. Featured PG administration
+
+Redesign the Featured PGs page.
+
+Display all property promotion campaigns in a professional table.
+
+### Summary cards
+
+- Total Featured Campaigns
+- Active Featured PGs
+- Scheduled Campaigns
+- Expired Campaigns
+- Pending Payments
+- Featured Listing Revenue
+
+### Table columns
+
+- Campaign ID
+- Property Name
+- Property ID
+- Owner Name
+- Owner Mobile Number
+- City
+- Promotion Package
+- Campaign Price
+- Start Date
+- End Date
+- Impressions
+- Clicks
+- Payment Status
+- Campaign Status
+- Actions
+
+Only display impressions and clicks when actual measurement data is available.
+
+### Search
+
+- Property Name
+- Property ID
+- Owner Name
+- Campaign ID
+- City
+
+### Filters
+
+- City
+- Owner
+- Campaign Status
+- Payment Status
+- Promotion Package
+- Start Date
+- End Date
+
+### Actions
+
+- Add Featured PG
+- View
+- Edit
+- Activate
+- Pause
+- Resume
+- Cancel
+- Extend through authorized workflow
+- Archive
+- Delete eligible drafts
+
+---
+
+## 29. Add or edit featured PG
+
+Fields:
+
+- Select Property
+- Select Owner
+- Promotion Package
+- Promotion Title
+- Target City
+- Placement
+- Campaign Start Date
+- Campaign End Date
+- Duration
+- Campaign Price
+- Payment Reference
+- Campaign Status
+- Administrative Notes
+
+### Placement options
+
+- Homepage Featured Section
+- Explore Page
+- Search Results
+- City Featured Section
+- Locality Featured Section
+
+Only allow approved, location-verified, eligible public listings to be promoted.
+
+Do not allow payment status to be falsely marked as gateway-confirmed.
+
+### Featured campaign details
+
+When clicking View, display:
+
+- Complete Property Information
+- Owner Information
+- Campaign Information
+- Promotion Duration
+- Payment Information
+- Performance Analytics
+- Campaign History
+
+Clearly label featured listings as Sponsored or Featured where appropriate.
+
+---
+
+# PART 12 — LOCAL ADVERTISEMENT MANAGEMENT
+
+## 30. PG Finder Local advertising administration
+
+Create or improve the Local Ads management module.
+
+This module is for directly managed advertisements from local businesses.
+
+Keep it separate from Google AdMob reporting.
+
+### Example advertiser categories
+
+- Restaurants
+- Grocery Stores
+- Laundry Services
+- Salons
+- Gyms
+- Cafes
+- Stationery Stores
+- Medical Stores
+- Local Transport Services
+- Home Services
+- Internet Service Providers
+- Other eligible local businesses
+
+Apply age-appropriate advertising restrictions and moderation.
+
+### Tabs
+
+- All Advertisements
+- Advertisers
+- Active Campaigns
+- Pending Approval
+- Scheduled Campaigns
+- Expired Campaigns
+- Rejected Campaigns
+- Advertisement Payments
+
+### Summary cards
+
+- Total Advertisers
+- Total Campaigns
+- Active Advertisements
+- Pending Approval
+- Expiring Campaigns
+- Local Advertising Revenue
+
+---
+
+## 31. Local advertisement table
+
+Display:
+
+- Advertisement ID
+- Business Name
+- Advertiser Name
+- Contact Number
+- Advertisement Category
+- City
+- Locality
+- Advertisement Title
+- Placement
+- Campaign Start Date
+- Campaign End Date
+- Campaign Price
+- Payment Status
+- Impressions
+- Clicks
+- Campaign Status
+- Actions
+
+### Search
+
+- Business Name
+- Advertiser Name
+- Mobile Number
+- Advertisement ID
+- Campaign Title
+- City
+- Locality
+
+### Filters
+
+- Business Category
+- City
+- Locality
+- Campaign Status
+- Payment Status
+- Placement
+- Campaign Start Date
+- Campaign End Date
+
+### Actions
+
+- Add Advertisement
+- View
+- Edit
+- Approve
+- Reject
+- Activate
+- Pause
+- Resume
+- Cancel
+- Archive
+- Delete eligible drafts
+
+---
+
+## 32. Advertiser management
+
+Create an Advertisers table.
+
+Columns:
+
+- Advertiser ID
+- Business Name
+- Contact Person
+- Mobile Number
+- Email
+- Business Category
+- City
+- Locality
+- Total Campaigns
+- Active Campaigns
+- Total Confirmed Payments
+- Account Status
+- Actions
+
+### Add or edit advertiser
+
+Fields:
+
+- Business Name
+- Contact Person
+- Mobile Number
+- Alternate Mobile Number
+- Email
+- Business Category
+- Business Address
+- State
+- City
+- Locality
+- PIN Code
+- Website
+- Business Description
+- Business Logo
+- Account Status
+
+### Advertiser details
+
+Display:
+
+- Business Information
+- Contact Information
+- Business Location
+- Active Advertisements
+- Previous Advertisements
+- Payment History
+- Campaign Performance
+- Administrative Notes
+
+---
+
+## 33. Create local advertisement
+
+Provide a simple advertisement creation form.
+
+### Advertisement information
+
+- Select Advertiser
+- Advertisement Title
+- Short Description
+- Advertisement Image
+- Business Category
+- Call-to-Action Label
+- Destination URL
+- Public Business Contact if authorized
+
+### Campaign targeting
+
+- State
+- City
+- Locality
+- Eligible PG Finder placement
+- Campaign Start Date
+- Campaign End Date
+
+Use contextual or broad area-based targeting.
+
+Do not use tenants' private GPS histories or sensitive personal information for advertisement targeting.
+
+### Placement options
+
+- PG Finder Local
+- Tenant Homepage
+- Explore Page
+- Local Services Section
+
+### Payment information
+
+- Advertisement Package
+- Campaign Amount
+- Payment Method
+- Payment Reference
+- Payment Status
+
+### Moderation
+
+- Draft
+- Pending Approval
+- Approved
+- Scheduled
+- Active
+- Paused
+- Rejected
+- Expired
+- Cancelled
+
+### Advertisement preview
+
+Display a live preview of the advertisement using its image, title, description, and action button.
+
+Clearly label the advertisement as Sponsored.
+
+Validate destination URLs and advertisement content before publishing.
+
+---
+
+# PART 13 — NOTIFICATION MANAGEMENT
+
+## 34. Complete notification center
+
+Redesign the existing Notifications page.
+
+The administrator must be able to create notifications, publish notifications, schedule notifications where supported, and manage previously posted notifications.
+
+### Tabs
+
+- All Notifications
+- Published
+- Scheduled
+- Drafts
+- Failed
+- Archived
+
+### Summary cards
+
+- Total Notifications
+- Published Notifications
+- Scheduled Notifications
+- Draft Notifications
+- Delivered Notifications
+- Failed Notifications
+
+Only display delivery statistics supported by the actual notification system.
+
+---
+
+## 35. Notifications table
+
+Display:
+
+- Notification ID
+- Title
+- Notification Category
+- Target Audience
+- Target Property or City
+- Priority
+- Delivery Channel
+- Created By
+- Created Date
+- Published Date
+- Scheduled Date
+- Delivery Status
+- Actions
+
+### Search
+
+- Notification Title
+- Notification ID
+- Message Content
+- Created By
+
+### Filters
+
+- Notification Category
+- Target Audience
+- Priority
+- Delivery Channel
+- Notification Status
+- Created Date
+- Published Date
+
+### Actions
+
+- Create Notification
+- View
+- Edit Draft
+- Duplicate
+- Publish
+- Schedule
+- Cancel Scheduled Notification
+- Archive
+- Delete eligible drafts
+
+---
+
+## 36. Create notification form
+
+When clicking Create Notification, display a form.
+
+### Notification content
+
+- Notification Title
+- Notification Message
+- Optional Image
+- Notification Category
+- Priority
+- Optional Internal Navigation Link
+
+### Notification categories
+
+- General Announcement
+- Platform Update
+- Maintenance Announcement
+- Property Approval
+- Location Verification
+- Subscription Update
+- Payment Reminder
+- Policy Update
+- Startup Event
+- Safety Announcement
+- Support Update
+- Promotional Announcement
+
+### Target audience
+
+Allow selection of:
+
+- All Eligible Users
+- All PG Owners
+- All Tenants
+- Specific PG Owners
+- Specific Tenants
+- Specific Properties
+- Specific Cities
+- Specific States
+- Specific Subscription Plans
+
+Show an estimated recipient count where supported.
+
+### Delivery channels
+
+- In-App Notification
+- Push Notification
+- Email where integrated
+
+Do not claim SMS, WhatsApp, email, or push delivery is available unless the integration exists.
+
+### Publishing options
+
+- Save as Draft
+- Publish Now
+- Schedule for Later
+
+Use the Asia/Kolkata timezone for administrative scheduling.
+
+### Preview
+
+Display a notification preview before publication.
+
+### Confirmation
+
+Before sending a notification to a large audience, display:
+
+- Notification Title
+- Selected Audience
+- Estimated Recipient Count
+- Delivery Channel
+- Scheduled Time
+
+Require confirmation.
+
+---
+
+## 37. Previously published notifications
+
+Allow the administrator to view:
+
+- Original Message
+- Target Audience
+- Published Date
+- Delivery Status
+- Read Count if available
+- Unread Count if available
+- Failed Deliveries if available
+
+Allow archiving or withdrawing an in-app notification where supported.
+
+Do not imply that an already delivered push notification can be recalled from a user's device.
+
+For material corrections, allow publishing a corrected notification linked to the original.
+
+Preserve notification publication history.
+
+---
+
+# PART 14 — SUPPORT AND HELP DESK
+
+## 38. Complete support ticket management
+
+Redesign the Support page into a professional help desk.
+
+The administrator must be able to:
+
+- View user problems
+- Read ticket messages
+- Review attachments
+- Assign tickets
+- Update priority
+- Update status
+- Send replies
+- Resolve tickets
+- Reopen tickets
+
+### Summary cards
+
+- Total Tickets
+- Open Tickets
+- In Progress
+- Awaiting User Response
+- Resolved Tickets
+- High Priority Tickets
+- Overdue Tickets
+
+---
+
+## 39. Support tickets table
+
+Display:
+
+- Ticket ID
+- Subject
+- User Name
+- User Role
+- Mobile Number
+- Associated PG
+- Issue Category
+- Priority
+- Assigned Administrator
+- Created Date
+- Last Updated
+- Ticket Status
+- Actions
+
+### Search
+
+- Ticket ID
+- User Name
+- Mobile Number
+- Email
+- Ticket Subject
+- Property Name
+
+### Filters
+
+- User Role
+- Issue Category
+- Priority
+- Ticket Status
+- Assigned Administrator
+- Property
+- City
+- Created Date
+- Last Updated Date
+
+### Issue categories
+
+- Account and Login
+- Property Registration
+- Property Approval
+- Location Verification
+- Document Verification
+- Subscription
+- Platform Payment
+- Featured Listing
+- Advertisement
+- Tenant Joining
+- Room and Bed Management
+- Rent Management
+- Technical Issue
+- Privacy Concern
+- Safety Concern
+- Other
+
+### Ticket statuses
+
+- New
+- Open
+- Assigned
+- In Progress
+- Awaiting User Response
+- Awaiting Internal Review
+- Resolved
+- Closed
+- Reopened
+
+### Priorities
+
+- Low
+- Medium
+- High
+- Urgent
+
+### Actions
+
+- View
+- Reply
+- Edit Ticket Metadata
+- Assign
+- Change Priority
+- Change Status
+- Resolve
+- Close
+- Reopen
+- Archive
+
+---
+
+## 40. Support ticket details page
+
+When clicking View, open a detailed ticket page.
+
+### Header
+
+Display:
+
+- Ticket ID
+- Subject
+- Ticket Status
+- Priority
+- Created Date
+- Assigned Administrator
+
+### User information
+
+Display:
+
+- User Name
+- User Role
+- User ID
+- Mobile Number
+- Email
+- Associated Property if applicable
+
+### Problem description
+
+Display the original issue description.
+
+Display submitted screenshots and authorized attachments.
+
+### Conversation
+
+Create a ticket conversation interface.
+
+Display:
+
+- User Messages
+- Administrator Replies
+- Message Timestamps
+- Attachments
+- Sender Role
+
+### Administrator reply form
+
+Include:
+
+- Message Text Area
+- Optional Attachment
+- Send Reply Button
+
+When the administrator sends a reply:
+
+- Save the message.
+- Update the ticket conversation.
+- Notify the user.
+- Update the last activity timestamp.
+- Preserve message history.
+
+The user must be able to see the reply from their corresponding support page.
+
+### Internal notes
+
+Provide a separate Internal Notes section.
+
+Internal notes must not be visible to the user.
+
+### Ticket management
+
+Allow the administrator to:
+
+- Assign Ticket
+- Update Priority
+- Update Category
+- Update Status
+- Add Resolution Notes
+- Resolve Ticket
+- Reopen Ticket
+
+Require a resolution summary when closing important support issues.
+
+---
+
+# PART 15 — AUDIT LOGS AND ACTIVITY MONITORING
+
+## 41. Central audit log system
+
+Redesign the Audit Logs page into a comprehensive administrative activity center.
+
+The purpose is to provide security accountability, operational history, and troubleshooting.
+
+Do not create a hidden user surveillance system.
+
+Create tabs:
+
+1. All Activity
+2. Authentication Activity
+3. PG Owner Activity
+4. Tenant Activity
+5. Property Activity
+6. Administrator Activity
+7. Financial Activity
+8. Document Access
+9. Location Verification Activity
+10. Location Sharing Requests
+11. Security Events
+
+---
+
+## 42. Audit logs table
+
+Display:
+
+- Event ID
+- User ID
+- User Name
+- User Role
+- Event Category
+- Action
+- Resource Type
+- Resource ID
+- Associated Property
+- Event Timestamp
+- Event Result
+- Risk Level where applicable
+- Actions
+
+Additional security metadata may be displayed in authorized event details where justified.
+
+### Search
+
+- Event ID
+- User ID
+- User Name
+- Property ID
+- Property Name
+- Resource ID
+- Action
+
+### Filters
+
+- User Role
+- Event Category
+- Action
+- Resource Type
+- Property
+- Event Result
+- Date Range
+- Risk Level
+
+### Actions
+
+- View Event
+- Export Authorized Logs
+- View Related Account
+- View Related Property
+- View Related Security Event
+
+Audit logs must be append-only from the ordinary administrative interface.
+
+Do not provide Edit or Delete buttons for individual audit log entries.
+
+---
+
+## 43. Authentication and application activity
+
+Record appropriate security and operational events.
+
+Examples:
+
+- Account Registration
+- Login Success
+- Login Failure
+- Logout
+- Session Expired
+- Password Changed
+- Account Suspended
+- Account Restored
+- App Session Started
+- App Session Ended where reliably available
+- Unauthorized Access Attempt
+
+### Activity information
+
+Where legitimately collected, display:
+
+- User ID
+- User Role
+- Event Type
+- Event Timestamp
+- Device Category
+- Operating System
+- Application Version
+- Browser Type
+- Session Identifier
+- Event Result
+
+Sensitive network metadata must be restricted to authorized security personnel.
+
+If approximate network-derived region information is used for a legitimate security purpose, clearly label it as approximate and potentially inaccurate.
+
+Do not represent it as a verified physical location.
+
+Do not collect precise GPS coordinates automatically when owners or tenants open the application.
+
+Do not request background location permissions for audit logging.
+
+Do not create movement histories.
+
+---
+
+## 44. Property location audit history
+
+Record the history of registered PG property location submissions.
+
+Display:
+
+- Property ID
+- PG Name
+- Owner ID
+- Owner Name
+- Submitted Property Latitude
+- Submitted Property Longitude
+- Location Accuracy
+- Submission Timestamp
+- Verification Status
+- Reviewing Administrator
+- Verification Timestamp
+- Verification Remarks
+
+Allow authorized administrators to view the submitted property coordinates using Open in Google Maps.
+
+Preserve historical property location changes for verification accountability.
+
+Do not confuse property location history with personal owner or tenant movement history.
+
+---
+
+## 45. Personal location request audit history
+
+For any existing voluntary location sharing feature, record:
+
+- Request ID
+- Requesting Owner
+- Associated Tenant
+- Associated Property
+- Request Purpose
+- Request Timestamp
+- Administrator Review Decision
+- Tenant Consent Status
+- Permission Expiry
+- Revocation Status
+- Authorized Access Events
+
+Do not store precise personal coordinates in general audit logs.
+
+Keep any permitted location data in a separately protected resource.
+
+Administrative approval must not bypass tenant consent.
+
+Disable owner access to precise personal locations of minors by default.
+
+Apply additional safeguards for vulnerable users.
+
+Provide no continuous location tracking or automatic location collection.
+
+---
+
+## 46. Administrative audit events
+
+Record important administrative actions, including:
+
+- Property Approved
+- Property Rejected
+- Property Corrections Requested
+- Location Verified
+- Location Rejected
+- Owner Suspended
+- Owner Restored
+- Tenant Suspended
+- Tenant Restored
+- Property Suspended
+- Property Restored
+- Document Viewed
+- Document Verified
+- Document Rejected
+- Subscription Plan Created
+- Subscription Plan Updated
+- Feature Added
+- Subscription Changed
+- Featured Campaign Created
+- Advertisement Approved
+- Notification Published
+- Support Ticket Updated
+- Support Reply Sent
+- Authorized Record Archived
+
+For important changes, record permitted before-and-after values.
+
+Exclude passwords, authentication tokens, OTPs, full sensitive identity numbers, and private document contents.
+
+---
+
+## 47. Audit event details
+
+When clicking View Event, display:
+
+- Event ID
+- Actor
+- Actor Role
+- Action
+- Resource Type
+- Resource ID
+- Timestamp
+- Event Result
+- Administrative Reason
+- Authorized Before Values
+- Authorized After Values
+- Related Property
+- Related Account
+
+Use readable descriptions instead of exposing raw technical JSON by default.
+
+Provide an expandable technical details section for authorized administrators where necessary.
+
+Implement appropriate audit log retention and access restrictions.
+
+---
+
+# PART 16 — SUPER ADMIN PROFILE
+
+## 48. Replace More with Profile
+
+Update the Super Admin mobile bottom navigation.
+
+Remove the More navigation item.
+
+Replace it with Profile.
+
+Preserve the remaining existing navigation items.
+
+Suggested final navigation:
+
+- Home
+- Properties
+- Users
+- Approvals
+- Profile
+
+Use the existing route structure.
+
+Suggested profile route:
+
+`/admin/profile`
+
+Do not remove functionality previously available under More.
+
+Move those modules into:
+
+- Admin Dashboard Quick Links
+- Desktop Sidebar
+- Relevant Management Pages
+- Profile Settings where appropriate
+
+---
+
+## 49. Super Admin profile page
+
+Create or improve the administrator profile page.
+
+### Profile header
+
+Display:
+
+- Profile Photograph
+- Administrator Name
+- Administrator ID
+- Email
+- Mobile Number
+- Administrator Role
+- Account Status
+- Member Since
+- Last Login
+
+Provide an Edit Profile button.
+
+### Personal information
+
+- Full Name
+- Email
+- Mobile Number
+- Profile Photograph
+
+### Administrative information
+
+- Administrator Role
+- Assigned Permissions
+- Account Status
+- Account Creation Date
+
+### Activity overview
+
+Display:
+
+- Properties Reviewed
+- Locations Verified
+- Documents Reviewed
+- Support Tickets Resolved
+- Notifications Published
+
+Use actual administrative activity records.
+
+### Account settings
+
+- Edit Profile
+- Change Password
+- Two-Factor Authentication if supported
+- Active Sessions
+- Notification Preferences
+- Theme Preferences
+- Language Preferences
+- Security Settings
+- Help and Support
+- Privacy Policy
+- Terms and Conditions
+- Logout
+
+Do not allow administrators to elevate their own permissions through the profile form.
+
+Require appropriate authorization for role and permission changes.
+
+---
+
+# PART 17 — SUPER ADMIN DASHBOARD QUICK LINKS
+
+## 50. Improve administrator quick links
+
+Ensure all administrative modules are easily accessible from the Super Admin Dashboard.
+
+Display compact quick-access tiles for:
+
+- Property Verification
+- Location Verification
+- PG Owners
+- Tenants
+- All Properties
+- Documents
+- Subscriptions
+- Plan Features
+- Featured PGs
+- Local Advertisements
+- Advertisers
+- Notifications
+- Support Tickets
+- Audit Logs
+- Startup Events
+- Reviews and Ratings
+- Payments
+- Reports
+- Settings
+
+Preserve additional existing modules.
+
+Use equal-sized cards.
+
+Use consistent icons and text labels.
+
+Display relevant pending counts.
+
+Clicking a quick link must navigate directly to the associated management page.
+
+Do not hide essential operations inside a More menu.
+
+---
+
+# PART 18 — SAFE EDIT AND DELETE OPERATIONS
+
+## 51. Standard View action
+
+Every applicable administrative table must have a View action.
+
+View must display complete relevant record details.
+
+Use a dedicated details page for complex records.
+
+Use a dialog or drawer for smaller records.
+
+Do not display only a basic notification when View is clicked.
+
+---
+
+## 52. Standard Edit action
+
+Every editable record must have an Edit action.
+
+Edit must:
+
+- Open a prefilled form.
+- Validate changes.
+- Check administrator permissions.
+- Save changes through the appropriate service or API.
+- Update the table immediately after success.
+- Record important changes in audit logs.
+
+Do not allow unrestricted editing of verified records, financial transactions, or user identity information.
+
+Use re-verification or correction workflows where necessary.
+
+---
+
+## 53. Standard Delete and Archive action
+
+Provide Delete for records that can safely be permanently deleted.
+
+Examples:
+
+- Unused drafts
+- Empty test records
+- Unpublished notification drafts
+- Unused subscription plans
+- Unused advertisement drafts
+
+For records containing important history, provide Archive, Suspend, Cancel, or Deactivate instead.
+
+Do not permanently delete:
+
+- Active tenant stays
+- Confirmed payments
+- Deposit records
+- Financial ledgers
+- Existing subscription history
+- Property verification history
+- Support conversation history
+- Security audit logs
+- Important contractual records
+
+Implement lawful personal data deletion requests through a separate authorized retention and privacy workflow.
+
+### Confirmation dialog
+
+Display:
+
+- Record Name
+- Requested Action
+- Consequences
+- Confirmation Button
+- Cancel Button
+
+Require an administrative reason for significant actions.
+
+Do not delete records immediately when the trash icon is clicked.
+
+---
+
+# PART 19 — SHARED DATA AND BACKEND INTEGRATION
+
+## 54. Data consistency
+
+All Super Admin changes must be reflected in the corresponding dashboards.
+
+### Property approval
+
+When a property is approved:
+
+- Update Super Admin property records.
+- Update the PG Owner Dashboard.
+- Notify the owner.
+- Update internal management eligibility when all required approvals are complete.
+
+### Location verification
+
+When property location is verified:
+
+- Update the location verification record.
+- Update property verification status.
+- Update the owner-facing status.
+- Record verification history.
+
+### Subscription changes
+
+When a plan is updated:
+
+- Update the available plan configuration.
+- Preserve existing subscription agreements.
+- Apply versioned entitlement rules.
+- Update owner subscription displays appropriately.
+
+### Featured PG
+
+When a campaign becomes active:
+
+- Update the eligible property promotion placement.
+- Update the owner-facing campaign status.
+- Update the campaign history.
+
+### Local advertisements
+
+When an advertisement is approved and active:
+
+- Display it in the appropriate eligible placement.
+- Respect campaign dates.
+- Remove it from active placements after expiry or cancellation.
+
+### Support
+
+When an administrator replies:
+
+- Update the support conversation.
+- Notify the corresponding user.
+- Update ticket status and timestamps.
+
+### Notifications
+
+When an administrator publishes a notification:
+
+- Deliver it to the selected eligible audience through supported channels.
+- Update notification history.
+- Record the publication event.
+
+Do not maintain disconnected datasets for each dashboard.
+
+---
+
+## 55. Database and API requirements
+
+Inspect existing database models and API services.
+
+Reuse equivalent entities.
+
+Potential supporting entities include:
+
+- users
+- owner_profiles
+- tenant_profiles
+- properties
+- property_approval_requests
+- property_verification_history
+- property_location_verifications
+- property_location_history
+- documents
+- document_verification_history
+- subscription_plans
+- plan_versions
+- plan_features
+- plan_feature_assignments
+- subscriptions
+- platform_payments
+- listing_entitlements
+- featured_campaigns
+- advertisers
+- local_ad_campaigns
+- notifications
+- notification_recipients
+- notification_delivery_events
+- support_tickets
+- support_messages
+- support_internal_notes
+- audit_logs
+- account_activity_events
+- location_sharing_requests
+- location_sharing_permissions
+- administrator_profiles
+- administrator_roles
+- administrator_permissions
+
+Do not create duplicate database entities when equivalent models already exist.
+
+Use safe migrations.
+
+Preserve existing records.
+
+Implement proper relationships and indexes.
+
+Use database transactions for operations that update multiple related records.
+
+---
+
+## 56. Authorization and security
+
+Every Super Admin API must verify:
+
+- Authenticated User
+- Administrator Role
+- Required Permission
+- Resource Access
+- Valid Request Data
+
+Implement granular permissions where supported.
+
+Examples:
+
+- Manage Owners
+- Manage Tenants
+- Approve Properties
+- Verify Locations
+- Verify Documents
+- Manage Subscriptions
+- Manage Advertisements
+- Publish Notifications
+- Manage Support
+- View Security Logs
+- Manage Administrator Accounts
+
+Do not rely only on hiding buttons in the frontend.
+
+Enforce permissions on the backend.
+
+Use appropriate:
+
+- Input validation
+- Rate limiting
+- Secure document storage
+- Audit logging
+- Financial integrity controls
+- Session security
+- Data minimization
+- Access expiry
+- Privacy protections
+
+---
+
+# PART 20 — RESPONSIVE UI REQUIREMENTS
+
+## 57. Mobile application layout
+
+The application must remain mobile-first.
+
+Test the Super Admin Dashboard at:
+
+- 320px
+- 375px
+- 390px
+- 430px
+- Tablet widths
+- Laptop widths
+- Desktop widths
+
+### Mobile table behavior
+
+- Keep the main table compact.
+- Allow horizontal scrolling inside the table container.
+- Keep important columns accessible.
+- Use expandable rows for additional information.
+- Keep action buttons accessible.
+- Avoid excessively small text.
+- Do not convert every table row into a large card.
+
+### Filters
+
+On desktop, display search and filters in a horizontal toolbar.
+
+On mobile:
+
+- Display the search field.
+- Display a Filters button.
+- Open additional filters in a drawer or dialog.
+- Display active filter counts.
+- Provide Clear Filters.
+
+---
+
+## 58. Fixed bottom navigation
+
+Preserve fixed bottom navigation across all dashboards.
+
+Use a shared viewport-height application shell.
+
+The main content must scroll independently.
+
+Do not place bottom navigation inside the scrolling content.
+
+Requirements:
+
+- Visible immediately after login
+- Visible while scrolling
+- Visible on management pages
+- Visible on profile
+- No content overlap
+- No unnecessary nested scrolling
+- Safe-area support
+
+Preserve desktop sidebar navigation.
+
+---
+
+## 59. Light and Dark themes
+
+All new components must support:
+
+- Light Mode
+- Dark Mode
+- System Mode
+
+Use existing semantic theme variables.
+
+Verify:
+
+- Table backgrounds
+- Table borders
+- Input backgrounds
+- Dropdowns
+- Dialogs
+- Status labels
+- Action buttons
+- Quick link cards
+- Charts
+- Text contrast
+- Hover states
+- Focus states
+
+Do not introduce hardcoded white backgrounds that break Dark mode.
+
+---
+
+# PART 21 — DEMO DATA AND EMPTY STATES
+
+## 60. Demo environment
+
+If the application is currently operating with mock data, create coherent fictional demo records only where necessary to demonstrate the updated functionality.
+
+Demo data should cover:
+
+- PG Owners
+- Tenants
+- Properties
+- Property Verification Requests
+- Location Verification Requests
+- Documents
+- Subscription Plans
+- Plan Features
+- Featured PG Campaigns
+- Local Advertisers
+- Local Advertisements
+- Notifications
+- Support Tickets
+- Audit Events
+
+All demo records must be clearly identified as fictional.
+
+Do not use real personal contact information.
+
+Do not generate real-looking private identity documents.
+
+Do not fabricate production payments, advertising revenue, notification delivery results, or personal GPS histories.
+
+When a real backend exists, use the actual backend records.
+
+### Empty states
+
+When no records exist, display clear messages.
+
+Examples:
+
+- No pending property verification requests.
+- No documents awaiting verification.
+- No active featured campaigns.
+- No support tickets found.
+- No advertisements match your filters.
+
+Provide relevant Add or Clear Filters actions.
+
+---
+
+# PART 22 — IMPLEMENTATION ORDER
+
+## 61. Execute the work in phases
+
+### Phase 1 — PG Owner Dashboard
+
+- Remove category headings.
+- Create one uniform quick links grid.
+- Preserve all existing operations.
+- Preserve pending counts.
+- Verify mobile and desktop layouts.
+
+### Phase 2 — Shared Admin Components
+
+- Create or improve the shared table component.
+- Create reusable search and filter controls.
+- Create reusable status labels.
+- Create standard action buttons.
+- Create confirmation dialogs.
+
+### Phase 3 — Property Administration
+
+- Property Verification Table
+- Property Verification Details
+- Location Verification Table
+- Location Verification Details
+- Google Maps property integration
+- All Properties Table
+- Property Suspension and Restoration
+
+### Phase 4 — User Administration
+
+- PG Owners Table
+- Owner Detailed Profile
+- Tenants Table
+- Tenant Detailed Profile
+- Account Suspension and Restoration
+
+### Phase 5 — Document Management
+
+- Unified Document Table
+- Document Categories
+- Secure Preview
+- Verification Actions
+- Document History
+
+### Phase 6 — Commercial Management
+
+- Subscription Plans
+- Plan Features
+- Active Subscriptions
+- Featured PGs
+- Advertiser Management
+- Local Advertisement Management
+
+### Phase 7 — Communication
+
+- Notification Management
+- Notification Creation
+- Notification History
+- Support Tickets
+- Support Conversations
+- Support Status Updates
+
+### Phase 8 — Audit and Profile
+
+- Audit Logs
+- Authentication Activity
+- Property Location Verification History
+- Administrative Activity
+- Super Admin Profile
+- Replace More with Profile
+
+### Phase 9 — Integration and Testing
+
+- Verify shared data synchronization.
+- Verify permissions.
+- Verify financial integrity.
+- Verify privacy safeguards.
+- Verify responsive layouts.
+- Verify Light and Dark themes.
+- Run production build.
+- Fix errors introduced by these changes.
+
+---
+
+# PART 23 — ACCEPTANCE CRITERIA
+
+## 62. PG Owner Dashboard verification
+
+- All existing quick links remain available.
+- Category headings are removed.
+- Quick links appear in one continuous grid.
+- Cards have equal width and height.
+- Rows and columns are aligned.
+- Icons and labels are consistent.
+- Pending count indicators work.
+- Every quick link opens its associated page.
+- No unrelated owner functionality is changed.
+
+## 63. Super Admin verification
+
+- Property Verification uses a searchable table.
+- Property Verification supports filters and record actions.
+- Location Verification uses a searchable table.
+- Location Verification details display registered property coordinates.
+- Open in Google Maps opens the correct submitted property location.
+- PG Owners use a searchable, filterable table.
+- Owner detailed profiles work.
+- Tenants use a searchable, filterable table.
+- Tenant detailed profiles work.
+- Property location is clearly distinguished from personal location.
+- All Properties uses a professional table.
+- Property suspension and restoration work.
+- Documents uses a unified table.
+- Document category filters work.
+- Authorized document preview works.
+- Subscription plans can be created and edited.
+- Plan features can be created and edited.
+- Plan entitlements remain consistent.
+- Featured PG campaigns can be managed.
+- Local advertisers can be managed.
+- Local advertisement campaigns can be managed.
+- Notifications can be created and published through supported channels.
+- Previously posted notifications can be managed.
+- Support tickets can be viewed.
+- Administrators can reply to support tickets.
+- Support status updates work.
+- Audit logs display appropriate activity history.
+- Audit logs cannot be casually modified or deleted.
+- Registered property location history is available.
+- No silent personal GPS tracking is introduced.
+- More is replaced with Profile.
+- Administrator Profile works.
+- Bottom navigation remains visible.
+- Desktop sidebar remains functional.
+- Light and Dark themes work.
+- Existing tenant and owner workflows remain functional.
+- Production build passes.
+
+---
+
+# PART 24 — FINAL IMPLEMENTATION REPORT
+
+## 64. Required completion report
+
+After implementation, provide a detailed report containing:
+
+1. Existing codebase findings
+2. Completed PG Owner Dashboard changes
+3. Completed Super Admin Dashboard changes
+4. Files modified
+5. Components created
+6. Components reused
+7. Routes added or updated
+8. Database migrations
+9. API endpoints added or updated
+10. Search and filter implementation
+11. Functional View, Edit, and Archive actions
+12. Property approval workflow status
+13. Google Maps property location functionality
+14. Subscription management functionality
+15. Featured PG functionality
+16. Local advertisement functionality
+17. Notification functionality
+18. Support ticket functionality
+19. Audit logging functionality
+20. Privacy and security checks
+21. Responsive testing results
+22. Light and Dark mode testing
+23. Build status
+24. Remaining dependencies
+25. Incomplete or demo-only functionality
+
+Do not simply describe the requested changes.
+
+Implement them in the existing application.
+
+Do not claim functionality is complete when only a static UI exists.
+
+## Final objective
+
+Transform PG Finder into a professional, centralized PG administration platform.
+
+The PG Owner Dashboard must have a clean, uniform quick links grid.
+
+The Super Admin Dashboard must provide complete management of properties, property approvals, registered property locations, owners, tenants, documents, subscription plans, features, featured PGs, local advertisements, notifications, support tickets, audit logs, and administrator profiles.
+
+The entire application must remain simple, professional, secure, responsive, and easy to operate.
